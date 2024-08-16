@@ -2,12 +2,30 @@
 import { Box, Button, Group, Stack, Text, Title, rem } from "@mantine/core";
 import BasilTwitterSolid from "~icons/basil/twitter-solid.jsx";
 import HeroiconsEnvelope from "~icons/heroicons/envelope";
+import MovingGradient from "./MovingGradient";
 
 import classes from "./page.module.css";
+import { useState } from "react";
 
 export default function Home() {
+  const [color, setColor] = useState("#fff");
+
+  const changeColor = (colorNum: number) => {
+    console.log("changeColor", colorNum);
+    if (colorNum === 1) {
+      setColor("#d0bfff");
+    } else if (colorNum === 2) {
+      setColor("#ffec99");
+    } else if (colorNum === 3) {
+      setColor("#d8f5a2");
+    } else {
+      setColor("#fff");
+    }
+  };
+
   return (
-    <Stack justify="space-between" h="100vh">
+    <Stack justify="space-between" h="100dvh">
+      <MovingGradient color={color} />
       <Box p={36} c="dark.7">
         <Stack gap={0}>
           <Group gap={4}>
@@ -26,20 +44,27 @@ export default function Home() {
           <Text fw={500} size="lg" style={{ letterSpacing: rem(-1) }}>
             a design engineer currently exploring:
           </Text>
-          <Group gap={8} pt={8} style={{ maxWidth: rem(240) }}>
+          <Group
+            gap={8}
+            pt={8}
+            style={{ maxWidth: rem(240) }}
+            onMouseLeave={() => changeColor(0)}>
             <Button
               className={`${classes.button} ${classes.ar}`}
-              variant="outline">
+              variant="outline"
+              onMouseEnter={() => changeColor(1)}>
               ar/vr
             </Button>
             <Button
               className={`${classes.button} ${classes.game}`}
-              variant="outline">
+              variant="outline"
+              onMouseEnter={() => changeColor(2)}>
               games
             </Button>
             <Button
               className={`${classes.button} ${classes.immerse}`}
-              variant="outline">
+              variant="outline"
+              onMouseEnter={() => changeColor(3)}>
               immersive experiences
             </Button>
           </Group>

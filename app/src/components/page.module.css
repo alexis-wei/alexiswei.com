@@ -24,3 +24,39 @@
 .immerse:hover {
   background-color: var(--mantine-color-lime-1);
 }
+
+.gradientContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.movingGradient {
+  position: absolute;
+  width: 80vmin;
+  height: 80vmin;
+  border-radius: 30%;
+  filter: blur(40px);
+  opacity: 0.8;
+  animation: moveGradient 20s infinite alternate, changeSize 15s infinite alternate;
+}
+
+@keyframes moveGradient {
+  0% { top: 20%; left: 20%; }
+  25% { top: 80%; left: 50%; }
+  50% { top: 20%; left: 80%; }
+  75% { top: 60%; left: 40%; }
+  100% { top: 20%; left: 80%; }
+}
+
+@keyframes changeSize {
+  0% { transform: scale(1); }
+  30% { transform: scale(2); }
+  80% { transform: scale(1.2); }
+  100% { transform: scale(0.8); }
+}
