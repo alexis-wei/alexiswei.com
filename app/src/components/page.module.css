@@ -1,0 +1,26 @@
+.button {
+  border-radius: var(--mantine-radius-xl);
+  font-family: var(--mantine-font-family-headings);
+  color: var(--mantine-color-dark-7);
+  border-color: var(--mantine-color-dark-7);
+  transition: background-color 0.3s ease-in-out;
+}
+
+.contactButton {
+  border-radius: var(--mantine-radius-xl);
+  font-family: var(--mantine-font-family-body);
+  color: var(--mantine-color-dark-7);
+  border-color: var(--mantine-color-dark-7);
+}
+
+.ar:hover {
+  background-color: var(--mantine-color-violet-1);
+}
+
+.game:hover {
+  background-color: var(--mantine-color-yellow-1);
+}
+
+.immerse:hover {
+  background-color: var(--mantine-color-lime-1);
+}
