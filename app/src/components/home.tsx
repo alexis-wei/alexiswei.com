@@ -1,7 +1,7 @@
 "use client";
 import { Box, Button, Group, Stack, Text, Title, rem } from "@mantine/core";
-import BasilTwitterSolid from "~icons/basil/twitter-solid.jsx";
-import HeroiconsEnvelope from "~icons/heroicons/envelope";
+import BasilTwitterSolid from "~icons/basil/twitter-solid";
+import HeroiconsEnvelope from "~icons/heroicons/envelope-20-solid";
 import MovingGradient from "./MovingGradient";
 
 import classes from "./page.module.css";
@@ -24,7 +24,7 @@ export default function Home() {
   };
 
   return (
-    <Stack justify="space-between" h="100dvh">
+    <Stack justify="space-between" h="100dvh" style={{ position: "absolute" }}>
       <MovingGradient color={color} />
       <Box p={36} c="dark.7">
         <Stack gap={0}>

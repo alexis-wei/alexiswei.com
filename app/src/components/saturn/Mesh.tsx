@@ -10,14 +10,8 @@ export default function MeshComponent() {
   const mesh = useRef<Mesh>(null!);
   const { nodes, materials, scene } = useLoader(GLTFLoader, fileUrl);
 
-  console.log("nodes", nodes);
-  console.log("materials", materials);
-  // useFrame(() => {
-  //   mesh.current.rotation.y += 0.01;
-  // });
-
   return (
-    <mesh ref={mesh}>
+    <mesh ref={mesh} rotation={[0.1, 0.3, 0.7]}>
       <primitive object={scene} />
     </mesh>
   );

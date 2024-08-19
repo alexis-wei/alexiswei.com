@@ -4,7 +4,7 @@ import Welcome from "@/components/saturn/Welcome";
 
 export default function Home() {
   return (
-    <main>
+    <main style={{ position: "relative" }}>
       <HomePage />
       <Welcome />
     </main>
