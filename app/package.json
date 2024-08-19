@@ -13,9 +13,13 @@
     "@fontsource/libre-baskerville": "^5.0.13",
     "@mantine/core": "^7.12.1",
     "@mantine/hooks": "^7.12.1",
+    "@react-three/drei": "^9.111.0",
+    "@react-three/fiber": "^8.17.5",
+    "@types/three": "^0.167.1",
     "next": "14.2.5",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "three": "^0.167.1"
   },
   "devDependencies": {
     "@iconify-json/basil": "^1.1.6",
