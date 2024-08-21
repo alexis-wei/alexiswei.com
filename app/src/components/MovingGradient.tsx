@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from "react";
 import styles from "./page.module.css";
 
 interface MovingGradientProps {
@@ -12,7 +11,7 @@ const MovingGradient: React.FC<MovingGradientProps> = ({ color }) => {
 
   return (
     <div className={styles.gradientContainer}>
-      <div className={styles.movingGradient} style={gradientStyle}></div>
+      <div className={styles.movingGradient} style={gradientStyle} />
     </div>
   );
 };

@@ -1,18 +1,25 @@
 "use client";
 
 import { useRef } from "react";
-import { useFrame, useLoader } from "@react-three/fiber";
-import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { useFrame } from "@react-three/fiber";
 import { Mesh } from "three";
 
-export default function MeshComponent() {
-  const fileUrl = "/saturn/scene.gltf";
+interface MeshComponentProps {
+  gltfModel: object;
+}
+
+const MeshComponent: React.FC<MeshComponentProps> = ({ gltfModel }) => {
   const mesh = useRef<Mesh>(null!);
-  const { nodes, materials, scene } = useLoader(GLTFLoader, fileUrl);
+
+  useFrame((_, delta) => {
+    mesh.current.rotation.y += delta * 0.2;
+  });
 
   return (
     <mesh ref={mesh} rotation={[0.1, 0.3, 0.7]}>
-      <primitive object={scene} />
+      <primitive object={gltfModel} />
     </mesh>
   );
-}
+};
+
+export default MeshComponent;
