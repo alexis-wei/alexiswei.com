@@ -1,42 +1,35 @@
 "use client";
 
-import { Canvas, useLoader } from "@react-three/fiber";
+import { Canvas } from "@react-three/fiber";
 import { useEffect, useState } from "react";
 import MeshComponent from "./Mesh";
-import { Box, Group, Loader, Transition } from "@mantine/core";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { Box, Center, Loader, Transition } from "@mantine/core";
+import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 
 const Saturn = () => {
-  const [visible, setVisible] = useState(false);
-  const [modelIsLoaded, setModelIsLoaded] = useState(false);
-  const fileUrl = "/saturn/scene.gltf";
-  const gltf = useLoader(GLTFLoader, fileUrl);
-
+  const [gltf, setGltf] = useState<GLTF | null>(null);
   useEffect(() => {
-    if (modelIsLoaded) setVisible(true);
-    if (gltf) setModelIsLoaded(true);
-  }, [gltf, modelIsLoaded]);
+    const loader = new GLTFLoader();
+    loader.load("/saturn/scene.gltf", (gltf) => {
+      setGltf(gltf);
+    });
+  }, []);
 
   return (
-    <Box h="120px" w="240px">
+    <Box h="120px" w="240px" pos="relative">
       <Transition
-        mounted={!visible}
+        mounted={!gltf}
         transition="fade"
         duration={1000}
         timingFunction="cubic-bezier(0.0, 0.15, 0.4, 1)">
-        {(styles) => (
-          <Group
-            h="120"
-            w="240"
-            style={{ ...styles, position: "absolute" }}
-            justify="center"
-            align="center">
+        {(style) => (
+          <Center pos="absolute" inset={0} style={style}>
             <Loader color="dark.7" size="sm" type="dots" />
-          </Group>
+          </Center>
         )}
       </Transition>
       <Transition
-        mounted={visible}
+        mounted={!!gltf}
         transition="fade"
         duration={3000}
         timingFunction="cubic-bezier(0, 0.05, 0.3, 1)"
@@ -46,9 +39,11 @@ const Saturn = () => {
           <Canvas
             style={{
               ...styles,
-              height: "120px",
-              width: "240px",
               position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
             }}>
             <ambientLight color="#fcf9ea" />
             <directionalLight
@@ -57,16 +52,16 @@ const Saturn = () => {
               intensity={1}
             />
             <directionalLight
-              color="##fff"
+              color="#fff"
               position={[-1, 5, 0]}
               intensity={1}
             />
             <directionalLight
-              color="##fff"
+              color="#fff"
               position={[-2, 3, 2]}
               intensity={1}
             />
-            <MeshComponent gltfModel={gltf.scene} />
+            {gltf && <MeshComponent gltfModel={gltf.scene} />}
           </Canvas>
         )}
       </Transition>
