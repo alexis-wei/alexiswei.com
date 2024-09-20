@@ -25,10 +25,10 @@ const HeaderComponent: React.FC = () => {
 const VideoComponent: React.FC<VideoProps> = ({ uri, caption }) => {
   return (
     <Stack align="center">
-      <div
+      <Box
+        w={{ base: "80%", sm: "600px", md: "800px" }}
+        h="auto"
         style={{
-          width: "800px",
-          height: "500px",
           borderRadius: "16px",
           outline: "1px solid #333333",
           overflow: "hidden",
@@ -47,7 +47,7 @@ const VideoComponent: React.FC<VideoProps> = ({ uri, caption }) => {
             objectFit: "cover",
           }}
         />
-      </div>
+      </Box>
       <Text size="sm" fw={500} style={{ letterSpacing: rem(-1) }}>
         {caption}
       </Text>
