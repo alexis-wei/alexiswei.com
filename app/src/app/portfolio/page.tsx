@@ -4,6 +4,7 @@ import { Box, Stack, Title, Text, Button, rem } from "@mantine/core";
 import TheDrop from "./TheDrop";
 import Phoenix from "./Phoenix";
 import Space from "./Space";
+import classes from "./portfolio.module.css";
 
 const ProjectButton: React.FC<{ title: string; id: string }> = ({
   title,
@@ -27,7 +28,12 @@ const ProjectButton: React.FC<{ title: string; id: string }> = ({
   }, [id]);
 
   return (
-    <Button variant="transparent" m="0" p="0" onClick={handleClick}>
+    <Button
+      variant="transparent"
+      m="0"
+      p="0"
+      onClick={handleClick}
+      className={classes.projectButton}>
       <Text c="#1f1f1f">{title}</Text>
     </Button>
   );
