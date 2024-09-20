@@ -62,9 +62,13 @@ const ProjectRoot: React.FC<ProjectRootProps> = ({
           <DescriptionText text={description} />
           <DescriptionText text={props.details} />
         </Group>
-        <Stack w={{ base: "80%", lg: rem(240) }} align="end" gap={rem(4)}>
-          <Text style={{ letterSpacing: rem(-0.2) }}>{props.time}</Text>
-          <Text style={{ letterSpacing: rem(-0.2) }}>{props.projectType}</Text>
+        <Stack w={{ base: "100%", lg: rem(240) }} align="end" gap={0}>
+          <Text size="sm" style={{ letterSpacing: rem(-0.2) }}>
+            {props.time}
+          </Text>
+          <Text fw={600} size="sm" style={{ letterSpacing: rem(-0.2) }}>
+            {props.projectType}
+          </Text>
         </Stack>
       </Group>
       <Stack>

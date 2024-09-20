@@ -30,7 +30,7 @@ const Space: React.FC = () => {
         projectType="visionOS"
         oneLiner="an immersive VR meditation experience–for yourself and with friends"
         description="the name 'space' comes from wanting users to having their own space to focus on themselves. A place that you choose to be in, with intention"
-        details="the design is inspired by the galaxy, a place where you can get lost in, staring at the vast sky, an endless number of possbilities to focus on, an inpiring world to be in"
+        details="the design is inspired by the galaxy, a place where you can get lost in, staring at the vast sky, an endless number of possibilities to focus on, an inspiring world to be in"
         primaryColors={["#000000", "#B6DCFF", "#EED1ED"]}
         primaryDesc="we start with the key colors of the sky, throughout both night and day, the biggest space that most of us find ourselves getting lost in"
         secondaryColors={["#CFECCE", "#FFE5A7", "#639817", "#FC7812"]}
