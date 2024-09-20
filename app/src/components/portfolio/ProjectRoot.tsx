@@ -71,11 +71,11 @@ const ProjectRoot: React.FC<ProjectRootProps> = ({
           </Text>
         </Stack>
       </Group>
-      <Stack>
+      <Stack gap={rem(4)}>
         <Title order={3}>design system</Title>
-        <Group gap={44} align="start">
-          <Stack gap={8}>
-            <Text size="md" style={{ letterSpacing: rem(-0.2) }}>
+        <Group gap={rem(44)} align="start">
+          <Stack gap={rem(8)}>
+            <Text size="md" fw={500} style={{ letterSpacing: rem(-0.4) }}>
               Primary
             </Text>
             <Group align="start" gap={12}>
@@ -94,7 +94,7 @@ const ProjectRoot: React.FC<ProjectRootProps> = ({
             </Group>
           </Stack>
           <Stack gap={8}>
-            <Text size="md" style={{ letterSpacing: rem(-0.2) }}>
+            <Text size="md" fw={500} style={{ letterSpacing: rem(-0.4) }}>
               Secondary
             </Text>
             <Group align="start" gap={12}>
@@ -113,7 +113,7 @@ const ProjectRoot: React.FC<ProjectRootProps> = ({
             </Group>
           </Stack>
           <Stack gap={8}>
-            <Text size="md" style={{ letterSpacing: rem(-0.2) }}>
+            <Text size="md" fw={500} style={{ letterSpacing: rem(-0.2) }}>
               Fonts
             </Text>
             <Group align="start">

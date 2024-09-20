@@ -78,12 +78,14 @@ const Phoenix: React.FC = () => {
         time="april/may 2024"
         projectType="mobile web app"
         oneLiner="a co-creation platform for D2C brands  to partner with their community to build, test, & launch products "
-        description="Phoenix was born directly from a need of brands wanting to hear directly from their most loyal customers.
-        Brands have access to thousands people eager to provide answers, yet they struggle to find meaning out of the data.
-        The goal of Phoenix is to summarize these community finding into concrete suggestions"
-        details="design inspiration came from friendly fun colors made to engage a younger community. Turn surveys to fun"
+        description="Phoenix was born directly from the new wave of 'build with your community', a need from brands wanting to hear directly from their most loyal customers. 
+        Brands have access to thousands people eager to provide suggestions, yet they struggle to find concrete product improvements out of this large dataset. 
+        Phoenix aims to solve this problem"
+        details="Phoenix symbolizes rebirth, something anew. 
+        As we target community in a medium (surveys forms, data dashboards) that is typically considered boring and cluttered, 
+        we want to make understanding the key conclusions easy"
         primaryColors={["#FF5C29", "#81E70D", "#FAFAFA"]}
-        primaryDesc="emotions: energetic, youthful"
+        primaryDesc="The vibrant colors of fire and nature brings new life to products, inspiring a new generation of products filled with energy"
         secondaryColors={[
           "#D2F8BE",
           "#FFFCB7",
