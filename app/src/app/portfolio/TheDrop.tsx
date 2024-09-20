@@ -42,7 +42,7 @@ const VideoComponent: React.FC<VideoProps> = ({ uri, caption }) => {
           }}
         />
       </div>
-      <Text size="sm" fw={500} style={{ letterSpacing: rem(-1) }}>
+      <Text size="sm" fw={500} style={{ letterSpacing: rem(-0.2) }}>
         {caption}
       </Text>
     </Stack>

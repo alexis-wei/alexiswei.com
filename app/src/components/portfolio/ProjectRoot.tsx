@@ -31,7 +31,7 @@ interface DescriptionProps {
 const DescriptionText: React.FC<DescriptionProps> = ({ text }) => (
   <Text
     w={{ base: "80%", md: rem(240) }}
-    style={{ letterSpacing: rem(-1) }}
+    style={{ letterSpacing: rem(-0.2) }}
     mt={rem(-4)}
     size="sm">
     {text}
@@ -54,7 +54,7 @@ const ProjectRoot: React.FC<ProjectRootProps> = ({
         {props.header}
       </Box>
       <Group justify="space-between" align="start">
-        <Group gap={rem(24)} align="start" w="full">
+        <Group gap={rem(32)} align="start" w="full">
           <Title order={3} w={{ base: "100%", md: rem(240) }}>
             &quot;{title}&quot;
           </Title>
@@ -63,15 +63,15 @@ const ProjectRoot: React.FC<ProjectRootProps> = ({
           <DescriptionText text={props.details} />
         </Group>
         <Stack w={{ base: "80%", lg: rem(240) }} align="end" gap={rem(4)}>
-          <Text style={{ letterSpacing: rem(-1) }}>{props.time}</Text>
-          <Text style={{ letterSpacing: rem(-1) }}>{props.projectType}</Text>
+          <Text style={{ letterSpacing: rem(-0.2) }}>{props.time}</Text>
+          <Text style={{ letterSpacing: rem(-0.2) }}>{props.projectType}</Text>
         </Stack>
       </Group>
       <Stack>
         <Title order={3}>design system</Title>
         <Group gap={44} align="start">
           <Stack gap={8}>
-            <Text size="md" style={{ letterSpacing: rem(-1) }}>
+            <Text size="md" style={{ letterSpacing: rem(-0.2) }}>
               Primary
             </Text>
             <Group align="start" gap={12}>
@@ -84,13 +84,13 @@ const ProjectRoot: React.FC<ProjectRootProps> = ({
                 w={rem(240)}
                 mt={rem(-4)}
                 size="sm"
-                style={{ letterSpacing: rem(-1) }}>
+                style={{ letterSpacing: rem(-0.2) }}>
                 {props.primaryDesc}
               </Text>
             </Group>
           </Stack>
           <Stack gap={8}>
-            <Text size="md" style={{ letterSpacing: rem(-1) }}>
+            <Text size="md" style={{ letterSpacing: rem(-0.2) }}>
               Secondary
             </Text>
             <Group align="start" gap={12}>
@@ -103,13 +103,15 @@ const ProjectRoot: React.FC<ProjectRootProps> = ({
                 w={rem(240)}
                 mt={rem(-4)}
                 size="sm"
-                style={{ letterSpacing: rem(-1) }}>
+                style={{ letterSpacing: rem(-0.2) }}>
                 {props.secondaryDesc}
               </Text>
             </Group>
           </Stack>
           <Stack gap={8}>
-            <Text size="md">Fonts</Text>
+            <Text size="md" style={{ letterSpacing: rem(-0.2) }}>
+              Fonts
+            </Text>
             <Group align="start">
               {props.fonts?.map((font, index) => (
                 <Stack gap={4} key={index}>
@@ -136,7 +138,7 @@ const ProjectRoot: React.FC<ProjectRootProps> = ({
                 w={rem(240)}
                 mt={rem(-4)}
                 size="sm"
-                style={{ letterSpacing: rem(-1) }}>
+                style={{ letterSpacing: rem(-0.2) }}>
                 {props.fontDesc}
               </Text>
             </Group>

@@ -30,7 +30,7 @@ export default function Welcome() {
             style={{ position: "absolute" }}>
             <Stack align="center" justify="center">
               <Saturn />
-              <Text ff="heading" fw="700" style={{ letterSpacing: rem(-1) }}>
+              <Text ff="heading" fw="700" style={{ letterSpacing: rem(-0.2) }}>
                 welcome
               </Text>
             </Stack>
