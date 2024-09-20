@@ -78,14 +78,16 @@ const TheDrop: React.FC = () => {
         title="the drop"
         time="jan-mar 2024"
         projectType="mobile web app"
-        oneLiner="if etsy and shopify had a baby"
-        description="Sellers of one of a kind goods want to have an easy way to directly upload their products. 
-        The Drop focuses on sellers that have a following already on instagram and tiktok, and utilizes their content to create a shoppable video based feed?"
-        details="onboarded 20+ shops in 2 months, made over 20k in sales volume.
-
-while considering the primary entry point of Instagram, what is the best in-app browser experience for our users?"
+        oneLiner="a video based shoppable link in bio – think simplified shopify"
+        description="The Drop helps sellers that have a social presence to own their audience and help them grow. 
+        We minimize their reliance on third party platforms such as depop and etsy through offering a simple way to have their own platform. 
+        We started with offering a unique drop format that works best for one of a kind goods"
+        details="our UX prioritizes simplicity for a less technical audience. 
+        How can we minimize the number of screens before a purchase can be made? 
+        What is the simplest way for sellers to onboard and upload their products to get ready for selling?
+        All while considering the primary entry point of Instagram, how to create the best in-app browser experience?"
         primaryColors={["#121212", "#FFFFFF", "#FFD218"]}
-        primaryDesc="neutral fitting for each seller, with a pop of yellow for vibrancy. As the app onboarded more and more sellers, we realized a need for the clothes to be the center of attention, rather than our own primary colors"
+        primaryDesc="clean neutrals create trust while allowing each seller to show off their own character through their items"
         secondaryColors={[
           "#002199",
           "#FF8A22",
