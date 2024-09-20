@@ -1,5 +1,5 @@
 import React from "react";
-import HomePage from "../components/home";
+import HomePage from "@/components/Home";
 import Welcome from "@/components/saturn/Welcome";
 
 export default function Home() {
