@@ -32,7 +32,7 @@ export default function Home() {
       <Box p={36} c="dark.7">
         <Stack gap={0}>
           <Group gap={4}>
-            <Text fw={500} size="lg" style={{ letterSpacing: rem(-0.5) }}>
+            <Text fw={500} size="lg" style={{ letterSpacing: rem(-1) }}>
               hi, i&apos;m
             </Text>
             <Title
@@ -44,7 +44,7 @@ export default function Home() {
               alexis
             </Title>
           </Group>
-          <Text fw={500} size="lg" style={{ letterSpacing: rem(-0.5) }}>
+          <Text fw={500} size="lg" style={{ letterSpacing: rem(-1) }}>
             a design engineer currently exploring:
           </Text>
           <Group
