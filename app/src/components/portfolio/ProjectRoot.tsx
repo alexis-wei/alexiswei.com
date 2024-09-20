@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { Box, Group, Image, Stack, Text, Title, rem } from "@mantine/core";
 
 export interface Font {
@@ -20,7 +20,23 @@ interface ProjectRootProps {
   projectType?: string;
   fonts: Font[];
   fontDesc: string;
+  header?: ReactNode;
+  content?: ReactNode;
 }
+
+interface DescriptionProps {
+  text: string;
+}
+
+const DescriptionText: React.FC<DescriptionProps> = ({ text }) => (
+  <Text
+    w={{ base: "80%", md: rem(240) }}
+    style={{ letterSpacing: rem(-1) }}
+    mt={rem(-4)}
+    size="sm">
+    {text}
+  </Text>
+);
 
 const ProjectRoot: React.FC<ProjectRootProps> = ({
   title = "title",
@@ -34,59 +50,67 @@ const ProjectRoot: React.FC<ProjectRootProps> = ({
         bd="0.5px solid rgba(0, 0, 0, 0.2)"
         w="100%"
         h={400}
-        style={{ "border-radius": "16px" }}></Box>
+        style={{ "border-radius": "16px", overflow: "clip" }}>
+        {props.header}
+      </Box>
       <Group justify="space-between" align="start">
-        <Group gap={20} align="start" w="full">
-          <Title order={3} w={{ base: "100%", md: rem(280) }}>
+        <Group gap={rem(24)} align="start" w="full">
+          <Title order={3} w={{ base: "100%", md: rem(240) }}>
             &quot;{title}&quot;
           </Title>
-          <Text w={{ base: "100%", md: rem(280) }} mt={rem(-4)}>
-            {oneLiner}
-          </Text>
-          <Text w={{ base: "100%", md: rem(280) }} mt={rem(-4)}>
-            {description}
-          </Text>
-          <Text w={{ base: "100%", md: rem(280) }} mt={rem(-4)}>
-            {props.details}
-          </Text>
+          <DescriptionText text={oneLiner} />
+          <DescriptionText text={description} />
+          <DescriptionText text={props.details} />
         </Group>
-        <Stack w={rem(200)} align="end" gap={rem(4)}>
-          <Text>{props.time}</Text>
-          <Text>{props.projectType}</Text>
+        <Stack w={{ base: "80%", lg: rem(240) }} align="end" gap={rem(4)}>
+          <Text style={{ letterSpacing: rem(-1) }}>{props.time}</Text>
+          <Text style={{ letterSpacing: rem(-1) }}>{props.projectType}</Text>
         </Stack>
       </Group>
       <Stack>
         <Title order={3}>design system</Title>
-        <Group gap={36} align="start">
-          <Stack>
-            <Text size="md">Primary</Text>
-            <Group align="start" gap={8}>
-              <Stack gap={10} w={rem(80)}>
+        <Group gap={44} align="start">
+          <Stack gap={8}>
+            <Text size="md" style={{ letterSpacing: rem(-1) }}>
+              Primary
+            </Text>
+            <Group align="start" gap={12}>
+              <Stack gap={8} w={rem(80)}>
                 {props.primaryColors?.map((color, index) => (
                   <Box key={index} h={40} bg={color} />
                 ))}
               </Stack>
-              <Text w={rem(240)} mt={rem(-6)}>
+              <Text
+                w={rem(240)}
+                mt={rem(-4)}
+                size="sm"
+                style={{ letterSpacing: rem(-1) }}>
                 {props.primaryDesc}
               </Text>
             </Group>
           </Stack>
-          <Stack>
-            <Text size="md">Secondary</Text>
-            <Group align="start" gap={8}>
-              <Group gap={10} wrap="wrap" w={rem(180)} mih={rem(136)}>
+          <Stack gap={8}>
+            <Text size="md" style={{ letterSpacing: rem(-1) }}>
+              Secondary
+            </Text>
+            <Group align="start" gap={12}>
+              <Group gap={8} wrap="wrap" w={rem(168)} mih={rem(136)}>
                 {props.secondaryColors?.map((color, index) => (
                   <Box key={index} h={40} bg={color} w={rem(80)} />
                 ))}
               </Group>
-              <Text w={rem(240)} mt={rem(-6)}>
+              <Text
+                w={rem(240)}
+                mt={rem(-4)}
+                size="sm"
+                style={{ letterSpacing: rem(-1) }}>
                 {props.secondaryDesc}
               </Text>
             </Group>
           </Stack>
-          <Stack>
+          <Stack gap={8}>
             <Text size="md">Fonts</Text>
-            <Group>
+            <Group align="start">
               {props.fonts?.map((font, index) => (
                 <Stack gap={4} key={index}>
                   <Image
@@ -98,16 +122,28 @@ const ProjectRoot: React.FC<ProjectRootProps> = ({
                     w={rem(100)}
                     h={rem(100)}
                   />
-                  <Stack gap={0}>
-                    <Text c="1F1F1F">{font.name}</Text>
-                    <Text c="#9B9B9B">{font.style}</Text>
+                  <Stack gap={0} align="start" justify="flex-start">
+                    <Text c="1F1F1F" size="sm">
+                      {font.name}
+                    </Text>
+                    <Text c="#9B9B9B" size="xs">
+                      {font.style}
+                    </Text>
                   </Stack>
                 </Stack>
               ))}
+              <Text
+                w={rem(240)}
+                mt={rem(-4)}
+                size="sm"
+                style={{ letterSpacing: rem(-1) }}>
+                {props.fontDesc}
+              </Text>
             </Group>
           </Stack>
         </Group>
       </Stack>
+      {props.content}
     </Stack>
   );
 };
