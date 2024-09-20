@@ -76,7 +76,7 @@ const Phoenix: React.FC = () => {
       <ProjectRoot
         title="phoenix"
         time="april/may 2024"
-        projectType="mobile web app"
+        projectType="browser application"
         oneLiner="a co-creation platform for D2C brands  to partner with their community to build, test, & launch products "
         description="Phoenix was born directly from the new wave of 'build with your community', a need from brands wanting to hear directly from their most loyal customers. 
         Brands have access to thousands people eager to provide suggestions, yet they struggle to find concrete product improvements out of this large dataset. 

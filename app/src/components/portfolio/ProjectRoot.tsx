@@ -62,7 +62,11 @@ const ProjectRoot: React.FC<ProjectRootProps> = ({
           <DescriptionText text={description} />
           <DescriptionText text={props.details} />
         </Group>
-        <Stack w={{ base: "100%", lg: rem(240) }} align="end" gap={0}>
+        <Stack
+          w={{ base: "100%", lg: rem(240) }}
+          align="end"
+          gap={0}
+          mt={rem(-4)}>
           <Text size="sm" style={{ letterSpacing: rem(-0.2) }}>
             {props.time}
           </Text>
@@ -97,10 +101,21 @@ const ProjectRoot: React.FC<ProjectRootProps> = ({
             <Text size="md" fw={500} style={{ letterSpacing: rem(-0.4) }}>
               Secondary
             </Text>
-            <Group align="start" gap={12}>
-              <Group gap={8} wrap="wrap" w={rem(168)} mih={rem(136)}>
+            <Group align="start" justify="flex-start" gap={12}>
+              <Group
+                gap={8}
+                wrap="wrap"
+                align="start"
+                justify="flex-start"
+                w={rem(168)}>
                 {props.secondaryColors?.map((color, index) => (
-                  <Box key={index} h={40} bg={color} w={rem(80)} />
+                  <Box
+                    key={index}
+                    h={40}
+                    bg={color}
+                    w={rem(80)}
+                    style={{ flexGrow: 0, flexShrink: 0 }}
+                  />
                 ))}
               </Group>
               <Text
