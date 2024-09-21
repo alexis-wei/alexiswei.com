@@ -1,11 +1,11 @@
 "use client";
 import React, { useCallback, useEffect, useState } from "react";
 import { Box, Stack, Title, Text, Button, rem } from "@mantine/core";
-import TheDrop from "./TheDrop";
-import Phoenix from "./Phoenix";
-import Space from "./Space";
-import classes from "./portfolio.module.css";
-import Foreword from "./Foreword";
+import TheDrop from "@/components/portfolio/TheDrop";
+import Phoenix from "@/components/portfolio/Phoenix";
+import Space from "@/components/portfolio/Space";
+import classes from "@/components/portfolio/portfolio.module.css";
+import Foreword from "@/components/portfolio/Foreword";
 
 interface ProjectButtonProps {
   title: string;
@@ -99,18 +99,20 @@ export default function Portfolio() {
         pos="fixed"
         radius={"xl"}
         bg={"rgba(255,255,255,0.62"}
-        c="#1F1F1F"
         size="compact-sm"
         style={{
           position: "fixed",
-          bottom: "20px",
+          bottom: "50%",
           right: "24px",
           display: showScrollTop ? "block" : "none",
         }}
+        styles={{
+          label: { color: "#1f1f1f" },
+          inner: { fontSize: 12 },
+        }}
         onClick={() => {
           window.scrollTo({ top: 0, behavior: "smooth" });
-        }}
-        className={classes.scrollTopButton}>
+        }}>
         ↑ top
       </Button>
     </Stack>

@@ -33,7 +33,7 @@ const Foreword: React.FC = () => {
           </Text>
         </Stack>
       </Stack>
-      <Group justify="center" align="center" mih="100vh" px={rem(24)}>
+      <Group justify="center" align="center" mih="100vh" px={rem(32)}>
         <Title fs="italic" order={6} ta="center">
           &quot;do the greatest thing ever, or something a little greater&quot;
         </Title>
