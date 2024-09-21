@@ -1,6 +1,8 @@
 import React, { ReactNode } from "react";
 import { Box, Group, Image, Stack, Text, Title, rem } from "@mantine/core";
 
+import classes from "./portfolio.module.css";
+
 export interface Font {
   name: string;
   style: string;
@@ -50,10 +52,13 @@ const ProjectRoot: React.FC<ProjectRootProps> = ({
         bd="0.5px solid rgba(0, 0, 0, 0.2)"
         w="100%"
         h={400}
-        style={{ "border-radius": "16px", overflow: "clip" }}>
+        style={{ borderRadius: "16px", overflow: "clip" }}>
         {props.header}
       </Box>
-      <Group justify="space-between" align="start">
+      <Group
+        justify="space-between"
+        align="start"
+        className={classes.projectRootWrapGroup}>
         <Group gap={rem(32)} align="start" w="full">
           <Title order={3} w={{ base: "100%", md: rem(240) }}>
             &quot;{title}&quot;
@@ -62,7 +67,11 @@ const ProjectRoot: React.FC<ProjectRootProps> = ({
           <DescriptionText text={description} />
           <DescriptionText text={props.details} />
         </Group>
-        <Stack w={{ base: "100%", lg: rem(240) }} align="end" gap={0}>
+        <Stack
+          w={{ base: "100%", md: rem(240) }}
+          align="end"
+          gap={0}
+          mt={rem(-4)}>
           <Text size="sm" style={{ letterSpacing: rem(-0.2) }}>
             {props.time}
           </Text>
@@ -97,10 +106,21 @@ const ProjectRoot: React.FC<ProjectRootProps> = ({
             <Text size="md" fw={500} style={{ letterSpacing: rem(-0.4) }}>
               Secondary
             </Text>
-            <Group align="start" gap={12}>
-              <Group gap={8} wrap="wrap" w={rem(168)} mih={rem(136)}>
+            <Group align="start" justify="flex-start" gap={12}>
+              <Group
+                gap={8}
+                wrap="wrap"
+                align="start"
+                justify="flex-start"
+                w={rem(168)}>
                 {props.secondaryColors?.map((color, index) => (
-                  <Box key={index} h={40} bg={color} w={rem(80)} />
+                  <Box
+                    key={index}
+                    h={40}
+                    bg={color}
+                    w={rem(80)}
+                    style={{ flexGrow: 0, flexShrink: 0 }}
+                  />
                 ))}
               </Group>
               <Text

@@ -1,15 +1,18 @@
 "use client";
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Box, Stack, Title, Text, Button, rem } from "@mantine/core";
-import TheDrop from "./TheDrop";
-import Phoenix from "./Phoenix";
-import Space from "./Space";
-import classes from "./portfolio.module.css";
+import TheDrop from "@/components/portfolio/TheDrop";
+import Phoenix from "@/components/portfolio/Phoenix";
+import Space from "@/components/portfolio/Space";
+import classes from "@/components/portfolio/portfolio.module.css";
+import Foreword from "@/components/portfolio/Foreword";
 
-const ProjectButton: React.FC<{ title: string; id: string }> = ({
-  title,
-  id,
-}) => {
+interface ProjectButtonProps {
+  title: string;
+  id: string;
+}
+
+const ProjectButton: React.FC<ProjectButtonProps> = ({ title, id }) => {
   const handleClick = useCallback(() => {
     const element = document.getElementById(id);
     if (element) {
@@ -40,22 +43,46 @@ const ProjectButton: React.FC<{ title: string; id: string }> = ({
 };
 
 export default function Portfolio() {
+  const [showScrollTop, setShowScrollTop] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > window.innerHeight);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const buttons: ProjectButtonProps[] = [
+    { title: "00 // foreword", id: "foreword" },
+    { title: "01 // space", id: "space" },
+    { title: "02 // the drop", id: "thedrop" },
+    { title: "03 // phoenix", id: "phoenix" },
+  ];
   return (
     <Stack pb={20} align="center">
-      <Stack gap={80} pb={200} w="100%">
+      <Stack gap={80} pb={200} w="100%" h="100%">
         <Stack
           w="full"
           justify="center"
           align="center"
           h="100vh"
           style={{ color: "#1f1f1f" }}>
-          <Title order={4}>Table of contents</Title>
+          <Title order={4}>table of contents</Title>
           <Stack align="start" gap={0}>
-            <ProjectButton title="01 // space" id="space" />
-            <ProjectButton title="02 // the drop" id="thedrop" />
-            <ProjectButton title="03 // phoenix" id="phoenix" />
+            {buttons.map((button) => (
+              <ProjectButton
+                key={button.id}
+                title={button.title}
+                id={button.id}
+              />
+            ))}
           </Stack>
         </Stack>
+        <Box id="foreword">
+          <Foreword />
+        </Box>
         <Box id="space">
           <Space />
         </Box>
@@ -67,6 +94,27 @@ export default function Portfolio() {
         </Box>
       </Stack>
       <Text size="xs">with love, alexis</Text>
+      <Button
+        variant="transparent"
+        pos="fixed"
+        radius={"xl"}
+        bg={"rgba(255,255,255,0.62"}
+        size="compact-sm"
+        style={{
+          position: "fixed",
+          bottom: "50%",
+          right: "24px",
+          display: showScrollTop ? "block" : "none",
+        }}
+        styles={{
+          label: { color: "#1f1f1f" },
+          inner: { fontSize: 12 },
+        }}
+        onClick={() => {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }}>
+        ↑ top
+      </Button>
     </Stack>
   );
 }

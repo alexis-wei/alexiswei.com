@@ -21,6 +21,7 @@ const HeaderComponent: React.FC = () => {
   );
 };
 
+
 const Space: React.FC = () => {
   return (
     <Stack>
@@ -29,12 +30,12 @@ const Space: React.FC = () => {
         time="present"
         projectType="visionOS"
         oneLiner="an immersive VR meditation experience–for yourself and with friends"
-        description="the name 'space' comes from wanting users to having their own space to focus on themselves. A place that you choose to be in, with intention"
-        details="the design is inspired by the galaxy, a place where you can get lost in, staring at the vast sky, an endless number of possibilities to focus on, an inspiring world to be in"
+        description="the name 'space' comes from wanting users to have their own space to focus on nothing but themselves. A place that you can choose to be in, with intention, to be and become your best self"
+        details="inspired by the galaxy and one's ability to get lost while staring at the vast sky. There's a sense of magic to space, yet it is all rooted in reality, inspiring your daily lives with an endless number of possiblities in your capabilities"
         primaryColors={["#000000", "#B6DCFF", "#EED1ED"]}
-        primaryDesc="we start with the key colors of the sky, throughout both night and day, the biggest space that most of us find ourselves getting lost in"
+        primaryDesc="we start with the key colors of the sky, throughout both night and day, the biggest space that most of us find ourselves getting lost in. Also happens to be the colors of clouds during sunset and sunrise"
         secondaryColors={["#CFECCE", "#FFE5A7", "#639817", "#FC7812"]}
-        secondaryDesc="the secondary colors contrast the light pastels in the primaries by being bright pops of color that reminds us of elements of nature. The bright green from leaves and a glowing orange for a warm day under the sun, as if you can already imagine laying on the grass at a beautiful park"
+        secondaryDesc="the secondary colors reminds us of elements of nature. The earthy green representing leaves and a glowing orange for a warm day under the sun, as if you can already imagine laying on the grass on a beautiful day"
         fonts={[
           {
             name: "bagel hot one",
