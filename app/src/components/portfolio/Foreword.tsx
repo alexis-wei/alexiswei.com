@@ -22,12 +22,12 @@ const Foreword: React.FC = () => {
             journey as a creative maker
             <br />
             <br />
-            i get easily excited by new mediums, a chance to break ground and
-            products i can see myself using. you can also see this portfolio as
-            a gallery of explorations that have made my heart flutter
+            i get easily excited by new mediums, a chance to break new ground
+            and products that i can see myself using. you can see this portfolio
+            as a gallery of explorations that have made my heart flutter
             <br />
             <br />
-            i hope you enjoy your journey & get a lil inspired ✧<br />
+            enjoy your journey & get a lil inspired ✧<br />
             <br />
             lovefrom, alexis
           </Text>
