@@ -1,11 +1,22 @@
 "use client";
+
 import React, { useCallback, useEffect, useState } from "react";
-import { Box, Stack, Title, Text, Button, rem } from "@mantine/core";
+import {
+  Box,
+  Stack,
+  Title,
+  Text,
+  Button,
+  rem,
+  Affix,
+  Transition,
+} from "@mantine/core";
 import TheDrop from "@/components/portfolio/TheDrop";
 import Phoenix from "@/components/portfolio/Phoenix";
 import Space from "@/components/portfolio/Space";
 import classes from "@/components/portfolio/portfolio.module.css";
 import Foreword from "@/components/portfolio/Foreword";
+import { useWindowScroll } from "@mantine/hooks";
 
 interface ProjectButtonProps {
   title: string;
@@ -43,17 +54,7 @@ const ProjectButton: React.FC<ProjectButtonProps> = ({ title, id }) => {
 };
 
 export default function Portfolio() {
-  const [showScrollTop, setShowScrollTop] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setShowScrollTop(window.scrollY > window.innerHeight);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
+  const [scroll, scrollTo] = useWindowScroll();
   const buttons: ProjectButtonProps[] = [
     { title: "00 // foreword", id: "foreword" },
     { title: "01 // space", id: "space" },
@@ -94,27 +95,29 @@ export default function Portfolio() {
         </Box>
       </Stack>
       <Text size="xs">with love, alexis</Text>
-      <Button
-        variant="transparent"
-        pos="fixed"
-        radius={"xl"}
-        bg={"rgba(255,255,255,0.62"}
-        size="compact-sm"
-        style={{
-          position: "fixed",
-          bottom: "50%",
-          right: "24px",
-          display: showScrollTop ? "block" : "none",
-        }}
-        styles={{
-          label: { color: "#1f1f1f" },
-          inner: { fontSize: 12 },
-        }}
-        onClick={() => {
-          window.scrollTo({ top: 0, behavior: "smooth" });
-        }}>
-        ↑ top
-      </Button>
+      <Affix position={{ bottom: "10%", right: 24 }}>
+        <Transition
+          transition="slide-up"
+          mounted={
+            typeof window !== "undefined" && scroll.y > window.innerHeight
+          }>
+          {(style) => (
+            <Button
+              variant="transparent"
+              radius="xl"
+              bg="rgba(255,255,255,0.62)"
+              size="compact-sm"
+              style={style}
+              c="#1f1f1f"
+              fz={12}
+              onClick={() => {
+                scrollTo({ y: 0 });
+              }}>
+              ↑ top
+            </Button>
+          )}
+        </Transition>
+      </Affix>
     </Stack>
   );
 }
