@@ -10,6 +10,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@dimforge/rapier3d": "^0.14.0",
     "@fontsource-variable/plus-jakarta-sans": "^5.0.21",
     "@fontsource/libre-baskerville": "^5.0.13",
     "@mantine/core": "^7.12.1",
