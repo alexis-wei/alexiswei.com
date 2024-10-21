@@ -1,7 +1,7 @@
-import React from "react";
-import { Stack, Title, Text, Group, Box, rem, Image } from "@mantine/core";
-import ProjectRoot from "@/components/portfolio/ProjectRoot";
-import { VideoProps } from "./types";
+import React from 'react';
+import { Stack, Title, Text, Group, Box, rem, Image } from '@mantine/core';
+import ProjectRoot from '@/components/portfolio/ProjectRoot';
+import { VideoProps } from './types';
 
 const HeaderComponent: React.FC = () => {
   return (
@@ -26,14 +26,14 @@ const VideoComponent: React.FC<VideoProps> = ({ uri, caption }) => {
   return (
     <Stack align="center">
       <Box
-        w={{ base: "80%", sm: "600px", md: "800px" }}
+        w={{ base: '80%', sm: '600px', md: '800px' }}
         h="auto"
         style={{
-          borderRadius: "16px",
-          outline: "1px solid #333333",
-          overflow: "hidden",
-          position: "relative",
-          boxShadow: "0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)",
+          borderRadius: '16px',
+          outline: '1px solid #333333',
+          overflow: 'hidden',
+          position: 'relative',
+          boxShadow: '0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)',
         }}>
         <video
           src={uri}
@@ -42,9 +42,9 @@ const VideoComponent: React.FC<VideoProps> = ({ uri, caption }) => {
           loop={true}
           playsInline={true}
           style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
           }}
         />
       </Box>
@@ -84,29 +84,29 @@ const Phoenix: React.FC = () => {
         details="Phoenix symbolizes rebirth, something anew. 
         As we target community in a medium (surveys forms, data dashboards) that is typically considered boring and cluttered, 
         we want to make understanding the key conclusions easy"
-        primaryColors={["#FF5C29", "#81E70D", "#FAFAFA"]}
+        primaryColors={['#FF5C29', '#81E70D', '#FAFAFA']}
         primaryDesc="The vibrant colors of fire and nature brings new life to products, inspiring a new generation of products filled with energy"
         secondaryColors={[
-          "#D2F8BE",
-          "#FFFCB7",
-          "#C6CEF9",
-          "#FFD5B7",
-          "#F1C6F9",
-          "#FFCECE",
+          '#D2F8BE',
+          '#FFFCB7',
+          '#C6CEF9',
+          '#FFD5B7',
+          '#F1C6F9',
+          '#FFCECE',
         ]}
         secondaryDesc="pastel fresh colors are used for energizing for a generally younger gen-z and gen-alpha audience that we expect to get feedback from for our platform"
         fonts={[
           {
-            name: "archivo",
-            style: "black expanded",
+            name: 'archivo',
+            style: 'black expanded',
             imgUri:
-              "https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/archivo-expanded.jpg",
+              'https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/archivo-expanded.jpg',
           },
           {
-            name: "archivo",
-            style: "regular",
+            name: 'archivo',
+            style: 'regular',
             imgUri:
-              "https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/archivo-reg.jpg",
+              'https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/archivo-reg.jpg',
           },
         ]}
         fontDesc="As the colors are full and varied, a same font different weight pairing provides uniformity while still being able to stand out"

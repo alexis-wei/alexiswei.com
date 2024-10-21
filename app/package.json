@@ -10,15 +10,16 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@dimforge/rapier3d": "^0.14.0",
     "@fontsource-variable/plus-jakarta-sans": "^5.0.21",
     "@fontsource/libre-baskerville": "^5.0.13",
     "@mantine/core": "^7.12.1",
     "@mantine/hooks": "^7.12.1",
     "@react-three/drei": "^9.111.0",
     "@react-three/fiber": "^8.17.5",
+    "@react-three/rapier": "^1.5.0",
     "@types/three": "^0.167.1",
     "next": "^14.2.13",
+    "r3f-perf": "^7.2.2",
     "react": "^18",
     "react-dom": "^18",
     "three": "^0.167.1"
@@ -33,6 +34,7 @@
     "@types/react-dom": "^18",
     "eslint": "^8",
     "eslint-config-next": "14.2.5",
+    "lil-gui": "^0.19.2",
     "postcss": "^8.4.41",
     "postcss-preset-mantine": "^1.17.0",
     "postcss-simple-vars": "^7.0.1",

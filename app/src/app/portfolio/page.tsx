@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback } from 'react';
 import {
   Box,
   Stack,
@@ -10,13 +10,13 @@ import {
   rem,
   Affix,
   Transition,
-} from "@mantine/core";
-import TheDrop from "@/components/portfolio/TheDrop";
-import Phoenix from "@/components/portfolio/Phoenix";
-import Space from "@/components/portfolio/Space";
-import classes from "@/components/portfolio/portfolio.module.css";
-import Foreword from "@/components/portfolio/Foreword";
-import { useWindowScroll } from "@mantine/hooks";
+} from '@mantine/core';
+import TheDrop from '@/components/portfolio/TheDrop';
+import Phoenix from '@/components/portfolio/Phoenix';
+import Space from '@/components/portfolio/Space';
+import classes from '@/components/portfolio/portfolio.module.css';
+import Foreword from '@/components/portfolio/Foreword';
+import { useWindowScroll } from '@mantine/hooks';
 
 interface ProjectButtonProps {
   title: string;
@@ -28,14 +28,14 @@ const ProjectButton: React.FC<ProjectButtonProps> = ({ title, id }) => {
     const element = document.getElementById(id);
     if (element) {
       element.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-        inline: "nearest",
+        behavior: 'smooth',
+        block: 'start',
+        inline: 'nearest',
       });
       setTimeout(() => {
         window.scrollTo({
           top: element.offsetTop,
-          behavior: "auto",
+          behavior: 'auto',
         });
       }, 800);
     }
@@ -56,10 +56,10 @@ const ProjectButton: React.FC<ProjectButtonProps> = ({ title, id }) => {
 export default function Portfolio() {
   const [scroll, scrollTo] = useWindowScroll();
   const buttons: ProjectButtonProps[] = [
-    { title: "00 // foreword", id: "foreword" },
-    { title: "01 // space", id: "space" },
-    { title: "02 // the drop", id: "thedrop" },
-    { title: "03 // phoenix", id: "phoenix" },
+    { title: '00 // foreword', id: 'foreword' },
+    { title: '01 // space', id: 'space' },
+    { title: '02 // the drop', id: 'thedrop' },
+    { title: '03 // phoenix', id: 'phoenix' },
   ];
   return (
     <Stack pb={20} align="center">
@@ -69,7 +69,7 @@ export default function Portfolio() {
           justify="center"
           align="center"
           h="100vh"
-          style={{ color: "#1f1f1f" }}>
+          style={{ color: '#1f1f1f' }}>
           <Title order={4}>table of contents</Title>
           <Stack align="start" gap={0}>
             {buttons.map((button) => (
@@ -95,11 +95,11 @@ export default function Portfolio() {
         </Box>
       </Stack>
       <Text size="xs">with love, alexis</Text>
-      <Affix position={{ bottom: "10%", right: 24 }}>
+      <Affix position={{ bottom: '10%', right: 24 }}>
         <Transition
           transition="slide-up"
           mounted={
-            typeof window !== "undefined" && scroll.y > window.innerHeight
+            typeof window !== 'undefined' && scroll.y > window.innerHeight
           }>
           {(style) => (
             <Button
