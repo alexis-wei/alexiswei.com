@@ -41,7 +41,7 @@ export default function Home() {
       <MovingGradient color={color} />
       <Box p={36} c="dark.7">
         <Stack gap={10}>
-          <Stack gap={0}>
+          <Stack gap={2}>
             <Group gap={4}>
               <Text
                 fw={500}
@@ -63,9 +63,9 @@ export default function Home() {
               fw={500}
               size="lg"
               style={{
-                letterSpacing: rem(-1),
+                letterSpacing: rem(-0.5),
                 maxWidth: rem(280),
-                lineHeight: '1.2',
+                lineHeight: '1.3',
               }}>
               a design engineer working with startups on:
             </Text>
