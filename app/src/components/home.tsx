@@ -9,7 +9,7 @@ import {
   Title,
   rem,
 } from '@mantine/core';
-import BasilTwitterSolid from '~icons/basil/twitter-solid';
+import BasilTwitterOutline from '~icons/basil/twitter-outline';
 import HeroiconsEnvelope from '~icons/heroicons/envelope';
 import HeroiconsCalendar from '~icons/heroicons/calendar';
 import MovingGradient from './MovingGradient';
@@ -111,7 +111,7 @@ export default function Home() {
             onClick={() =>
               window.open('https://www.x.com/itsalexiswei', '_blank')
             }>
-            <BasilTwitterSolid />
+            <BasilTwitterOutline />
           </ActionIcon>
           <ActionIcon
             className={classes.contactButton}
