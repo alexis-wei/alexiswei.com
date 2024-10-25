@@ -1,21 +1,20 @@
-import type { Metadata } from "next";
-import "@mantine/core/styles.layer.css";
-import { MantineProvider, createTheme } from "@mantine/core";
-import "@fontsource/libre-baskerville";
-import "@fontsource-variable/plus-jakarta-sans";
-// import "./globals.css";
+import type { Metadata } from 'next';
+import '@mantine/core/styles.layer.css';
+import { MantineProvider, createTheme } from '@mantine/core';
+import '@fontsource/libre-baskerville';
+import '@fontsource-variable/plus-jakarta-sans';
 
 const theme = createTheme({
   fontFamily: '"Plus Jakarta Sans Variable", sans-serif',
-  fontFamilyMonospace: "IBM Mono, Courier, monospace",
+  fontFamilyMonospace: 'IBM Mono, Courier, monospace',
   headings: {
     fontFamily: '"Libre Baskerville", serif',
   },
 });
 
 export const metadata: Metadata = {
-  title: "alexis",
-  description: "this is alexis wei",
+  title: 'alexis',
+  description: 'this is alexis wei',
 };
 
 export default function RootLayout({
