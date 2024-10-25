@@ -13,8 +13,8 @@ const theme = createTheme({
 });
 
 export const metadata: Metadata = {
-  title: 'alexis',
-  description: 'this is alexis wei',
+  title: 'alexis wei | design engineer',
+  description: 'alexis wei | design engineer',
 };
 
 export default function RootLayout({
