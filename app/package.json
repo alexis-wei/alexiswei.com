@@ -12,6 +12,7 @@
   "dependencies": {
     "@fontsource-variable/plus-jakarta-sans": "^5.0.21",
     "@fontsource/libre-baskerville": "^5.0.13",
+    "@iconify-json/fe": "^1.2.1",
     "@mantine/core": "^7.12.1",
     "@mantine/hooks": "^7.12.1",
     "@react-three/drei": "^9.111.0",
