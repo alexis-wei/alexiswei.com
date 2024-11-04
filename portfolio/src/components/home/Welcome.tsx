@@ -11,7 +11,9 @@ export default function Welcome() {
   };
 
   return (
-    <div className="w-dvh absolute flex h-dvh flex-col items-center justify-center gap-24 bg-white py-60">
+    <div
+      className={`w-dvh absolute flex h-dvh w-dvw flex-col items-center justify-center gap-24 bg-white py-60 ${visible ? "" : "hidden"}`}
+    >
       <div className="flex flex-col items-center justify-center gap-6">
         <div className="relative flex h-[120px] w-60 items-center justify-center">
           <Saturn />
@@ -24,7 +26,7 @@ export default function Welcome() {
         size="sm"
         variant="ghost"
         onClick={handleEnter}
-        className="left-[-1] min-h-10"
+        className="left-[-1] min-h-10 tracking-tight"
       >
         &#187; &nbsp; enter alexis&apos; world
       </Button>

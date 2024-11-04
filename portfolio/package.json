@@ -23,6 +23,11 @@
     "three": "^0.170.0"
   },
   "devDependencies": {
+    "@iconify-json/basil": "^1.2.1",
+    "@iconify-json/heroicons": "^1.2.1",
+    "@iconify/json": "^2.2.267",
+    "@svgr/core": "^8.1.0",
+    "@svgr/plugin-jsx": "^8.1.0",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
@@ -36,6 +41,7 @@
     "prettier-plugin-tailwindcss": "^0.6.8",
     "tailwindcss": "^3.4.14",
     "tailwindcss-animate": "^1.0.7",
-    "typescript": "^5"
+    "typescript": "^5",
+    "unplugin-icons": "^0.20.0"
   }
 }
