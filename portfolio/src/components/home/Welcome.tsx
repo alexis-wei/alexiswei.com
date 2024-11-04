@@ -12,7 +12,7 @@ export default function Welcome() {
 
   return (
     <div
-      className={`w-dvh absolute flex h-dvh w-dvw flex-col items-center justify-center gap-24 bg-white py-60 ${visible ? "" : "hidden"}`}
+      className={`w-dvh absolute flex h-dvh w-dvw flex-col items-center justify-center gap-24 bg-white py-60 fade-in fade-out-35 ${visible ? "" : "hidden"}`}
     >
       <div className="flex flex-col items-center justify-center gap-6">
         <div className="relative flex h-[120px] w-60 items-center justify-center">

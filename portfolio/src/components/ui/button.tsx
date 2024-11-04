@@ -18,14 +18,14 @@ const buttonVariants = cva(
         secondary:
           "bg-stone-100 text-stone-900 shadow-sm hover:bg-stone-100/80 dark:bg-stone-800 dark:text-stone-50 dark:hover:bg-stone-800/80",
         ghost:
-          "hover:font-medium text-stone-600 dark:hover:bg-stone-800 dark:hover:text-stone-50",
+          "hover:font-medium text-stone-500 hover:text-stone-600 dark:hover:bg-stone-800 dark:hover:text-stone-50",
         link: "text-stone-900 underline-offset-4 hover:underline dark:text-stone-50",
       },
       size: {
         default: "h-9 px-4 py-2",
         sm: "h-8 rounded-md px-3 text-xs",
         lg: "h-10 rounded-md px-8",
-        icon: "h-9 w-9",
+        icon: "h-8 w-8",
       },
     },
     defaultVariants: {

@@ -1,12 +1,6 @@
 "use client";
 import { Button } from "../ui/button";
-import BasilTwitterOutline from "~icons/basil/twitter-outline";
-import HeroiconsEnvelope from "~icons/heroicons/envelope";
-import HeroiconsCalendar from "~icons/heroicons/calendar";
-import FeGithub from "~icons/fe/github";
 import MovingGradient from "./MovingGradient";
-
-import classes from "./page.module.css";
 import { useState } from "react";
 
 const Main = () => {
@@ -22,7 +16,7 @@ const Main = () => {
   };
 
   return (
-    <div className="absolute h-dvh w-dvw flex-col items-stretch justify-between p-9 sm:flex-row">
+    <div className="flex h-dvh w-dvw flex-col items-stretch justify-between p-9 sm:flex-row">
       <MovingGradient color={color} />
       <div className="flex h-full w-full flex-col gap-2.5 text-stone-700">
         <div className="flex flex-col gap-0.5">
@@ -64,42 +58,52 @@ const Main = () => {
         </div>
       </div>
 
-      <div className="h-fit items-start gap-1 text-stone-700">
+      <div className="flex h-fit items-start">
         <Button
-          className={classes.contactButton}
+          className="w-6 text-stone-400"
           variant="ghost"
           size="icon"
           onClick={() =>
             window.open("https://www.cal.com/itsalexiswei", "_blank")
           }
         >
-          <HeroiconsCalendar />
+          <IconHeroiconsCalendar />
         </Button>
         <Button
-          className={classes.contactButton}
+          className="w-6 text-stone-400"
           variant="ghost"
           size="icon"
           onClick={() =>
             window.open("https://www.x.com/itsalexiswei", "_blank")
           }
         >
-          <BasilTwitterOutline />
+          <IconBasilTwitterOutline />
         </Button>
         <Button
-          className={classes.contactButton}
+          className="w-6 text-stone-400"
           variant="ghost"
           size="icon"
           onClick={() => window.open("mailto:hi@alexiswei.com", "_blank")}
         >
-          <HeroiconsEnvelope />
+          <IconHeroiconsEnvelope />
         </Button>
         <Button
-          className={classes.contactButton}
+          className="w-6 text-stone-400"
+          variant="ghost"
+          size="icon"
+          onClick={() =>
+            window.open("https://alexiswei0108.substack.com/", "_blank")
+          }
+        >
+          <IconBiSubstack className="scale-[80%]" />
+        </Button>
+        <Button
+          className="w-6 text-stone-400"
           variant="ghost"
           size="icon"
           onClick={() => window.open("https://github.com/alexis-wei", "_blank")}
         >
-          <FeGithub />
+          <IconFeGithub />
         </Button>
       </div>
     </div>
