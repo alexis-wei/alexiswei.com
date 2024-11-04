@@ -3,7 +3,7 @@ import { Plus_Jakarta_Sans, Libre_Baskerville } from "next/font/google";
 import "./globals.css";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
-  weight: ["400", "700"],
+  weight: "variable",
   style: ["italic", "normal"],
   subsets: ["latin"],
   display: "swap",
@@ -48,7 +48,7 @@ export default function RootLayout({
       <meta name="apple-mobile-web-app-title" content="alexiswei" />
       <link rel="manifest" href="/site.webmanifest" />
       <body
-        className={`${plusJakartaSans.variable} ${libreBaskerville.variable} antialiased`}
+        className={`${plusJakartaSans.variable} ${libreBaskerville.variable} font-sans antialiased`}
       >
         {children}
       </body>

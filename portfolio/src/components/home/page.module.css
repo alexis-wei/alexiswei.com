@@ -15,26 +15,26 @@
 @keyframes l5 {
   0% {
     box-shadow:
-      10px 0 #1f1f1f,
-      -10px 0 #0002;
+      8px 0 #1f1f1f,
+      -8px 0 #0002;
     background: #1f1f1f;
   }
   33% {
     box-shadow:
-      10px 0 #1f1f1f,
-      -10px 0 #0002;
+      8px 0 #1f1f1f,
+      -8px 0 #0002;
     background: #0002;
   }
   66% {
     box-shadow:
-      10px 0 #0002,
-      -10px 0 #1f1f1f;
+      8px 0 #0002,
+      -8px 0 #1f1f1f;
     background: #0002;
   }
   100% {
     box-shadow:
-      10px 0 #0002,
-      -10px 0 #1f1f1f;
+      8px 0 #0002,
+      -8px 0 #1f1f1f;
     background: #1f1f1f;
   }
 }
