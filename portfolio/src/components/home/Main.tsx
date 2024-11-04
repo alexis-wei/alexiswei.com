@@ -39,7 +39,7 @@ const Main = () => {
             variant="outline"
             onMouseEnter={() => changeColor(purple)}
           >
-            0→1 product
+            0 &#x2192; 1 product
           </Button>
           <Button
             className={`rounded-none font-serif font-bold shadow-md hover:border-stone-600 hover:bg-[#ffec99] hover:shadow-none`}
