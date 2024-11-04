@@ -18,7 +18,7 @@ const Main = () => {
   return (
     <div className="flex h-dvh w-dvw flex-col items-stretch justify-between p-9 sm:flex-row">
       <MovingGradient color={color} />
-      <div className="flex h-full w-full flex-col gap-2.5 text-stone-700">
+      <div className="flex h-full w-full flex-col gap-2.5 text-stone-900">
         <div className="flex flex-col gap-0.5">
           <div className="flex items-baseline gap-1">
             <p className="text-lg font-medium leading-none tracking-tighter">
