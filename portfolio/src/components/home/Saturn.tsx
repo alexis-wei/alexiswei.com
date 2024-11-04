@@ -13,8 +13,9 @@ const Saturn = () => {
       setGltf(gltf);
     });
   }, []);
-  if (gltf) {
-    return (
+
+  return (
+    <div>
       <Canvas
         style={{
           position: "absolute",
@@ -23,7 +24,7 @@ const Saturn = () => {
           right: 0,
           bottom: 0,
         }}
-        className="duration-700 fade-in fade-out"
+        className={`duration-1000 fade-in fade-out ${gltf ? "opacity-100" : "opacity-0"}`}
       >
         <ambientLight color="#fcf9ea" />
         <directionalLight color="#f3ecd1" position={[0, 3, 5]} intensity={1} />
@@ -31,9 +32,12 @@ const Saturn = () => {
         <directionalLight color="#fff" position={[-2, 3, 2]} intensity={1} />
         {gltf && <MeshComponent gltfModel={gltf.scene} />}
       </Canvas>
-    );
-  } else {
-    return <p className="animate-pulse duration-700 fade-in fade-out">...</p>;
-  }
+      <p
+        className={`animate-pulse font-serif text-xl font-bold duration-300 fade-in fade-out ${gltf ? "hidden opacity-0" : "opacity-100"}`}
+      >
+        ...
+      </p>
+    </div>
+  );
 };
 export default Saturn;
