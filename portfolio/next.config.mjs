@@ -15,6 +15,10 @@ const nextConfig = {
             extension: "jsx",
           }),
         ],
+        dts: true,
+        eslintrc: {
+          enabled: true,
+        },
       }),
       Icons({
         compiler: "jsx",
