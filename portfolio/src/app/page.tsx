@@ -1,8 +1,9 @@
+import Welcome from "@/components/home/Welcome";
+
 export default function Home() {
   return (
-    <div>
-      <p className="text-xl font-sans">hello</p>
-      <p className="text-sm font-serif">hello again</p>
+    <div className="flex h-dvh w-dvw items-center justify-center">
+      <Welcome />
     </div>
   );
 }
