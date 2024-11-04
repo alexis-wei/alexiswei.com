@@ -1,8 +1,40 @@
-.enter:hover span{
+.enter:hover span {
   font-weight: 500;
-  /* box-shadow: 1px 1px grey; */
 }
 
 .enter {
   font-weight: 400;
+}
+
+.loader {
+  width: 5px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  animation: l5 1.2s infinite linear alternate;
+}
+@keyframes l5 {
+  0% {
+    box-shadow:
+      10px 0 #1f1f1f,
+      -10px 0 #0002;
+    background: #1f1f1f;
+  }
+  33% {
+    box-shadow:
+      10px 0 #1f1f1f,
+      -10px 0 #0002;
+    background: #0002;
+  }
+  66% {
+    box-shadow:
+      10px 0 #0002,
+      -10px 0 #1f1f1f;
+    background: #0002;
+  }
+  100% {
+    box-shadow:
+      10px 0 #0002,
+      -10px 0 #1f1f1f;
+    background: #1f1f1f;
+  }
 }

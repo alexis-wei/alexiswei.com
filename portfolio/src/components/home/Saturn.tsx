@@ -4,6 +4,7 @@ import { Canvas } from "@react-three/fiber";
 import { useEffect, useState } from "react";
 import MeshComponent from "./Mesh";
 import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import classes from "./page.module.css";
 
 const Saturn = () => {
   const [gltf, setGltf] = useState<GLTF | null>(null);
@@ -32,11 +33,9 @@ const Saturn = () => {
         <directionalLight color="#fff" position={[-2, 3, 2]} intensity={1} />
         {gltf && <MeshComponent gltfModel={gltf.scene} />}
       </Canvas>
-      <p
-        className={`animate-pulse font-serif text-xl font-bold duration-300 fade-in fade-out ${gltf ? "hidden opacity-0" : "opacity-100"}`}
-      >
-        ...
-      </p>
+      <div
+        className={`${classes.loader} duration-300 fade-in fade-out ${gltf ? "hidden opacity-0" : "opacity-100"}`}
+      />
     </div>
   );
 };
