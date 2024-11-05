@@ -1,0 +1,6 @@
+li:before {
+  content: "•";
+  font-size: 15px;
+  vertical-align: top;
+  padding-right: 7px;
+}
