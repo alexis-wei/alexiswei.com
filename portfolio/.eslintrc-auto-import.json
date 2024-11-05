@@ -4,6 +4,9 @@
     "IconBiSubstack": true,
     "IconFeGithub": true,
     "IconHeroiconsCalendar": true,
-    "IconHeroiconsEnvelope": true
+    "IconHeroiconsEnvelope": true,
+    "IconHeroiconsRightArrow": true,
+    "IconHeroiconsArrowRight": true,
+    "IconHeroiconsArrowLeft": true
   }
 }

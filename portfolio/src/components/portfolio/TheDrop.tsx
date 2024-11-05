@@ -1,7 +1,7 @@
 "use client";
 import { FC, useEffect, useRef } from "react";
-import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
+import Highlight from "./Highlight";
 
 const Summary = () => {
   return (
@@ -15,8 +15,7 @@ const Summary = () => {
 
 const TheDrop: FC = () => {
   const containerRef = useRef(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const videoRef2 = useRef<HTMLVideoElement>(null);
+
   const customListClass =
     "text-sm before:inline-block before:pr-1 before:align-top before:text-[16px] before:content-['•']";
 
@@ -35,12 +34,6 @@ const TheDrop: FC = () => {
     [0.5, 1],
   );
 
-  useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.load();
-    }
-  }, []);
-
   // Add this useEffect to monitor scrollYProgress
   useEffect(() => {
     const unsubscribe = scrollYProgress.on("change", (value) => {
@@ -52,14 +45,13 @@ const TheDrop: FC = () => {
   return (
     <div
       ref={containerRef}
-      className="relative flex h-full w-full max-w-[dvw] grow flex-col items-center gap-4 p-5"
+      className="relative flex h-full w-full max-w-[dvw] grow flex-col items-center gap-4 p-5 pb-60"
     >
       <div className="flex h-[50dvw] min-h-72 w-full items-center justify-center bg-[#FFD218] md:h-96">
         <div className="h-fit">
-          <Image
+          <img
             src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/thedrop-logo.png"
-            width={60}
-            height={36}
+            className="h-auto w-[60px]"
             alt="the drop logo"
           />
         </div>
@@ -84,10 +76,10 @@ const TheDrop: FC = () => {
             prototype with 0 lines of code. Over the next 3 months, my
             co-founders and I built out the platform, onboarded 20+ sellers,
             conducted &gt;$30k of transactions on our platform and was a part of
-            the microsoft startup program. As the sole designer & engineer, I
-            worked on landing pages, seller dashboards, individual components,
-            and anything you can think of, truly bring the product to life from
-            0 &#x2192; 1
+            the microsoft startup program. As the sole designer & engineer, my
+            work consistented of landing pages, seller dashboards, component
+            design, and anything you can think of, truly bring the product to
+            life from 0 &#x2192; 1
           </p>
           <div className="flex w-full gap-4">
             <div className="flex w-full flex-col gap-2">
@@ -154,62 +146,34 @@ const TheDrop: FC = () => {
         <div className="w-1/6] absolute left-0 top-0 z-10 h-full bg-gradient-to-r from-white to-transparent"></div>
         <div className="absolute right-0 top-0 z-10 h-full w-1/6 bg-gradient-to-l from-white to-transparent"></div>
         <div className="flex w-full shrink-0 items-center gap-8 overflow-x-scroll lg:max-w-[1000px]">
-          <motion.div
-            className="flex h-fit w-72 shrink-0 flex-col items-center gap-2 rounded-xl p-5 shadow-sm"
-            style={{ scale }}
-          >
-            <Image
-              src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/landing-collage.png"
-              alt="collage"
-              width={220}
-              height={400}
-            />
+          <Highlight
+            type="image"
+            src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/landing-collage.png"
+            description="created a fun graphic putting together sellers that our team
+              admires, the kind of creatives we hope to attract to our platform"
+            alt="collage"
+          />
+          <Highlight
+            type="video"
+            src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/first-video.mp4"
+            description="immediate clear focus on vintage sellers who want to sell from
+              their social media"
+            alt="landing page first screen"
+          />
+          <Highlight
+            type="image"
+            src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/sticky.png"
+            description="button sticky on bottom for constant visibility and reminder"
+            alt="sticky button on bottom desc"
+          />
 
-            <p className="text-xxs text-center text-stone-600">
-              created a fun graphic putting together sellers that our team
-              admires, the kind of creatives we hope to attract to our platform
-            </p>
-          </motion.div>
-          <motion.div className="flex h-fit w-72 shrink-0 flex-col items-center gap-2 rounded-xl p-5 shadow-sm">
-            <video width="220" height="auto" ref={videoRef} playsInline muted>
-              <source
-                src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/first-video.mp4"
-                type="video/mp4"
-              />
-              Your browser does not support the video tag.
-            </video>
-
-            <p className="text-xxs px-6 text-center text-stone-600">
-              immediate clear focus on vintage sellers who want to sell from
-              their social media
-            </p>
-          </motion.div>
-          <motion.div className="flex h-fit w-72 shrink-0 flex-col items-center gap-2 rounded-xl p-5 shadow-sm">
-            <Image
-              src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/sticky.png"
-              alt="collage"
-              width={220}
-              height={400}
-            />
-
-            <p className="text-xxs text-center text-stone-600">
-              button sticky on bottom for constant visibility and reminder
-            </p>
-          </motion.div>
-          <motion.div className="flex h-fit w-72 shrink-0 flex-col items-center gap-2 rounded-xl p-5 shadow-sm">
-            <video width="220" height="auto" playsInline muted>
-              <source
-                src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/drop%20countdown.mp4"
-                type="video/mp4"
-              />
-              Your browser does not support the video tag.
-            </video>
-
-            <p className="text-xxs px-6 text-center text-stone-600">
-              active countdown showcasing the same excitement that your buyers
-              would have during a drop moment
-            </p>
-          </motion.div>
+          <Highlight
+            type="video"
+            src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/drop%20countdown.mp4"
+            description="active countdown showcasing the same excitement that your buyers
+              would have during a drop moment"
+            alt="landing page first screen"
+          />
         </div>
       </div>
       <div className="flex w-full flex-col items-start gap-4">
@@ -235,6 +199,42 @@ const TheDrop: FC = () => {
           navigate.
         </p>
       </div>
+      <div className="flex w-fit max-w-[600px] snap-x snap-mandatory overflow-x-auto">
+        <div className="flex min-w-full grow snap-center items-center justify-center gap-2 px-4">
+          <div className="w-fit">
+            <img
+              src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/payment%20original.png"
+              alt="origin payments section"
+              className="h-auto w-[200px]"
+            />
+          </div>
+          <IconHeroiconsArrowRight />
+          <div className="w-fit">
+            <img
+              src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/payment%20improved.png"
+              alt="updated payments section"
+              className="h-auto w-[200px]"
+            />
+          </div>
+        </div>
+        <div className="flex min-w-full grow snap-center items-center justify-center gap-2 px-4">
+          <div className="w-full">
+            <img
+              src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/drop%20original.png"
+              alt="origin drops section"
+              className="h-auto w-[200px]"
+            />
+          </div>
+          <IconHeroiconsArrowRight />
+          <div className="w-full">
+            <img
+              src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/drops_improved.png"
+              alt="updated drops section"
+              className="h-auto w-[200px]"
+            />
+          </div>
+        </div>
+      </div>
       <div className="flex w-full flex-col items-start gap-4">
         <div className="flex w-full flex-col items-start gap-1">
           <h4>storefront</h4>
@@ -256,6 +256,27 @@ const TheDrop: FC = () => {
             <li className={`${customListClass} before:pr-2`}>intro video</li>
           </ul>
         </div>
+      </div>
+      <div className="flex w-full shrink-0 items-center gap-8 overflow-x-scroll lg:max-w-[1000px]">
+        <Highlight
+          type="image"
+          src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/email%20catcher.png"
+          description="worked so surprisingly well, our best unexpected best performing feature"
+          alt="email catcher"
+        />
+        <Highlight
+          type="video"
+          src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/discover-short.mp4"
+          description="with a goal to discover other similar sellers and see if there was possible cross pollination"
+          alt="discover page"
+        />
+
+        <Highlight
+          type="video"
+          src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/transition.mp4"
+          description="initial smooth transition on page load"
+          alt="landing page first screen"
+        />
       </div>
     </div>
   );
