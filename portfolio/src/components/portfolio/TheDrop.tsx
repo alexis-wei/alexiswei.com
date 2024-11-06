@@ -36,7 +36,7 @@ const TheDrop: FC = () => {
   return (
     <div
       ref={containerRef}
-      className="relative flex h-full w-full max-w-[dvw] grow flex-col items-center gap-8 p-5 pb-60 md:gap-16"
+      className="relative flex h-full w-full max-w-[dvw] grow flex-col items-center gap-8 p-5 pb-60 font-sans md:gap-16"
     >
       <div className="flex h-full w-full max-w-[dvw] grow flex-col items-center gap-4">
         <div className="flex h-[50dvw] min-h-72 w-full items-center justify-center bg-[#FFD218] md:h-96">
@@ -168,7 +168,7 @@ const TheDrop: FC = () => {
           />
         </div>
       </div>
-      <div className="flex w-full flex-col justify-center gap-8 xl:flex-row xl:gap-0">
+      <div className="flex w-full flex-col justify-center gap-0 md:gap-8 xl:flex-row xl:gap-0">
         <div className="flex w-full flex-col items-start gap-4">
           <div className="flex w-full flex-col items-start gap-1">
             <h4>seller dashboard</h4>
@@ -195,7 +195,7 @@ const TheDrop: FC = () => {
         </div>
         <div className="flex w-full snap-x snap-mandatory overflow-x-auto pb-16">
           <div className="flex min-w-full grow snap-center flex-col items-center justify-center gap-2 px-4 md:flex-row">
-            <div className="flex w-full justify-center md:justify-end xl:w-fit">
+            <div className="flex h-fit w-full justify-center md:justify-end xl:w-fit">
               <div className="relative h-[136px] w-[220px]">
                 <Image
                   src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/payment%20original.png"
@@ -209,7 +209,7 @@ const TheDrop: FC = () => {
             <IconHeroiconsArrowRight className="hidden shrink-0 md:flex" />
             <IconHeroiconsArrowDown className="shrink-0 md:hidden" />
             <div className="relative flex w-full items-center justify-center overflow-visible md:justify-start">
-              <div className="relative h-[284px] w-[300px]">
+              <div className="relative h-[208px] w-[220px] sm:h-[284px] sm:w-[300px]">
                 <Image
                   src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/payment%20improved.png"
                   alt="updated payments section"
@@ -218,18 +218,18 @@ const TheDrop: FC = () => {
                   className="object-fit"
                 />
               </div>
-              <div className="absolute w-[168px] -translate-y-[100px] translate-x-[84px] rounded bg-[#FEF8E8] px-3 py-2 shadow md:translate-x-[164px]">
+              <div className="absolute w-[168px] -translate-y-[76px] translate-x-[88px] rounded bg-[#FEF8E8] px-3 py-2 shadow sm:-translate-y-[100px] sm:translate-x-[84px] md:translate-x-[164px]">
                 <p className="text-xxs">
                   clear account balance shown directly on dashboard instead of
                   redirecting to Stripe
                 </p>
               </div>
-              <div className="absolute w-[130px] translate-x-[170px] translate-y-[50px] rounded bg-[#FEF8E8] px-3 py-2 shadow md:translate-x-[260px]">
+              <div className="absolute w-[130px] -translate-y-[8px] translate-x-[120px] rounded bg-[#FEF8E8] px-3 py-2 shadow sm:translate-x-[170px] sm:translate-y-[50px] md:translate-x-[260px]">
                 <p className="text-xxs">
                   info banner after sellers were confused about payout delays
                 </p>
               </div>
-              <div className="absolute w-[220px] -translate-x-[124px] translate-y-[160px] rounded bg-[#FEF8E8] px-3 py-2 shadow md:-translate-x-[40px]">
+              <div className="absolute w-[220px] -translate-x-[40px] translate-y-[128px] rounded bg-[#FEF8E8] px-3 py-2 shadow sm:-translate-x-[124px] sm:translate-y-[160px] md:-translate-x-[40px]">
                 <p className="text-xxs">
                   directly able to get payout on seller side instead of needing
                   to be triggered from our end
@@ -264,7 +264,7 @@ const TheDrop: FC = () => {
           </div>
         </div>
       </div>
-      <div className="flex w-full flex-col items-start gap-4">
+      <div className="flex w-full flex-col items-center gap-4">
         <div className="flex w-full flex-col items-start gap-4">
           <div className="flex w-full flex-col items-start gap-1">
             <h4>storefront</h4>
@@ -294,7 +294,7 @@ const TheDrop: FC = () => {
         <div className="max-w-dvw relative flex h-full w-full justify-between overflow-hidden lg:max-w-[1000px]">
           <div className="absolute left-0 top-0 z-10 h-full w-1/6 bg-gradient-to-r from-white to-transparent"></div>
           <div className="absolute right-0 top-0 z-10 h-full w-1/6 bg-gradient-to-l from-white to-transparent"></div>
-          <div className="flex w-full shrink-0 items-center gap-6 overflow-x-scroll px-[10dvw] lg:max-w-[1000px]">
+          <div className="flex w-full shrink-0 items-center gap-8 overflow-x-scroll px-[10dvw] lg:max-w-[1000px]">
             <Highlight
               type="image"
               src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/email%20catcher.png"
