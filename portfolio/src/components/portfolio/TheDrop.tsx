@@ -169,7 +169,7 @@ const TheDrop: FC = () => {
           />
         </div>
       </div>
-      <div className="flex w-full flex-col justify-center gap-8 lg:flex-row lg:gap-0">
+      <div className="flex w-full flex-col justify-center gap-8 xl:flex-row xl:gap-0">
         <div className="flex w-full flex-col items-start gap-4">
           <div className="flex w-full flex-col items-start gap-1">
             <h4>seller dashboard</h4>
@@ -196,7 +196,7 @@ const TheDrop: FC = () => {
         </div>
         <div className="flex w-full snap-x snap-mandatory overflow-x-auto pb-16">
           <div className="flex min-w-full grow snap-center flex-col items-center justify-center gap-2 px-4 md:flex-row">
-            <div className="w-fit">
+            <div className="flex w-full justify-center md:justify-end xl:w-fit">
               <div className="relative h-[136px] w-[220px]">
                 <Image
                   src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/payment%20original.png"
@@ -207,7 +207,8 @@ const TheDrop: FC = () => {
                 />
               </div>
             </div>
-            <IconHeroiconsArrowRight />
+            <IconHeroiconsArrowRight className="hidden shrink-0 md:flex" />
+            <IconHeroiconsArrowDown className="shrink-0 md:hidden" />
             <div className="relative flex w-full items-center justify-center overflow-visible md:justify-start">
               <div className="relative h-[284px] w-[300px]">
                 <Image
@@ -265,50 +266,55 @@ const TheDrop: FC = () => {
         </div>
       </div>
       <div className="flex w-full flex-col items-start gap-4">
-        <div className="flex w-full flex-col items-start gap-1">
-          <h4>storefront</h4>
-          <p className="max-w-[600px] text-sm">
-            beyond having a UX with good media load speed and a simple checkout
-            process, this the place where we experimented the most with
-            UI—knowing with each new store and drop, we had a new opportunity to
-            test new experiences with fresh eyes.
-          </p>
+        <div className="flex w-full flex-col items-start gap-4">
+          <div className="flex w-full flex-col items-start gap-1">
+            <h4>storefront</h4>
+            <p className="max-w-[600px] text-sm">
+              beyond having a UX with good media load speed and a simple
+              checkout process, this the place where we experimented the most
+              with UI—knowing with each new store and drop, we had a new
+              opportunity to test new experiences with fresh eyes.
+            </p>
+          </div>
+          <div className="flex w-full flex-col items-start gap-1">
+            <p className="text-sm">some ideas that we played with: </p>
+            <ul className="ml-1 flex list-inside list-none flex-col gap-0.5">
+              <li className={`${customListClass} before:pr-2`}>
+                email catcher
+              </li>
+              <li className={`${customListClass} before:pr-2`}>
+                discovery page
+              </li>
+              <li className={`${customListClass} before:pr-2`}>
+                entry transition
+              </li>
+              <li className={`${customListClass} before:pr-2`}>intro video</li>
+            </ul>
+          </div>
         </div>
-        <div className="flex w-full flex-col items-start gap-1">
-          <p className="text-sm">some ideas that we played with: </p>
-          <ul className="ml-1 flex list-inside list-none flex-col gap-0.5">
-            <li className={`${customListClass} before:pr-2`}>email catcher</li>
-            <li className={`${customListClass} before:pr-2`}>discovery page</li>
-            <li className={`${customListClass} before:pr-2`}>
-              entry transition
-            </li>
-            <li className={`${customListClass} before:pr-2`}>intro video</li>
-          </ul>
-        </div>
-      </div>
-      <div className="max-w-dvw relative flex h-full w-full justify-between overflow-hidden lg:max-w-[1000px]">
-        <div className="absolute left-0 top-0 z-10 h-full w-1/6 bg-gradient-to-r from-white to-transparent"></div>
-        <div className="absolute right-0 top-0 z-10 h-full w-1/6 bg-gradient-to-l from-white to-transparent"></div>
-        <div className="flex w-full shrink-0 items-center gap-8 overflow-x-scroll px-[14dvw] lg:max-w-[1000px]">
-          <Highlight
-            type="image"
-            src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/email%20catcher.png"
-            description="worked so surprisingly well, our best unexpected best performing feature"
-            alt="email catcher"
-          />
-          <Highlight
-            type="video"
-            src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/discover-short.mp4"
-            description="with a goal to discover other similar sellers and see if there was possible cross pollination"
-            alt="discover page"
-          />
-
-          <Highlight
-            type="video"
-            src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/transition.mp4"
-            description="initial smooth transition on page load"
-            alt="landing page first screen"
-          />
+        <div className="max-w-dvw relative flex h-full w-full justify-between overflow-hidden lg:max-w-[1000px]">
+          <div className="absolute left-0 top-0 z-10 h-full w-1/6 bg-gradient-to-r from-white to-transparent"></div>
+          <div className="absolute right-0 top-0 z-10 h-full w-1/6 bg-gradient-to-l from-white to-transparent"></div>
+          <div className="flex w-full shrink-0 items-center gap-6 overflow-x-scroll px-[10dvw] lg:max-w-[1000px]">
+            <Highlight
+              type="image"
+              src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/email%20catcher.png"
+              description="worked so surprisingly well, our best unexpected best performing feature"
+              alt="email catcher"
+            />
+            <Highlight
+              type="video"
+              src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/discover-short.mp4"
+              description="with a goal to discover other similar sellers and see if there was possible cross pollination"
+              alt="discover page"
+            />
+            <Highlight
+              type="video"
+              src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/transition.mp4"
+              description="initial smooth transition on page load"
+              alt="landing page first screen"
+            />
+          </div>
         </div>
       </div>
     </div>
