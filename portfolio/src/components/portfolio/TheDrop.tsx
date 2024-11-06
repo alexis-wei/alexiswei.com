@@ -168,7 +168,7 @@ const TheDrop: FC = () => {
           />
         </div>
       </div>
-      <div className="flex w-full flex-col justify-center gap-0 md:gap-8 xl:flex-row xl:gap-0">
+      <div className="flex w-full flex-col justify-center gap-8 xl:flex-row xl:gap-0">
         <div className="flex w-full flex-col items-start gap-4">
           <div className="flex w-full flex-col items-start gap-1">
             <h4>seller dashboard</h4>
@@ -193,7 +193,7 @@ const TheDrop: FC = () => {
             to navigate.
           </p>
         </div>
-        <div className="flex w-full snap-x snap-mandatory overflow-x-auto pb-16">
+        <div className="flex w-full snap-x snap-mandatory overflow-x-auto pb-12">
           <div className="flex min-w-full grow snap-center flex-col items-center justify-center gap-2 px-4 md:flex-row">
             <div className="flex h-fit w-full justify-center md:justify-end xl:w-fit">
               <div className="relative h-[136px] w-[220px]">
@@ -209,7 +209,7 @@ const TheDrop: FC = () => {
             <IconHeroiconsArrowRight className="hidden shrink-0 md:flex" />
             <IconHeroiconsArrowDown className="shrink-0 md:hidden" />
             <div className="relative flex w-full items-center justify-center overflow-visible md:justify-start">
-              <div className="relative h-[208px] w-[220px] sm:h-[284px] sm:w-[300px]">
+              <div className="relative h-[208px] w-[220px] sm:h-[286px] sm:w-[300px]">
                 <Image
                   src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/payment%20improved.png"
                   alt="updated payments section"
