@@ -21,7 +21,7 @@ export default function Custom404() {
               router.push("/");
             }}
           >
-            let's go home
+            let&apos;s go home
           </Button>
         </div>
       </div>
