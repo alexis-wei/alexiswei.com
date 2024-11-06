@@ -17,7 +17,7 @@ const Main = () => {
     setColor(color);
   };
 
-  const handleEnterPortfolio = (e: MouseEvent) => {
+  const handleEnterPortfolio = (e: React.MouseEvent) => {
     e.preventDefault();
     router.push("/portfolio");
   };
