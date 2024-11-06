@@ -48,7 +48,7 @@ export default function RootLayout({
       <meta name="apple-mobile-web-app-title" content="alexiswei" />
       <link rel="manifest" href="/site.webmanifest" />
       <body
-        className={`${plusJakartaSans.variable} ${libreBaskerville.variable} font-sans antialiased`}
+        className={`${plusJakartaSans.variable} ${libreBaskerville.variable} antialiased`}
       >
         {children}
       </body>

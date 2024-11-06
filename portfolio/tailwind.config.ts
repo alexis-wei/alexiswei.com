@@ -9,6 +9,9 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontSize: {
+        xxs: "10px",
+      },
       fontFamily: {
         sans: ["var(--font-plus-jakarta-sans)", "Inter", "Helvetica"],
         serif: ["var(--font-libre-baskerville)"],
