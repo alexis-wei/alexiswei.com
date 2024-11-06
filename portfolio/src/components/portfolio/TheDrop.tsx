@@ -2,6 +2,7 @@
 import { FC, useEffect, useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Highlight from "./Highlight";
+import Image from "next/image";
 
 const Summary = () => {
   return (
@@ -45,74 +46,75 @@ const TheDrop: FC = () => {
   return (
     <div
       ref={containerRef}
-      className="relative flex h-full w-full max-w-[dvw] grow flex-col items-center gap-4 p-5 pb-60"
+      className="relative flex h-full w-full max-w-[dvw] grow flex-col items-center gap-8 p-5 pb-60 md:gap-16"
     >
-      <div className="flex h-[50dvw] min-h-72 w-full items-center justify-center bg-[#FFD218] md:h-96">
-        <div className="h-fit">
-          <img
-            src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/thedrop-logo.png"
-            className="h-auto w-[60px]"
-            alt="the drop logo"
-          />
-        </div>
-      </div>
-      <div className="flex w-full flex-col items-start gap-8 sm:flex-row">
-        <div className="flex w-full min-w-36 justify-between sm:w-fit">
-          <div className="flex w-fit flex-col gap-2 text-nowrap">
-            <div className="w-fit bg-stone-400 px-3 py-1">
-              <p className="text-xxs font-extrabold uppercase text-white">
-                0 &nbsp;&#x2192; 1 &nbsp;product
-              </p>
-            </div>
-            <h4>"the drop"</h4>
+      <div className="flex h-full w-full max-w-[dvw] grow flex-col items-center gap-4">
+        <div className="flex h-[50dvw] min-h-72 w-full items-center justify-center bg-[#FFD218] md:h-96">
+          <div className="h-fit">
+            <img
+              src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/thedrop-logo.png"
+              className="h-auto w-[60px]"
+              alt="the drop logo"
+            />
           </div>
-          <div className="flex sm:hidden">
+        </div>
+        <div className="flex w-full flex-col items-start gap-8 sm:flex-row">
+          <div className="flex w-full min-w-36 justify-between sm:w-fit">
+            <div className="flex w-fit flex-col gap-2 text-nowrap">
+              <div className="w-fit bg-stone-400 px-3 py-1">
+                <p className="text-xxs font-extrabold uppercase text-white">
+                  0 &nbsp;&#x2192; 1 &nbsp;product
+                </p>
+              </div>
+              <h4>"the drop"</h4>
+            </div>
+            <div className="flex sm:hidden">
+              <Summary />
+            </div>
+          </div>
+          <div className="flex w-full flex-col gap-4 lg:flex-row lg:gap-8">
+            <p className="w-full max-w-96 text-sm">
+              I started working on the drop when it was just a basic MVP figma
+              prototype with 0 lines of code. Over the next 3 months, my
+              co-founders and I built out the platform, onboarded 20+ sellers,
+              conducted &gt;$30k of transactions on our platform and was a part
+              of the microsoft startup program. As the sole designer & engineer,
+              my work consistented of landing pages, seller dashboards,
+              component design, and anything you can think of, truly bring the
+              product to life from 0 &#x2192; 1
+            </p>
+            <div className="flex w-full gap-4">
+              <div className="flex w-full flex-col gap-2">
+                <p className="text-xxs font-extrabold uppercase tracking-wider text-stone-400">
+                  ABOUT
+                </p>
+                <p className="text-sm">
+                  a video based shoppable link in bio – think simplified shopify
+                  made for sellers on social media
+                </p>
+              </div>
+              <div className="flex w-full flex-col gap-2">
+                <p className="text-xxs font-extrabold uppercase tracking-wider text-stone-400">
+                  FOCUS
+                </p>
+                <ul className="ml-1 flex list-inside list-none flex-col gap-0.5">
+                  <li className={`${customListClass}`}>
+                    in-app browser experience (Instagram entry)
+                  </li>
+                  <li className={`${customListClass}`}>mobile-first</li>
+                  <li className={`${customListClass}`}>fast and simple</li>
+                  <li className={`${customListClass}`}>
+                    prioritizing content (video)
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div className="hidden sm:flex">
             <Summary />
           </div>
         </div>
-        <div className="flex w-full flex-col gap-4 lg:flex-row lg:gap-8">
-          <p className="w-full max-w-96 text-sm">
-            I started working on the drop when it was just a basic MVP figma
-            prototype with 0 lines of code. Over the next 3 months, my
-            co-founders and I built out the platform, onboarded 20+ sellers,
-            conducted &gt;$30k of transactions on our platform and was a part of
-            the microsoft startup program. As the sole designer & engineer, my
-            work consistented of landing pages, seller dashboards, component
-            design, and anything you can think of, truly bring the product to
-            life from 0 &#x2192; 1
-          </p>
-          <div className="flex w-full gap-4">
-            <div className="flex w-full flex-col gap-2">
-              <p className="text-xxs font-extrabold uppercase tracking-wider text-stone-400">
-                ABOUT
-              </p>
-              <p className="text-sm">
-                a video based shoppable link in bio – think simplified shopify
-                made for sellers on social media
-              </p>
-            </div>
-            <div className="flex w-full flex-col gap-2">
-              <p className="text-xxs font-extrabold uppercase tracking-wider text-stone-400">
-                FOCUS
-              </p>
-              <ul className="ml-1 flex list-inside list-none flex-col gap-0.5">
-                <li className={`${customListClass}`}>
-                  in-app browser experience (Instagram entry)
-                </li>
-                <li className={`${customListClass}`}>mobile-first</li>
-                <li className={`${customListClass}`}>fast and simple</li>
-                <li className={`${customListClass}`}>
-                  prioritizing content (video)
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div className="hidden sm:flex">
-          <Summary />
-        </div>
       </div>
-
       <motion.div
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
@@ -142,10 +144,10 @@ const TheDrop: FC = () => {
           These points acted as primary building blocks during design
         </p>
       </motion.div>
-      <div className="max-w-dvw relative flex h-full w-full justify-between lg:max-w-[1000px]">
-        <div className="w-1/6] absolute left-0 top-0 z-10 h-full bg-gradient-to-r from-white to-transparent"></div>
+      <div className="max-w-dvw relative flex h-full w-full justify-between overflow-hidden lg:max-w-[1000px]">
+        <div className="absolute left-0 top-0 z-10 h-full w-1/6 bg-gradient-to-r from-white to-transparent"></div>
         <div className="absolute right-0 top-0 z-10 h-full w-1/6 bg-gradient-to-l from-white to-transparent"></div>
-        <div className="flex w-full shrink-0 items-center gap-8 overflow-x-scroll lg:max-w-[1000px]">
+        <div className="flex w-full shrink-0 items-center gap-8 overflow-x-scroll px-[14dvw] lg:max-w-[1000px]">
           <Highlight
             type="image"
             src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/landing-collage.png"
@@ -176,62 +178,98 @@ const TheDrop: FC = () => {
           />
         </div>
       </div>
-      <div className="flex w-full flex-col items-start gap-4">
-        <div className="flex w-full flex-col items-start gap-1">
-          <h4>seller dashboard</h4>
+      <div className="flex w-full flex-col justify-center gap-8 lg:flex-row lg:gap-0">
+        <div className="flex w-full flex-col items-start gap-4">
+          <div className="flex w-full flex-col items-start gap-1">
+            <h4>seller dashboard</h4>
+            <p className="max-w-[600px] text-sm">
+              not something particularly sexy, but something we know sellers
+              have to interact with on a daily basis to track what’s going on.
+              The two key design goals were to be <u>clear</u> and{" "}
+              <u>informative</u>.
+            </p>
+          </div>
           <p className="max-w-[600px] text-sm">
-            not something particularly sexy, but something we know sellers have
-            to interact with on a daily basis to track what’s going on. The two
-            key design goals were to be <u>clear</u> and <u>informative</u>.
+            this started off extremely scrappy with bare minimum features at
+            launch, but is a place where we actively listened to client feedback
+            to understand what they needed for it to work well for them. The v0
+            we started with vs. 2 months later was truly night and day.
+          </p>
+          <p className="max-w-[600px] text-sm">
+            the dashboard actually prioritized a desktop first format since
+            sellers were more comfortable dealing with payments and tracking
+            logistics through their laptops. We were really able to shine here
+            for older audiences who found the platform straight forward and easy
+            to navigate.
           </p>
         </div>
-        <p className="max-w-[600px] text-sm">
-          this started off extremely scrappy with bare minimum features at
-          launch, but is a place where we actively listened to client feedback
-          to understand what they needed for it to work well for them. The v0 we
-          started with vs. 2 months later was truly night and day.
-        </p>
-        <p className="max-w-[600px] text-sm">
-          the dashboard actually prioritized a desktop first format since
-          sellers were more comfortable dealing with payments and tracking
-          logistics through their laptops. We were really able to shine here for
-          older audiences who found the platform straight forward and easy to
-          navigate.
-        </p>
-      </div>
-      <div className="flex w-fit max-w-[600px] snap-x snap-mandatory overflow-x-auto">
-        <div className="flex min-w-full grow snap-center items-center justify-center gap-2 px-4">
-          <div className="w-fit">
-            <img
-              src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/payment%20original.png"
-              alt="origin payments section"
-              className="h-auto w-[200px]"
-            />
+        <div className="flex w-full snap-x snap-mandatory overflow-x-auto pb-16">
+          <div className="flex min-w-full grow snap-center flex-col items-center justify-center gap-2 px-4 md:flex-row">
+            <div className="w-fit">
+              <div className="relative h-[136px] w-[220px]">
+                <Image
+                  src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/payment%20original.png"
+                  alt="origin payments section"
+                  sizes="220px"
+                  fill
+                  className="object-fit"
+                />
+              </div>
+            </div>
+            <IconHeroiconsArrowRight />
+            <div className="relative flex w-full items-center justify-center overflow-visible md:justify-start">
+              <div className="relative h-[284px] w-[300px]">
+                <Image
+                  src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/payment%20improved.png"
+                  alt="updated payments section"
+                  sizes="300px"
+                  fill
+                  className="object-fit"
+                />
+              </div>
+              <div className="absolute w-[168px] -translate-y-[100px] translate-x-[84px] rounded bg-[#FEF8E8] px-3 py-2 shadow md:translate-x-[164px]">
+                <p className="text-xxs">
+                  clear account balance shown directly on dashboard instead of
+                  redirecting to Stripe
+                </p>
+              </div>
+              <div className="absolute w-[130px] translate-x-[170px] translate-y-[50px] rounded bg-[#FEF8E8] px-3 py-2 shadow md:translate-x-[260px]">
+                <p className="text-xxs">
+                  info banner after sellers were confused about payout delays
+                </p>
+              </div>
+              <div className="absolute w-[220px] -translate-x-[124px] translate-y-[160px] rounded bg-[#FEF8E8] px-3 py-2 shadow md:-translate-x-[40px]">
+                <p className="text-xxs">
+                  directly able to get payout on seller side instead of needing
+                  to be triggered from our end
+                </p>
+              </div>
+            </div>
           </div>
-          <IconHeroiconsArrowRight />
-          <div className="w-fit">
-            <img
-              src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/payment%20improved.png"
-              alt="updated payments section"
-              className="h-auto w-[200px]"
-            />
-          </div>
-        </div>
-        <div className="flex min-w-full grow snap-center items-center justify-center gap-2 px-4">
-          <div className="w-full">
-            <img
-              src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/drop%20original.png"
-              alt="origin drops section"
-              className="h-auto w-[200px]"
-            />
-          </div>
-          <IconHeroiconsArrowRight />
-          <div className="w-full">
-            <img
-              src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/drops_improved.png"
-              alt="updated drops section"
-              className="h-auto w-[200px]"
-            />
+          <div className="flex min-w-full grow snap-center flex-col items-center justify-center gap-2 px-4 md:flex-row">
+            <div className="w-fit">
+              <div className="relative h-[258px] w-[220px]">
+                <Image
+                  src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/drop%20original.png"
+                  alt="original drops section"
+                  sizes="220px"
+                  fill
+                  className="object-fit"
+                />
+              </div>
+            </div>
+            <IconHeroiconsArrowRight />
+            <div className="w-fit">
+              <div className="relative h-[258px] w-[220px]">
+                <Image
+                  src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/drops_improved.png"
+                  alt="updated drops section"
+                  sizes="220px"
+                  fill
+                  className="object-fit"
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -257,26 +295,30 @@ const TheDrop: FC = () => {
           </ul>
         </div>
       </div>
-      <div className="flex w-full shrink-0 items-center gap-8 overflow-x-scroll lg:max-w-[1000px]">
-        <Highlight
-          type="image"
-          src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/email%20catcher.png"
-          description="worked so surprisingly well, our best unexpected best performing feature"
-          alt="email catcher"
-        />
-        <Highlight
-          type="video"
-          src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/discover-short.mp4"
-          description="with a goal to discover other similar sellers and see if there was possible cross pollination"
-          alt="discover page"
-        />
+      <div className="max-w-dvw relative flex h-full w-full justify-between overflow-hidden lg:max-w-[1000px]">
+        <div className="absolute left-0 top-0 z-10 h-full w-1/6 bg-gradient-to-r from-white to-transparent"></div>
+        <div className="absolute right-0 top-0 z-10 h-full w-1/6 bg-gradient-to-l from-white to-transparent"></div>
+        <div className="flex w-full shrink-0 items-center gap-8 overflow-x-scroll px-[14dvw] lg:max-w-[1000px]">
+          <Highlight
+            type="image"
+            src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/email%20catcher.png"
+            description="worked so surprisingly well, our best unexpected best performing feature"
+            alt="email catcher"
+          />
+          <Highlight
+            type="video"
+            src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/discover-short.mp4"
+            description="with a goal to discover other similar sellers and see if there was possible cross pollination"
+            alt="discover page"
+          />
 
-        <Highlight
-          type="video"
-          src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/transition.mp4"
-          description="initial smooth transition on page load"
-          alt="landing page first screen"
-        />
+          <Highlight
+            type="video"
+            src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/transition.mp4"
+            description="initial smooth transition on page load"
+            alt="landing page first screen"
+          />
+        </div>
       </div>
     </div>
   );
