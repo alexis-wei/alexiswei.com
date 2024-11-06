@@ -1,4 +1,5 @@
 "use client";
+import { useRouter } from "next/navigation";
 import { Button } from "../ui/button";
 import MovingGradient from "./MovingGradient";
 import { useState } from "react";
@@ -10,13 +11,19 @@ const Main = () => {
   const green = "#d8f5a2";
 
   const [color, setColor] = useState(white);
+  const router = useRouter();
 
   const changeColor = (color: string) => {
     setColor(color);
   };
 
+  const handleEnterPortfolio = (e: MouseEvent) => {
+    e.preventDefault();
+    router.push("/portfolio");
+  };
+
   return (
-    <div className="flex h-dvh w-dvw flex-col items-stretch justify-between p-9 sm:flex-row">
+    <div className="flex h-dvh w-dvw flex-col items-stretch justify-between p-9 transition-all duration-700 fade-out sm:flex-row">
       <MovingGradient color={color} />
       <div className="flex h-full w-full flex-col gap-2.5 text-stone-900">
         <div className="flex flex-col gap-0.5">
@@ -35,16 +42,17 @@ const Main = () => {
           onMouseLeave={() => changeColor(white)}
         >
           <Button
-            className={`rounded-none font-serif font-bold shadow-md hover:border-stone-600 hover:bg-[#d0bfff] hover:shadow-none`}
+            className={`rounded-none font-serif font-bold shadow-md hover:border-stone-600 hover:bg-[#ffec99] hover:shadow-none`}
             variant="outline"
-            onMouseEnter={() => changeColor(purple)}
+            onMouseEnter={() => changeColor(yellow)}
+            onClick={(e) => handleEnterPortfolio(e)}
           >
             0 &#x2192; 1 product
           </Button>
           <Button
-            className={`rounded-none font-serif font-bold shadow-md hover:border-stone-600 hover:bg-[#ffec99] hover:shadow-none`}
+            className={`rounded-none font-serif font-bold shadow-md hover:border-stone-600 hover:bg-[#d0bfff] hover:shadow-none`}
             variant="outline"
-            onMouseEnter={() => changeColor(yellow)}
+            onMouseEnter={() => changeColor(purple)}
           >
             branding
           </Button>

@@ -15,20 +15,18 @@ const Highlight: FC<HighlightProps> = (props: HighlightProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const divRef = useRef<HTMLDivElement>(null);
   const [isClient, setIsClient] = useState(false);
-  const [scale, setScale] = useState(1);
+  // const [scale, setScale] = useState(1);
 
   useEffect(() => {
-    const screenMidpoint = window.innerWidth / 2;
+    // const screenMidpoint = window.innerWidth / 2;
     setIsClient(true);
-    if (divRef && divRef.current) {
-      console.log("set scale");
-      const xPos = divRef.current.getBoundingClientRect().x + 144;
-      const distanceToMid = Math.abs(screenMidpoint - xPos);
-      const newScale = Math.max(1 - distanceToMid / screenMidpoint, 0.8);
-      console.log("scale:", newScale);
-      // the further away, the smaller it should be
-      setScale(newScale);
-    }
+    // if (divRef && divRef.current) {
+
+    //   const xPos = divRef.current.getBoundingClientRect().x + 144;
+    //   const distanceToMid = Math.abs(screenMidpoint - xPos);
+    //   const newScale = Math.max(1 - distanceToMid / screenMidpoint, 0.8);
+    //   setScale(newScale);
+    // }
   }, []);
 
   if (!isClient && props.type === "video") {
@@ -45,7 +43,7 @@ const Highlight: FC<HighlightProps> = (props: HighlightProps) => {
   return (
     <motion.div
       className="flex h-fit w-72 shrink-0 flex-col items-center gap-2 rounded-xl p-5 shadow-sm"
-      style={{ scale: scale }}
+      // style={{ scale: scale }}
       ref={divRef}
     >
       {props.type === "image" ? (
