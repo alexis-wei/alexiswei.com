@@ -31,7 +31,7 @@ const Highlight: FC<HighlightProps> = (props: HighlightProps) => {
 
   if (!isClient && props.type === "video") {
     return (
-      <motion.div className="flex h-fit w-72 shrink-0 flex-col items-center gap-2 rounded-xl p-5 shadow-sm">
+      <motion.div className="flex h-fit w-72 shrink-0 flex-col items-center gap-2 rounded-xl p-5 shadow">
         <div className="h-[424px] w-[220px] animate-pulse rounded-3xl bg-stone-100"></div>
         <p className="text-center text-xs text-stone-600">
           {props.description}
@@ -42,7 +42,7 @@ const Highlight: FC<HighlightProps> = (props: HighlightProps) => {
 
   return (
     <motion.div
-      className="flex h-fit w-72 shrink-0 flex-col items-center gap-2 rounded-xl p-5 shadow-sm"
+      className="flex h-fit w-72 shrink-0 flex-col items-center gap-2 rounded-xl p-5 shadow"
       // style={{ scale: scale }}
       ref={divRef}
     >

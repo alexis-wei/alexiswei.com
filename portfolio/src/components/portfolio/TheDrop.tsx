@@ -1,6 +1,6 @@
 "use client";
-import { FC, useEffect, useRef } from "react";
-import { motion, useScroll } from "framer-motion";
+import { FC, useRef } from "react";
+import { motion } from "framer-motion";
 import Highlight from "./Highlight";
 import Image from "next/image";
 
@@ -20,20 +20,19 @@ const TheDrop: FC = () => {
   const customListClass =
     "text-sm before:inline-block before:pr-1 before:align-top before:text-[16px] before:content-['•']";
 
-  // Track scroll progress relative to the container
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"],
-  });
+  // const { scrollYProgress } = useScroll({
+  //   target: containerRef,
+  //   offset: ["start start", "end end"],
+  // });
 
-  // Add this useEffect to monitor scrollYProgress
-  useEffect(() => {
-    const unsubscribe = scrollYProgress.on("change", (value) => {
-      console.log("Scroll Progress:", value);
-    });
+  // useEffect(() => {
+  //   const unsubscribe = scrollYProgress.on("change", (value) => {
+  //     console.log("Scroll Progress:", value);
+  //   });
 
-    return () => unsubscribe();
-  }, [scrollYProgress]);
+  //   return () => unsubscribe();
+  // }, [scrollYProgress]);
+
   return (
     <div
       ref={containerRef}
@@ -299,19 +298,19 @@ const TheDrop: FC = () => {
             <Highlight
               type="image"
               src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/email%20catcher.png"
-              description="worked so surprisingly well, our best unexpected best performing feature"
+              description="worked so surprisingly well, unexpectedly our best performing feature"
               alt="email catcher"
             />
             <Highlight
               type="video"
               src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/discover-short.mp4"
-              description="with a goal to discover other similar sellers and see if there was possible cross pollination"
+              description="with a goal for buyers to discover other similar sellers and see if there was the possiblity of cross pollination"
               alt="discover page"
             />
             <Highlight
               type="video"
               src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/transition.mp4"
-              description="initial smooth transition on page load"
+              description="initial transition on store load for a smooth entry experience"
               alt="landing page first screen"
             />
           </div>
