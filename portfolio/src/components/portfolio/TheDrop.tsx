@@ -1,6 +1,6 @@
 "use client";
 import { FC, useEffect, useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll } from "framer-motion";
 import Highlight from "./Highlight";
 import Image from "next/image";
 
@@ -25,15 +25,6 @@ const TheDrop: FC = () => {
     target: containerRef,
     offset: ["start start", "end end"],
   });
-
-  const scale = useTransform(
-    scrollYProgress,
-    [
-      0,
-      1, // End scale
-    ],
-    [0.5, 1],
-  );
 
   // Add this useEffect to monitor scrollYProgress
   useEffect(() => {
@@ -66,7 +57,7 @@ const TheDrop: FC = () => {
                   0 &nbsp;&#x2192; 1 &nbsp;product
                 </p>
               </div>
-              <h4>"the drop"</h4>
+              <h4>&quot;the drop&quot;</h4>
             </div>
             <div className="flex sm:hidden">
               <Summary />
