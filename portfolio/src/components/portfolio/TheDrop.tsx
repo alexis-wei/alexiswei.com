@@ -8,7 +8,7 @@ const Summary = () => {
   return (
     <div className="flex w-fit min-w-36 flex-col items-end gap-0.5 text-nowrap">
       <p className="text-sm italic">a bit of everything</p>
-      <p className="text-sm">jan-apr 2024</p>
+      <p className="text-sm">3 months</p>
       <p className="text-sm font-bold">mobile web app</p>
     </div>
   );
