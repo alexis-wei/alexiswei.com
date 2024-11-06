@@ -270,7 +270,7 @@ const TheDrop: FC = () => {
             <h4>storefront</h4>
             <p className="max-w-[600px] text-sm">
               beyond having a UX with good media load speed and a simple
-              checkout process, this the place where we experimented the most
+              checkout process, this is the place where we experimented the most
               with UI—knowing with each new store and drop, we had a new
               opportunity to test new experiences with fresh eyes.
             </p>
