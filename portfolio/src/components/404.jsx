@@ -11,7 +11,7 @@ export default function Custom404() {
           <h1>a little lost?</h1>
         </div>
         <div className="w-full items-end text-end">
-          <h1>don't worry, i got you</h1>
+          <h1>don&apos;t worry, i got you</h1>
         </div>
         <div className="w-full items-start pt-4">
           <Button
