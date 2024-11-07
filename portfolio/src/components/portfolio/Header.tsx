@@ -32,8 +32,6 @@ export interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
-  const customListClass =
-    "text-sm before:inline-block before:pr-1 before:align-top before:text-[16px] before:content-['•']";
   return (
     <div className="flex h-full w-full max-w-[dvw] grow flex-col items-center gap-4">
       <div
@@ -71,20 +69,21 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
         <div className="flex w-full flex-col gap-4 lg:flex-row lg:gap-8">
           <p className="w-full max-w-[420px] text-sm">{props.summary}</p>
           <div className="flex w-full gap-4">
-            <div className="flex w-full flex-col gap-2">
-              <p className="text-xxs font-extrabold uppercase tracking-widest text-stone-400">
+            <div className="flex w-full flex-col gap-1">
+              <p className="text-xs font-extrabold uppercase tracking-widest text-stone-400">
                 ABOUT
               </p>
               <p className="text-sm">{props.about}</p>
             </div>
-            <div className="flex w-full flex-col gap-2">
-              <p className="text-xxs font-extrabold uppercase tracking-widest text-stone-400">
-                FOCUS
+            <div className="flex w-full flex-col gap-1">
+              <p className="text-xs font-extrabold uppercase tracking-widest text-stone-400">
+                CONSIDERATIONS
               </p>
-              <ul className="ml-1 flex list-inside list-none flex-col gap-0.5">
+              <ul className="ml-1 flex list-inside list-none flex-col flex-nowrap gap-0.5">
                 {props.focus.map((item, index) => (
-                  <li key={index} className={`${customListClass}`}>
-                    {item}
+                  <li key={index} className="-ml-1 flex gap-1.5 text-sm">
+                    <span>•</span>
+                    <span>{item}</span>
                   </li>
                 ))}
               </ul>
