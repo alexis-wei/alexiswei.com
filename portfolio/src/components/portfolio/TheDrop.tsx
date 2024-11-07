@@ -53,11 +53,7 @@ const TheDrop: FC = () => {
       <Header {...theDropHeaderProps} />
 
       <div className="flex w-full max-w-[1200px] flex-col items-center gap-8 p-5 md:gap-16">
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          className="flex w-full flex-col items-start gap-4"
-        >
+        <motion.div className="flex w-full flex-col items-start gap-4">
           <div className="flex w-full flex-col items-start gap-1">
             <h4>landing page</h4>
             <p className="text-sm">key messaging: </p>
@@ -143,7 +139,7 @@ const TheDrop: FC = () => {
           </div>
           <div className="flex w-full snap-x snap-mandatory overflow-x-auto pb-12">
             <div className="flex min-w-full grow snap-center flex-col items-center justify-center gap-2 px-4 md:flex-row">
-              <div className="flex h-fit w-full justify-center md:justify-end xl:w-fit">
+              <div className="flex h-fit w-full justify-center md:justify-end">
                 <div className="relative h-[136px] w-[220px]">
                   <Image
                     src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/payment%20original.png"
