@@ -46,7 +46,7 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
             sizes="64"
             fill
             alt="logo"
-            className="object-fit"
+            className="object-contain"
           />
         </div>
       </div>

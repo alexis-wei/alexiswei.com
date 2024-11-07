@@ -48,7 +48,7 @@ const TheDrop: FC = () => {
   return (
     <div
       ref={containerRef}
-      className="relative flex h-full w-full max-w-[dvw] grow flex-col items-center gap-8 p-5 pb-60 font-sans md:gap-16"
+      className="relative flex h-full w-full max-w-[dvw] grow flex-col items-center gap-8 p-5 pb-40 font-sans md:gap-16"
     >
       <Header {...theDropHeaderProps} />
 
