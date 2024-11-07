@@ -30,10 +30,10 @@ const Spotlight: FC = () => {
   };
 
   return (
-    <div className="md: relative flex h-full w-full max-w-[dvw] grow flex-col items-center gap-4 p-5 pb-40 font-sans md:gap-8">
+    <div className="md: relative flex h-full w-full max-w-[dvw] grow flex-col items-center gap-4 p-5 pb-40 font-sans lg:gap-8">
       <Header {...spotlightHeaderProps} />
       <div className="flex w-full max-w-[1200px] flex-col items-center gap-8 p-5 md:gap-16">
-        <div className="flex w-full flex-col items-start gap-8 lg:flex-row">
+        <div className="flex w-full flex-col items-start gap-10 lg:flex-row">
           <div className="flex w-full flex-col items-start gap-1">
             <h4>conceptualization</h4>
             <div className="flex flex-col gap-4">
