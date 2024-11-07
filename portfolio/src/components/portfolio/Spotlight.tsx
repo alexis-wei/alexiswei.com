@@ -3,6 +3,7 @@
 import { FC } from "react";
 import Header, { HeaderProps } from "./Header";
 import Image from "next/image";
+import { motion } from "framer-motion";
 
 const Spotlight: FC = () => {
   const spotlightHeaderProps: HeaderProps = {
@@ -99,77 +100,95 @@ const Spotlight: FC = () => {
             models on embedded devices.
           </p>
         </div>
-        <div className="flex max-w-[1220px] flex-wrap items-center justify-center gap-4 lg:px-20">
-          <div className="flex w-[90dvw] flex-col items-center justify-center gap-2 border border-stone-300 p-4 shadow-md md:w-fit">
-            <div className="flex w-full gap-2 md:w-fit">
-              <div className="relative aspect-square w-full md:w-60">
+        <div className="flex max-w-[1220px] flex-col items-center justify-center gap-4 overflow-visible lg:px-20">
+          <motion.div
+            initial={{ x: -240 }}
+            whileInView={{ x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1, ease: "easeInOut", delay: 0.2 }}
+            className="flex w-full flex-wrap items-center justify-center gap-4"
+          >
+            <div className="flex w-[90dvw] flex-col items-center justify-center gap-2 border border-stone-300 p-4 shadow-md md:w-fit">
+              <div className="flex w-full gap-2 md:w-fit">
+                <div className="relative aspect-square w-full md:w-60">
+                  <Image
+                    src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/spotlight/sponsor_announce_meta.jpg"
+                    fill
+                    alt="sponsor meta"
+                    sizes="(max-width: 640px) 30vw, 240px"
+                    className="object-fit"
+                  />
+                </div>
+                <div className="relative aspect-square w-full md:w-60">
+                  <Image
+                    src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/spotlight/sponsor_announce_hugging_face.jpg"
+                    fill
+                    alt="sponsor hugging face"
+                    sizes="(max-width: 640px) 30vw, 240px"
+                    className="object-fit"
+                  />
+                </div>
+                <div className="relative aspect-square w-full md:w-60">
+                  <Image
+                    src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/spotlight/sponsor_announce_scaleway.jpg"
+                    fill
+                    alt="sponsor scaleway"
+                    sizes="(max-width: 640px) 30vw, 240px"
+                    className="object-fit"
+                  />
+                </div>
+              </div>
+              <p className="text-xs text-stone-500">
+                sponsor announcement posts
+              </p>
+            </div>
+            <div className="flex w-[90dvw] max-w-[280px] grow flex-col items-center justify-center gap-2 border border-stone-300 p-4 shadow-md sm:w-fit">
+              <div className="relative aspect-square w-full sm:w-60">
                 <Image
-                  src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/spotlight/sponsor_announce_meta.jpg"
+                  src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/spotlight/announcement_v2.jpg"
                   fill
-                  alt="sponsor meta"
-                  sizes="(max-width: 640px) 30vw, 240px"
+                  alt="event announcement"
+                  sizes=" 240px"
                   className="object-fit"
                 />
               </div>
-              <div className="relative aspect-square w-full md:w-60">
+              <p className="text-xs text-stone-500">announcement v2</p>
+            </div>
+          </motion.div>
+          <motion.div
+            initial={{ x: 240 }}
+            viewport={{ once: true }}
+            whileInView={{ x: 0 }}
+            transition={{ duration: 1, ease: "easeInOut", delay: 0.2 }}
+            className="flex w-full flex-wrap items-center justify-center gap-4"
+          >
+            <div className="flex w-[90dvw] max-w-[320px] flex-col items-center justify-center gap-2 border border-stone-300 p-4 shadow-md sm:w-fit">
+              <div className="relative aspect-[7/10] h-[393px] w-auto">
                 <Image
-                  src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/spotlight/sponsor_announce_hugging_face.jpg"
+                  src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/spotlight/sticker_sheet.jpg"
                   fill
-                  alt="sponsor hugging face"
-                  sizes="(max-width: 640px) 30vw, 240px"
+                  alt="sticker sheet"
+                  sizes="400px"
                   className="object-fit"
                 />
               </div>
-              <div className="relative aspect-square w-full md:w-60">
+              <p className="text-xs text-stone-500">sticker sheet</p>
+            </div>
+            <div className="flex w-[90dvw] flex-col items-center justify-center gap-2 border border-stone-300 p-4 shadow-md md:w-fit">
+              <div className="relative aspect-video h-auto w-full md:h-[393px] md:w-fit">
                 <Image
-                  src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/spotlight/sponsor_announce_scaleway.jpg"
+                  src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/spotlight/horizontal.jpg"
                   fill
-                  alt="sponsor scaleway"
-                  sizes="(max-width: 640px) 30vw, 240px"
+                  alt="horizontal banner"
+                  sizes="400px"
                   className="object-fit"
                 />
               </div>
+              <p className="text-xs text-stone-500">
+                horizontal banner for social media
+              </p>
             </div>
-            <p className="text-xs text-stone-500">sponsor announcement posts</p>
-          </div>
-          <div className="flex w-[90dvw] max-w-[280px] grow flex-col items-center justify-center gap-2 border border-stone-300 p-4 shadow-md sm:w-fit">
-            <div className="relative aspect-square w-full sm:w-60">
-              <Image
-                src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/spotlight/announcement_v2.jpg"
-                fill
-                alt="event announcement"
-                sizes=" 240px"
-                className="object-fit"
-              />
-            </div>
-            <p className="text-xs text-stone-500">announcement v2</p>
-          </div>
-          <div className="flex w-[90dvw] max-w-[320px] flex-col items-center justify-center gap-2 border border-stone-300 p-4 shadow-md sm:w-fit">
-            <div className="relative aspect-[7/10] h-[393px] w-auto">
-              <Image
-                src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/spotlight/sticker_sheet.jpg"
-                fill
-                alt="sticker sheet"
-                sizes="400px"
-                className="object-fit"
-              />
-            </div>
-            <p className="text-xs text-stone-500">sticker sheet</p>
-          </div>
-          <div className="flex w-[90dvw] flex-col items-center justify-center gap-2 border border-stone-300 p-4 shadow-md md:w-fit">
-            <div className="relative aspect-video h-auto w-full md:h-[393px] md:w-fit">
-              <Image
-                src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/spotlight/horizontal.jpg"
-                fill
-                alt="horizontal banner"
-                sizes="400px"
-                className="object-fit"
-              />
-            </div>
-            <p className="text-xs text-stone-500">
-              horizontal banner for social media
-            </p>
-          </div>
+          </motion.div>
         </div>
       </div>
     </div>
