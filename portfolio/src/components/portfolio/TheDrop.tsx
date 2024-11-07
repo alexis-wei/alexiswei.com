@@ -3,16 +3,7 @@ import { FC, useRef } from "react";
 import { motion } from "framer-motion";
 import Highlight from "./Highlight";
 import Image from "next/image";
-
-const Summary = () => {
-  return (
-    <div className="flex w-fit min-w-36 flex-col items-end gap-0.5 text-nowrap">
-      <p className="text-sm italic">a bit of everything</p>
-      <p className="text-sm">3 months</p>
-      <p className="text-sm font-bold">mobile web app</p>
-    </div>
-  );
-};
+import Header, { HeaderProps } from "./Header";
 
 const TheDrop: FC = () => {
   const containerRef = useRef(null);
@@ -33,78 +24,34 @@ const TheDrop: FC = () => {
   //   return () => unsubscribe();
   // }, [scrollYProgress]);
 
+  const theDropHeaderProps: HeaderProps = {
+    logoSrc:
+      "https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/thedrop-logo.png",
+    category: "0   →   1 product",
+    title: "the drop",
+    bgColor: "#FFD218",
+    summary:
+      "I started working on the drop when it was just a basic MVP figma prototype with 0 lines of code. Over the next 3 months, my co-founders and I built out the platform, onboarded 20+ sellers, conducted >$30k of transactions on our platform and was a part of the microsoft startup program. As the sole designer & engineer, my work consisted of landing pages, seller dashboards, component design, and anything you can think of, truly bring the product to life from 0 → 1",
+    about:
+      "a video based shoppable link in bio – think simplified shopify made for sellers on social media",
+    focus: [
+      "in-app browser experience (Instagram entry)",
+      "mobile-first",
+      "fast and simple",
+      "prioritizing content (video)",
+    ],
+    role: "a bit of everything",
+    timeline: "3 months",
+    projectType: "mobile web app",
+  };
+
   return (
     <div
       ref={containerRef}
       className="relative flex h-full w-full max-w-[dvw] grow flex-col items-center gap-8 p-5 pb-60 font-sans md:gap-16"
     >
-      <div className="flex h-full w-full max-w-[dvw] grow flex-col items-center gap-4">
-        <div className="flex h-[50dvw] min-h-72 w-full items-center justify-center bg-[#FFD218] md:h-96">
-          <div className="h-fit">
-            <img
-              src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/thedrop-logo.png"
-              className="h-auto w-[60px]"
-              alt="the drop logo"
-            />
-          </div>
-        </div>
-        <div className="flex w-full flex-col items-start gap-8 sm:flex-row">
-          <div className="flex w-full min-w-36 justify-between sm:w-fit">
-            <div className="flex w-fit flex-col gap-2 text-nowrap">
-              <div className="w-fit bg-stone-400 px-3 py-1">
-                <p className="text-xxs font-extrabold uppercase text-white">
-                  0 &nbsp;&#x2192; 1 &nbsp;product
-                </p>
-              </div>
-              <h4>&quot;the drop&quot;</h4>
-            </div>
-            <div className="flex sm:hidden">
-              <Summary />
-            </div>
-          </div>
-          <div className="flex w-full flex-col gap-4 lg:flex-row lg:gap-8">
-            <p className="w-full max-w-96 text-sm">
-              I started working on the drop when it was just a basic MVP figma
-              prototype with 0 lines of code. Over the next 3 months, my
-              co-founders and I built out the platform, onboarded 20+ sellers,
-              conducted &gt;$30k of transactions on our platform and was a part
-              of the microsoft startup program. As the sole designer & engineer,
-              my work consistented of landing pages, seller dashboards,
-              component design, and anything you can think of, truly bring the
-              product to life from 0 &#x2192; 1
-            </p>
-            <div className="flex w-full gap-4">
-              <div className="flex w-full flex-col gap-2">
-                <p className="text-xxs font-extrabold uppercase tracking-wider text-stone-400">
-                  ABOUT
-                </p>
-                <p className="text-sm">
-                  a video based shoppable link in bio – think simplified shopify
-                  made for sellers on social media
-                </p>
-              </div>
-              <div className="flex w-full flex-col gap-2">
-                <p className="text-xxs font-extrabold uppercase tracking-wider text-stone-400">
-                  FOCUS
-                </p>
-                <ul className="ml-1 flex list-inside list-none flex-col gap-0.5">
-                  <li className={`${customListClass}`}>
-                    in-app browser experience (Instagram entry)
-                  </li>
-                  <li className={`${customListClass}`}>mobile-first</li>
-                  <li className={`${customListClass}`}>fast and simple</li>
-                  <li className={`${customListClass}`}>
-                    prioritizing content (video)
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div className="hidden sm:flex">
-            <Summary />
-          </div>
-        </div>
-      </div>
+      <Header {...theDropHeaderProps} />
+
       <motion.div
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
