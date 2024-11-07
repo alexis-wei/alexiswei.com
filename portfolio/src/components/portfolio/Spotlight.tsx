@@ -107,7 +107,7 @@ const Spotlight: FC = () => {
                 <Image
                   src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/spotlight/sponsor_announce_meta.jpg"
                   fill
-                  alt="sponsor-huggingface"
+                  alt="sponsor meta"
                   sizes="(max-width: 640px) 30vw, 240px"
                   className="object-fit"
                 />
@@ -116,7 +116,7 @@ const Spotlight: FC = () => {
                 <Image
                   src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/spotlight/sponsor_announce_hugging_face.jpg"
                   fill
-                  alt="sponsor-meta"
+                  alt="sponsor hugging face"
                   sizes="(max-width: 640px) 30vw, 240px"
                   className="object-fit"
                 />
@@ -125,7 +125,7 @@ const Spotlight: FC = () => {
                 <Image
                   src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/spotlight/sponsor_announce_scaleway.jpg"
                   fill
-                  alt="sponsor-scaleway"
+                  alt="sponsor scaleway"
                   sizes="(max-width: 640px) 30vw, 240px"
                   className="object-fit"
                 />
@@ -138,12 +138,12 @@ const Spotlight: FC = () => {
               <Image
                 src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/spotlight/announcement_v2.jpg"
                 fill
-                alt="sponsor-huggingface"
+                alt="event announcement"
                 sizes=" 240px"
                 className="object-fit"
               />
             </div>
-            <p className="text-xs text-stone-500">sponsor announcement posts</p>
+            <p className="text-xs text-stone-500">announcement v2</p>
           </div>
           <div className="flex w-[90dvw] max-w-[320px] flex-col items-center justify-center gap-2 border border-stone-300 p-4 shadow-md sm:w-fit">
             <div className="relative aspect-[7/10] h-[393px] w-auto">
