@@ -6,7 +6,7 @@ import { useState } from "react";
 
 const Main = () => {
   const white = "#ffffff";
-  const purple = "#d0bfff";
+  const blue = "#bfe0ff";
   const yellow = "#ffec99";
   const green = "#d8f5a2";
 
@@ -17,9 +17,8 @@ const Main = () => {
     setColor(color);
   };
 
-  const handleEnterPortfolio = (e: React.MouseEvent) => {
-    e.preventDefault();
-    router.push("/portfolio");
+  const handleEnterPortfolio = (page: number) => {
+    router.push(`/portfolio?page=${page}`);
   };
 
   return (
@@ -45,14 +44,15 @@ const Main = () => {
             className={`rounded-none font-serif font-bold shadow-md hover:border-stone-600 hover:bg-[#ffec99] hover:shadow-none`}
             variant="outline"
             onMouseEnter={() => changeColor(yellow)}
-            onClick={(e) => handleEnterPortfolio(e)}
+            onClick={() => handleEnterPortfolio(1)}
           >
             0 &#x2192; 1 product
           </Button>
           <Button
-            className={`rounded-none font-serif font-bold shadow-md hover:border-stone-600 hover:bg-[#d0bfff] hover:shadow-none`}
+            className={`rounded-none font-serif font-bold shadow-md hover:border-stone-600 hover:bg-[#bfe0ff] hover:shadow-none`}
             variant="outline"
-            onMouseEnter={() => changeColor(purple)}
+            onMouseEnter={() => changeColor(blue)}
+            onClick={() => handleEnterPortfolio(2)}
           >
             branding
           </Button>
