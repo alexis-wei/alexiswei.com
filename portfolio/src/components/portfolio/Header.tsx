@@ -10,7 +10,7 @@ interface SummaryProps {
 
 const Summary: FC<SummaryProps> = ({ role, timeline, projectType }) => {
   return (
-    <div className="flex w-fit min-w-36 flex-col items-end gap-0.5 text-nowrap">
+    <div className="flex w-full flex-col items-end text-nowrap md:items-start">
       <p className="text-sm italic">{role}</p>
       <p className="text-sm">{timeline}</p>
       <p className="text-sm font-bold">{projectType}</p>
@@ -33,7 +33,7 @@ export interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
   return (
-    <div className="flex h-full w-full max-w-[dvw] grow flex-col items-center gap-4">
+    <div className="flex h-full w-full max-w-[dvw] grow flex-col items-center gap-8">
       <div
         className="flex h-[50dvw] min-h-72 w-full items-center justify-center md:h-96"
         style={{ backgroundColor: props.bgColor }}
@@ -48,8 +48,8 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
           />
         </div>
       </div>
-      <div className="flex w-full flex-col items-start gap-8 sm:flex-row">
-        <div className="flex w-full min-w-44 justify-between sm:w-fit">
+      <div className="flex h-full w-full max-w-[1200px] flex-col items-start justify-between gap-8 border border-stone-700 p-5 md:flex-row">
+        <div className="flex w-full min-w-44 grow flex-row justify-between gap-6 md:w-fit md:flex-col lg:h-full">
           <div className="flex w-fit flex-col gap-2 text-nowrap">
             <div className="w-fit bg-stone-400 px-3 py-1">
               <p className="text-xxs font-extrabold uppercase tracking-widest text-white">
@@ -58,15 +58,14 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
             </div>
             <h4>&quot;{props.title}&quot;</h4>
           </div>
-          <div className="flex sm:hidden">
-            <Summary
-              role={props.role}
-              timeline={props.timeline}
-              projectType={props.projectType}
-            />
-          </div>
+
+          <Summary
+            role={props.role}
+            timeline={props.timeline}
+            projectType={props.projectType}
+          />
         </div>
-        <div className="flex w-full flex-col gap-4 lg:flex-row lg:gap-8">
+        <div className="flex w-full flex-col gap-6 md:gap-4 lg:flex-row lg:gap-8">
           <p className="w-full max-w-[420px] text-sm">{props.summary}</p>
           <div className="flex w-full gap-4">
             <div className="flex w-full flex-col gap-1">
@@ -89,13 +88,6 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
               </ul>
             </div>
           </div>
-        </div>
-        <div className="hidden sm:flex">
-          <Summary
-            role={props.role}
-            timeline={props.timeline}
-            projectType={props.projectType}
-          />
         </div>
       </div>
     </div>
