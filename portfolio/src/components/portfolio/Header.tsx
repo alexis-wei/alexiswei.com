@@ -33,7 +33,7 @@ export interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
   return (
-    <div className="flex h-fit w-full max-w-[dvw] grow flex-col items-center gap-8">
+    <div className="flex h-fit w-full max-w-[dvw] grow flex-col items-center gap-6 md:gap-8">
       <div
         className="flex h-[50dvw] min-h-72 w-full items-center justify-center md:h-96"
         style={{ backgroundColor: props.bgColor }}
@@ -49,14 +49,14 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
         </div>
       </div>
       <div className="flex h-full w-full max-w-[1200px] flex-col items-start justify-between gap-8 border border-stone-700 p-5 md:flex-row">
-        <div className="flex w-full min-w-44 shrink-0 grow flex-row justify-between gap-6 md:w-fit md:flex-col lg:h-full">
+        <div className="flex w-full min-w-44 shrink-0 grow flex-row justify-between gap-0 md:w-fit md:flex-col md:gap-6 lg:h-full">
           <div className="flex w-fit flex-col gap-2 text-nowrap">
             <div className="w-fit bg-stone-400 px-3 py-1">
               <p className="text-xxs font-extrabold uppercase tracking-widest text-white md:text-xs">
                 {props.category}
               </p>
             </div>
-            <h4>&quot;{props.title}&quot;</h4>
+            <h4 className="text-xl sm:text-2xl">&quot;{props.title}&quot;</h4>
           </div>
 
           <Summary
