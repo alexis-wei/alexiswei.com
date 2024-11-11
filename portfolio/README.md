@@ -2,6 +2,6 @@
 
 I'm an independent design engineer
 
-hi[at]alexiswei[dot]com
+alexisw[dot]contact[at]gmail[dot]com
 
 book @ https://cal.com/itsalexiswei
