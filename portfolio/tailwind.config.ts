@@ -26,6 +26,8 @@ const config: Config = {
       },
       transitionProperty: {
         spacing: "margin, padding",
+        "spacing-and-colors":
+          "margin, padding, color, background-color, border-color, text-decoration-color, fill, stroke;",
       },
     },
   },
