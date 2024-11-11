@@ -66,7 +66,7 @@ const TheDrop: FC = () => {
     >
       <Header {...theDropHeaderProps} />
 
-      <div className="flex w-full max-w-[1200px] flex-col items-center gap-8 p-5 md:gap-16">
+      <div className="flex w-full max-w-[1200px] flex-col items-center gap-10 md:gap-16 md:p-5">
         <motion.div className="flex w-full flex-col items-start gap-4">
           <div className="flex w-full flex-col items-start gap-1">
             <h4>landing page</h4>
