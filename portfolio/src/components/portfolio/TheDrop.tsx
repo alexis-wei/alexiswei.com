@@ -1,5 +1,5 @@
 "use client";
-import { FC, useRef } from "react";
+import { FC, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import Highlight from "./Highlight";
 import Image from "next/image";
@@ -7,6 +7,7 @@ import Header, { HeaderProps } from "./Header";
 
 const TheDrop: FC = () => {
   const containerRef = useRef(null);
+  const [dashboardCarouselPos, setDashboardCarouselPos] = useState(1);
 
   const customListClass =
     "text-sm before:inline-block before:pr-1 before:align-top before:text-[16px] before:content-['•'] md:text-base";
@@ -142,77 +143,116 @@ const TheDrop: FC = () => {
               easy to navigate.
             </p>
           </div>
-          <div className="no-scrollbar flex w-full snap-x snap-mandatory overflow-x-auto pb-12">
-            <div className="flex min-w-full grow snap-center flex-col items-center justify-center gap-6 px-4 md:flex-row md:gap-10">
-              <div className="flex flex-col items-center justify-center gap-2 md:flex-row">
-                <div className="flex h-fit w-full justify-center md:justify-end">
-                  <div className="relative h-[136px] w-[220px]">
-                    <Image
-                      src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/payment%20original.png"
-                      alt="origin payments section"
-                      sizes="220px"
-                      fill
-                      className="object-fit"
-                    />
+          <div className="no-scrollbar flex w-full snap-x snap-mandatory overflow-x-auto">
+            <div className="flex h-full min-w-full grow snap-center flex-col items-center justify-center border-4 border-[#FFD218] lg:h-[540px] lg:flex-row">
+              <div className="relative flex h-full w-full flex-col items-center justify-center bg-[#FFD218] px-8 py-24 lg:w-[680px]">
+                <span className="absolute top-8 font-bold uppercase tracking-widest text-black">
+                  ELEMENT
+                </span>
+                {dashboardCarouselPos === 0 ? (
+                  <div className="flex flex-col items-center justify-center gap-2 px-20 md:flex-row">
+                    <div className="flex h-fit w-full justify-center md:justify-end">
+                      <div className="relative h-[136px] w-[220px]">
+                        <Image
+                          src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/payment%20original.png"
+                          alt="origin payments section"
+                          sizes="220px"
+                          fill
+                          className="object-fit"
+                        />
+                      </div>
+                    </div>
+                    <IconHeroiconsArrowRight className="hidden shrink-0 md:flex" />
+                    <IconHeroiconsArrowDown className="shrink-0 md:hidden" />
+                    <div className="relative flex w-fit items-center justify-center overflow-visible md:justify-start">
+                      <div className="relative h-[208px] w-[220px] sm:h-[286px] sm:w-[300px]">
+                        <Image
+                          src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/payment%20improved.png"
+                          alt="updated payments section"
+                          sizes="300px"
+                          fill
+                          className="object-fit"
+                        />
+                      </div>
+                    </div>
                   </div>
-                </div>
-                <IconHeroiconsArrowRight className="hidden shrink-0 md:flex" />
-                <IconHeroiconsArrowDown className="shrink-0 md:hidden" />
-                <div className="relative flex w-fit items-center justify-center overflow-visible md:justify-start">
-                  <div className="relative h-[208px] w-[220px] sm:h-[286px] sm:w-[300px]">
-                    <Image
-                      src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/payment%20improved.png"
-                      alt="updated payments section"
-                      sizes="300px"
-                      fill
-                      className="object-fit"
-                    />
+                ) : (
+                  <div className="flex flex-col items-center justify-center gap-2 px-20 md:flex-row">
+                    <div className="w-fit">
+                      <div className="relative h-[258px] w-[220px]">
+                        <Image
+                          src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/drop%20original.png"
+                          alt="original drops section"
+                          sizes="220px"
+                          fill
+                          className="object-fit"
+                        />
+                      </div>
+                    </div>
+                    <IconHeroiconsArrowRight className="hidden shrink-0 md:flex" />
+                    <IconHeroiconsArrowDown className="shrink-0 md:hidden" />
+                    <div className="w-fit">
+                      <div className="relative h-[258px] w-[220px]">
+                        <Image
+                          src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/drops_improved.png"
+                          alt="updated drops section"
+                          sizes="220px"
+                          fill
+                          className="object-fit"
+                        />
+                      </div>
+                    </div>
                   </div>
+                )}
+                <div className="absolute bottom-8 flex h-[28px] w-fit gap-2 rounded-full bg-black bg-opacity-70 px-4 py-3">
+                  <div className="h-1 w-8 rounded-full bg-white"></div>
+                  <div className="h-1 w-1 rounded-full bg-white"></div>
                 </div>
               </div>
-              <div className="flex max-w-96 flex-col gap-4">
-                <div className="bg-[#ffe680] p-4 shadow shadow-[#FFD218]">
-                  <p className="text-xs font-medium md:text-sm">
-                    clear account balance shown directly on dashboard instead of
-                    redirecting to Stripe
-                  </p>
-                </div>
-                <div className="bg-[#ffe680] p-4 shadow shadow-[#FFD218]">
-                  <p className="text-xs font-medium md:text-sm">
-                    info banner after sellers were confused about payout delays
-                  </p>
-                </div>
-                <div className="bg-[#ffe680] p-4 shadow shadow-[#FFD218]">
-                  <p className="text-xs font-medium md:text-sm">
-                    directly able to get payout on seller side instead of
-                    needing to be triggered from our end
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="flex min-w-full grow snap-center flex-col items-center justify-center gap-2 px-4 md:flex-row">
-              <div className="w-fit">
-                <div className="relative h-[258px] w-[220px]">
-                  <Image
-                    src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/drop%20original.png"
-                    alt="original drops section"
-                    sizes="220px"
-                    fill
-                    className="object-fit"
-                  />
-                </div>
-              </div>
-              <IconHeroiconsArrowRight className="hidden shrink-0 md:flex" />
-              <IconHeroiconsArrowDown className="shrink-0 md:hidden" />
-              <div className="w-fit">
-                <div className="relative h-[258px] w-[220px]">
-                  <Image
-                    src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/drops_improved.png"
-                    alt="updated drops section"
-                    sizes="220px"
-                    fill
-                    className="object-fit"
-                  />
+              <div className="relative flex h-full w-full flex-col items-center justify-center px-8 pb-16 pt-24">
+                <span className="absolute top-8 font-bold uppercase tracking-widest text-black">
+                  IMPROVEMENTS
+                </span>
+                <div className="flex flex-col gap-4">
+                  <div className="flex gap-4">
+                    <div className="flex h-6 w-6 shrink-0 items-center justify-center bg-black">
+                      <span className="text-center font-serif text-xs font-bold italic text-white">
+                        1.
+                      </span>
+                    </div>
+                    <div className="max-w-96 border border-black bg-white p-4 shadow-[-6px_6px_0px_#FFD218]">
+                      <p className="text-xs md:text-sm">
+                        clear account balance shown directly on dashboard
+                        instead of redirecting to Stripe
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex gap-4">
+                    <div className="flex h-6 w-6 shrink-0 items-center justify-center bg-black">
+                      <span className="text-center font-serif text-xs font-bold italic text-white">
+                        2.
+                      </span>
+                    </div>
+                    <div className="max-w-96 border border-black bg-white p-4 shadow-[-6px_6px_0px_#FFD218]">
+                      <p className="text-xs md:text-sm">
+                        info banner after sellers were confused about payout
+                        delays
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex gap-4">
+                    <div className="flex h-6 w-6 shrink-0 items-center justify-center bg-black">
+                      <span className="text-center font-serif text-xs font-bold italic text-white">
+                        3.
+                      </span>
+                    </div>
+                    <div className="max-w-96 border border-black bg-white p-4 shadow-[-6px_6px_0px_#FFD218]">
+                      <p className="text-xs md:text-sm">
+                        directly able to get payout on seller side instead of
+                        needing to be triggered from our end
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

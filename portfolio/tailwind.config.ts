@@ -17,8 +17,7 @@ const config: Config = {
         serif: ["var(--font-libre-baskerville)"],
       },
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        black: "#1f1f1f",
       },
       borderRadius: {
         lg: "var(--radius)",
