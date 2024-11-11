@@ -35,7 +35,7 @@ const Highlight: FC<HighlightProps> = (props: HighlightProps) => {
 
   return (
     <motion.div
-      className="transition-spacing-and-colors flex h-[520px] w-[320px] shrink-0 flex-col items-center gap-4 border-black bg-white p-5 shadow duration-300 hover:mx-[7px] hover:border"
+      className={`flex h-[520px] w-[320px] shrink-0 flex-col items-center gap-4 border-black bg-white p-5 shadow duration-300 hover:mx-[7px] hover:border ${"transition-spacing-and-colors"}`}
       whileHover={{ scale: 1.05 }}
       transition={{ duration: 0.3 }}
       ref={divRef}
