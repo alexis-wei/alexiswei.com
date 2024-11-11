@@ -143,76 +143,76 @@ const TheDrop: FC = () => {
               easy to navigate.
             </p>
           </div>
-          <div className="no-scrollbar flex w-full snap-x snap-mandatory overflow-x-auto">
-            <div className="flex h-full min-w-full grow snap-center flex-col items-center justify-center border-4 border-[#FFD218] lg:h-[540px] lg:flex-row">
-              <div className="relative flex h-full w-full flex-col items-center justify-center bg-[#FFD218] px-8 py-24 lg:w-[680px]">
-                <span className="absolute top-8 font-bold uppercase tracking-widest text-black">
-                  ELEMENT
-                </span>
-                {dashboardCarouselPos === 0 ? (
-                  <div className="flex flex-col items-center justify-center gap-2 px-20 md:flex-row">
-                    <div className="flex h-fit w-full justify-center md:justify-end">
-                      <div className="relative h-[136px] w-[220px]">
-                        <Image
-                          src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/payment%20original.png"
-                          alt="origin payments section"
-                          sizes="220px"
-                          fill
-                          className="object-fit"
-                        />
-                      </div>
-                    </div>
-                    <IconHeroiconsArrowRight className="hidden shrink-0 md:flex" />
-                    <IconHeroiconsArrowDown className="shrink-0 md:hidden" />
-                    <div className="relative flex w-fit items-center justify-center overflow-visible md:justify-start">
-                      <div className="relative h-[208px] w-[220px] sm:h-[286px] sm:w-[300px]">
-                        <Image
-                          src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/payment%20improved.png"
-                          alt="updated payments section"
-                          sizes="300px"
-                          fill
-                          className="object-fit"
-                        />
-                      </div>
+          <div className="flex h-full min-w-full grow snap-center flex-col items-center justify-center border-4 border-[#FFD218] lg:h-[540px] lg:flex-row">
+            <div className="relative flex h-full w-full flex-col items-center justify-center bg-[#FFD218] px-8 py-24 lg:w-[680px]">
+              <span className="absolute top-8 font-bold uppercase tracking-widest text-black">
+                ELEMENT
+              </span>
+              {dashboardCarouselPos === 0 ? (
+                <div className="flex flex-col items-center justify-center gap-2 px-20 md:flex-row">
+                  <div className="flex h-fit w-full justify-center md:justify-end">
+                    <div className="relative h-[136px] w-[220px]">
+                      <Image
+                        src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/payment%20original.png"
+                        alt="origin payments section"
+                        sizes="220px"
+                        fill
+                        className="object-fit"
+                      />
                     </div>
                   </div>
-                ) : (
-                  <div className="flex flex-col items-center justify-center gap-2 px-20 md:flex-row">
-                    <div className="w-fit">
-                      <div className="relative h-[258px] w-[220px]">
-                        <Image
-                          src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/drop%20original.png"
-                          alt="original drops section"
-                          sizes="220px"
-                          fill
-                          className="object-fit"
-                        />
-                      </div>
-                    </div>
-                    <IconHeroiconsArrowRight className="hidden shrink-0 md:flex" />
-                    <IconHeroiconsArrowDown className="shrink-0 md:hidden" />
-                    <div className="w-fit">
-                      <div className="relative h-[258px] w-[220px]">
-                        <Image
-                          src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/drops_improved.png"
-                          alt="updated drops section"
-                          sizes="220px"
-                          fill
-                          className="object-fit"
-                        />
-                      </div>
+                  <IconHeroiconsArrowRight className="hidden shrink-0 md:flex" />
+                  <IconHeroiconsArrowDown className="shrink-0 md:hidden" />
+                  <div className="relative flex w-fit items-center justify-center overflow-visible md:justify-start">
+                    <div className="relative h-[208px] w-[220px] sm:h-[286px] sm:w-[300px]">
+                      <Image
+                        src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/payment%20improved.png"
+                        alt="updated payments section"
+                        sizes="300px"
+                        fill
+                        className="object-fit"
+                      />
                     </div>
                   </div>
-                )}
-                <div className="absolute bottom-8 flex h-[28px] w-fit gap-2 rounded-full bg-black bg-opacity-70 px-4 py-3">
-                  <div className="h-1 w-8 rounded-full bg-white"></div>
-                  <div className="h-1 w-1 rounded-full bg-white"></div>
                 </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center gap-2 px-20 md:flex-row">
+                  <div className="w-fit">
+                    <div className="relative h-[258px] w-[220px]">
+                      <Image
+                        src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/drop%20original.png"
+                        alt="original drops section"
+                        sizes="220px"
+                        fill
+                        className="object-fit"
+                      />
+                    </div>
+                  </div>
+                  <IconHeroiconsArrowRight className="hidden shrink-0 md:flex" />
+                  <IconHeroiconsArrowDown className="shrink-0 md:hidden" />
+                  <div className="w-fit">
+                    <div className="relative h-[258px] w-[220px]">
+                      <Image
+                        src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/drops_improved.png"
+                        alt="updated drops section"
+                        sizes="220px"
+                        fill
+                        className="object-fit"
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+              <div className="absolute bottom-8 flex h-[28px] w-fit gap-2 rounded-full bg-black bg-opacity-70 px-4 py-3">
+                <div className="h-1 w-8 rounded-full bg-white"></div>
+                <div className="h-1 w-1 rounded-full bg-white"></div>
               </div>
-              <div className="relative flex h-full w-full flex-col items-center justify-center px-8 pb-16 pt-24">
-                <span className="absolute top-8 font-bold uppercase tracking-widest text-black">
-                  IMPROVEMENTS
-                </span>
+            </div>
+            <div className="relative flex h-full w-full flex-col items-center justify-center px-8 pb-16 pt-24">
+              <span className="absolute top-8 font-bold uppercase tracking-widest text-black">
+                IMPROVEMENTS
+              </span>
+              {dashboardCarouselPos === 0 ? (
                 <div className="flex flex-col gap-4">
                   <div className="flex gap-4">
                     <div className="flex h-6 w-6 shrink-0 items-center justify-center bg-black">
@@ -254,7 +254,49 @@ const TheDrop: FC = () => {
                     </div>
                   </div>
                 </div>
-              </div>
+              ) : (
+                <div className="flex flex-col gap-4">
+                  <div className="flex gap-4">
+                    <div className="flex h-6 w-6 shrink-0 items-center justify-center bg-black">
+                      <span className="text-center font-serif text-xs font-bold italic text-white">
+                        1.
+                      </span>
+                    </div>
+                    <div className="max-w-96 border border-black bg-white p-4 shadow-[-6px_6px_0px_#FFD218]">
+                      <p className="text-xs md:text-sm">
+                        ability to add new drop directly from dashboard instead
+                        of having to contact us to add it manually
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex gap-4">
+                    <div className="flex h-6 w-6 shrink-0 items-center justify-center bg-black">
+                      <span className="text-center font-serif text-xs font-bold italic text-white">
+                        2.
+                      </span>
+                    </div>
+                    <div className="max-w-96 border border-black bg-white p-4 shadow-[-6px_6px_0px_#FFD218]">
+                      <p className="text-xs md:text-sm">
+                        all drops viewable rather than just information about
+                        the singel latest drop set up
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex gap-4">
+                    <div className="flex h-6 w-6 shrink-0 items-center justify-center bg-black">
+                      <span className="text-center font-serif text-xs font-bold italic text-white">
+                        3.
+                      </span>
+                    </div>
+                    <div className="max-w-96 border border-black bg-white p-4 shadow-[-6px_6px_0px_#FFD218]">
+                      <p className="text-xs md:text-sm">
+                        image preview so sellers can tell what items have
+                        already been uploaded, differentiating between drops
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
