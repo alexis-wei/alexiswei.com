@@ -17,18 +17,9 @@ const Highlight: FC<HighlightProps> = (props: HighlightProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const divRef = useRef<HTMLDivElement>(null);
   const [isClient, setIsClient] = useState(false);
-  // const [scale, setScale] = useState(1);
 
   useEffect(() => {
-    // const screenMidpoint = window.innerWidth / 2;
     setIsClient(true);
-    // if (divRef && divRef.current) {
-
-    //   const xPos = divRef.current.getBoundingClientRect().x + 144;
-    //   const distanceToMid = Math.abs(screenMidpoint - xPos);
-    //   const newScale = Math.max(1 - distanceToMid / screenMidpoint, 0.8);
-    //   setScale(newScale);
-    // }
   }, []);
 
   if (!isClient && props.type === "video") {
@@ -44,8 +35,9 @@ const Highlight: FC<HighlightProps> = (props: HighlightProps) => {
 
   return (
     <motion.div
-      className="flex h-[520px] w-[320px] shrink-0 flex-col items-center gap-4 bg-white p-5 shadow"
-      // style={{ scale: scale }}
+      className={`flex h-[520px] w-[320px] shrink-0 flex-col items-center gap-4 border-black bg-white p-5 shadow duration-300 hover:mx-[7px] hover:border ${"transition-spacing-and-colors"}`}
+      whileHover={{ scale: 1.05 }}
+      transition={{ duration: 0.3 }}
       ref={divRef}
     >
       {props.type === "image" ? (

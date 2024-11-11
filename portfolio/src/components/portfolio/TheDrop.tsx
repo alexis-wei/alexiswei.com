@@ -8,23 +8,11 @@ import Header, { HeaderProps } from "./Header";
 const TheDrop: FC = () => {
   const containerRef = useRef(null);
   const carouselRef = useRef<HTMLDivElement>(null);
-  const [dashboardCarouselPos, setDashboardCarouselPos] = useState(1);
+  const [dashboardCarouselCard, setDashboardCarouselCard] = useState(1);
+  const [dashboardCarouselScroll, setDashboardCarouselScroll] = useState(1);
 
   const customListClass =
     "text-sm before:inline-block before:pr-1 before:align-top before:text-[16px] before:content-['•'] md:text-base";
-
-  // const { scrollYProgress } = useScroll({
-  //   target: containerRef,
-  //   offset: ["start start", "end end"],
-  // });
-
-  // useEffect(() => {
-  //   const unsubscribe = scrollYProgress.on("change", (value) => {
-  //     console.log("Scroll Progress:", value);
-  //   });
-
-  //   return () => unsubscribe();
-  // }, [scrollYProgress]);
 
   const theDropHeaderProps: HeaderProps = {
     logoSrc:
@@ -55,8 +43,25 @@ const TheDrop: FC = () => {
     const scrollLeft = carouselRef.current.scrollLeft;
     const slideWidth = carouselRef.current.clientWidth;
 
-    const currentSlide = Math.round(scrollLeft / slideWidth);
-    setDashboardCarouselPos(currentSlide);
+    const currentCard = Math.round(scrollLeft / slideWidth);
+
+    const transitionVal = (slideWidth * 2) / 5;
+    const opacity = calculateOpacity(slideWidth, transitionVal, scrollLeft);
+    setDashboardCarouselScroll(opacity);
+
+    setDashboardCarouselCard(currentCard);
+  };
+
+  const calculateOpacity = (
+    slideWidth: number,
+    transitionVal: number,
+    xPos: number,
+  ) => {
+    if (xPos < transitionVal) return 1;
+    else if (xPos > slideWidth - transitionVal) return 0;
+    else {
+      return 1 - (xPos - transitionVal) / (slideWidth - transitionVal);
+    }
   };
 
   return (
@@ -66,7 +71,7 @@ const TheDrop: FC = () => {
     >
       <Header {...theDropHeaderProps} />
 
-      <div className="flex w-full max-w-[1200px] flex-col items-center gap-8 p-5 md:gap-16">
+      <div className="flex w-full max-w-[1200px] flex-col items-center gap-10 md:gap-16 md:p-5">
         <motion.div className="flex w-full flex-col items-start gap-4">
           <div className="flex w-full flex-col items-start gap-1">
             <h4>landing page</h4>
@@ -94,7 +99,7 @@ const TheDrop: FC = () => {
         </motion.div>
 
         <div className="no-scrollbar w-full overflow-x-scroll py-4">
-          <div className="flex h-full w-fit items-center gap-8">
+          <div className="flex h-full w-fit items-center gap-8 pl-[1px] pr-2">
             <Highlight
               type="image"
               src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/landing-collage.png"
@@ -154,18 +159,26 @@ const TheDrop: FC = () => {
               easy to navigate.
             </p>
           </div>
-          <div className="flex h-full min-w-full grow snap-center flex-col items-center justify-center border-4 border-[#FFD218] lg:h-[540px] lg:flex-row">
+          <div className="flex h-full min-w-full grow snap-center flex-col items-center justify-center border-4 border-[#FFD218] lg:h-[520px] lg:flex-row">
             <div className="relative flex h-full w-full items-center justify-center bg-[#FFD218] px-8 py-24 lg:w-[680px]">
               <span className="absolute top-8 font-bold uppercase tracking-widest text-black">
                 ELEMENT
               </span>
 
               <div
-                className="no-scrollbar relative flex snap-x snap-mandatory flex-row overflow-scroll"
+                className="no-scrollbar relative flex snap-x snap-mandatory flex-row overflow-scroll scroll-smooth"
                 ref={carouselRef}
                 onScroll={handleScroll}
               >
-                <div className="flex min-w-full snap-center flex-col items-center justify-center gap-2 md:flex-row md:px-12">
+                <motion.div
+                  animate={{
+                    opacity: dashboardCarouselScroll,
+                  }}
+                  transition={{
+                    opacity: { duration: 0.7, delay: 0.1 },
+                  }}
+                  className="flex min-w-full snap-center flex-col items-center justify-center gap-2 md:flex-row md:px-12"
+                >
                   <div className="flex h-fit w-full justify-center md:justify-end">
                     <div className="relative h-[136px] w-[220px]">
                       <Image
@@ -180,7 +193,7 @@ const TheDrop: FC = () => {
                   <IconHeroiconsArrowRight className="hidden shrink-0 md:flex" />
                   <IconHeroiconsArrowDown className="shrink-0 md:hidden" />
                   <div className="relative flex w-full items-center justify-center overflow-visible md:justify-start">
-                    <div className="relative h-[208px] w-[220px] sm:h-[286px] sm:w-[300px]">
+                    <div className="relative h-[286px] w-[300px]">
                       <Image
                         src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/payment%20improved.png"
                         alt="updated payments section"
@@ -190,9 +203,15 @@ const TheDrop: FC = () => {
                       />
                     </div>
                   </div>
-                </div>
+                </motion.div>
 
-                <div className="flex min-w-full snap-center flex-col items-center justify-center gap-2 md:flex-row md:px-12">
+                <motion.div
+                  animate={{ opacity: 1 - dashboardCarouselScroll }}
+                  transition={{
+                    opacity: { duration: 0.7, delay: 0.1 },
+                  }}
+                  className="flex min-w-full snap-center flex-col items-center justify-center gap-2 md:flex-row md:px-12"
+                >
                   <div className="relative h-[258px] w-[220px] sm:h-[286px] sm:w-[240px]">
                     <Image
                       src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/drop%20original.png"
@@ -216,15 +235,15 @@ const TheDrop: FC = () => {
                       />
                     </div>
                   </div>
-                </div>
+                </motion.div>
               </div>
 
               <div className="absolute bottom-8 flex h-[28px] w-fit gap-2 rounded-full bg-black bg-opacity-70 px-4 py-3">
                 <div
-                  className={`h-1 rounded-full bg-white transition-all duration-700 ease-out ${dashboardCarouselPos === 0 ? "w-8" : "w-1"}`}
+                  className={`h-1 rounded-full bg-white transition-all duration-700 ease-out ${dashboardCarouselCard === 0 ? "w-8" : "w-1"}`}
                 ></div>
                 <div
-                  className={`h-1 rounded-full bg-white transition-all duration-700 ease-out ${dashboardCarouselPos === 0 ? "w-1" : "w-8"}`}
+                  className={`h-1 rounded-full bg-white transition-all duration-700 ease-out ${dashboardCarouselCard === 0 ? "w-1" : "w-8"}`}
                 ></div>
               </div>
             </div>
@@ -232,7 +251,7 @@ const TheDrop: FC = () => {
               <span className="absolute top-8 font-bold uppercase tracking-widest text-black">
                 IMPROVEMENTS
               </span>
-              {dashboardCarouselPos === 0 ? (
+              {dashboardCarouselCard === 0 ? (
                 <div className="flex flex-col gap-4">
                   <div className="flex gap-4">
                     <div className="flex h-6 w-6 shrink-0 items-center justify-center bg-black">
@@ -353,7 +372,7 @@ const TheDrop: FC = () => {
           </div>
 
           <div className="no-scrollbar w-full overflow-x-scroll py-4">
-            <div className="flex h-full w-fit items-center gap-8">
+            <div className="flex h-full w-fit items-center gap-8 pl-[1px] pr-2">
               <Highlight
                 type="image"
                 src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/email%20catcher.png"

@@ -21,7 +21,7 @@ const Main: FC<PortfolioProps> = (props: PortfolioProps): JSX.Element => {
     setTimeout(() => {
       setHideLoader(true);
     }, 260);
-  }, []);
+  }, [props.page]);
 
   const handleUpdatePage = (newPage: number) => {
     setPage(newPage);
