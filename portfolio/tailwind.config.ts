@@ -24,6 +24,9 @@ const config: Config = {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      transitionProperty: {
+        spacing: "margin, padding",
+      },
     },
   },
   // eslint-disable-next-line @typescript-eslint/no-require-imports
