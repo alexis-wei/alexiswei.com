@@ -6,13 +6,14 @@
 // biome-ignore lint: disable
 export {}
 declare global {
-  const IconBasilTwitterOutline: typeof import('~icons/basil/twitter-outline.jsx')['default']
-  const IconBiSubstack: typeof import('~icons/bi/substack.jsx')['default']
-  const IconFeGithub: typeof import('~icons/fe/github.jsx')['default']
+  const IconBasilTwitterOutline: (typeof import("~icons/basil/twitter-outline.jsx"))["default"]
+  const IconBiSubstack: (typeof import("~icons/bi/substack.jsx"))["default"]
+  const IconFeGithub: (typeof import("~icons/fe/github.jsx"))["default"]
   const IconHeroiconsArrowDown: typeof import('~icons/heroicons/arrow-down.jsx')['default']
-  const IconHeroiconsArrowLeft: typeof import('~icons/heroicons/arrow-left.jsx')['default']
+  const IconHeroiconsArrowLeft: (typeof import("~icons/heroicons/arrow-left.jsx"))["default"]
   const IconHeroiconsArrowRight: typeof import('~icons/heroicons/arrow-right.jsx')['default']
-  const IconHeroiconsCalendar: typeof import('~icons/heroicons/calendar.jsx')['default']
-  const IconHeroiconsEnvelope: typeof import('~icons/heroicons/envelope.jsx')['default']
-  const IconHeroiconsRightArrow: typeof import('~icons/heroicons/right-arrow.jsx')['default']
+  const IconHeroiconsCalendar: (typeof import("~icons/heroicons/calendar.jsx"))["default"]
+  const IconHeroiconsEnvelope: (typeof import("~icons/heroicons/envelope.jsx"))["default"]
+  const IconHeroiconsHome: typeof import('~icons/heroicons/home.jsx')['default']
+  const IconHeroiconsRightArrow: (typeof import("~icons/heroicons/right-arrow.jsx"))["default"]
 }

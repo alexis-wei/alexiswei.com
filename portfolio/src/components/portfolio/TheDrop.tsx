@@ -160,7 +160,7 @@ const TheDrop: FC = () => {
             </p>
           </div>
           <div className="flex h-full min-w-full grow snap-center flex-col items-center justify-center border-4 border-[#FFD218] lg:h-[520px] lg:flex-row">
-            <div className="relative flex h-full w-full items-center justify-center bg-[#FFD218] px-8 py-24 lg:w-[680px]">
+            <div className="relative flex h-full w-full items-center justify-center bg-[#FFD218] px-8 py-[88px] lg:w-[680px]">
               <span className="absolute top-8 font-bold uppercase tracking-widest text-black">
                 ELEMENT
               </span>
@@ -247,7 +247,7 @@ const TheDrop: FC = () => {
                 ></div>
               </div>
             </div>
-            <div className="relative flex h-full w-full flex-col items-center justify-center px-8 pb-16 pt-24">
+            <div className="relative flex h-full w-full flex-col items-center justify-center px-8 pb-16 pt-[88px]">
               <span className="absolute top-8 font-bold uppercase tracking-widest text-black">
                 IMPROVEMENTS
               </span>
@@ -261,8 +261,8 @@ const TheDrop: FC = () => {
                     </div>
                     <div className="max-w-96 border border-black bg-white p-4 shadow-[-6px_6px_0px_#FFD218]">
                       <p className="text-xs md:text-sm">
-                        clear account balance shown directly on dashboard
-                        instead of redirecting to Stripe
+                        increased visibility of earnings—viewable directly on
+                        dashboard instead of needing to find through Stripe
                       </p>
                     </div>
                   </div>
@@ -274,8 +274,8 @@ const TheDrop: FC = () => {
                     </div>
                     <div className="max-w-96 border border-black bg-white p-4 shadow-[-6px_6px_0px_#FFD218]">
                       <p className="text-xs md:text-sm">
-                        info banner after sellers were confused about payout
-                        delays
+                        staying more informed—info banner for unexpected rules
+                        and delays
                       </p>
                     </div>
                   </div>
@@ -287,8 +287,8 @@ const TheDrop: FC = () => {
                     </div>
                     <div className="max-w-96 border border-black bg-white p-4 shadow-[-6px_6px_0px_#FFD218]">
                       <p className="text-xs md:text-sm">
-                        directly able to get payout on seller side instead of
-                        needing to be triggered from our end
+                        provided more control to sellers—allowing a manual
+                        payout process
                       </p>
                     </div>
                   </div>
@@ -303,8 +303,8 @@ const TheDrop: FC = () => {
                     </div>
                     <div className="max-w-96 border border-black bg-white p-4 shadow-[-6px_6px_0px_#FFD218]">
                       <p className="text-xs md:text-sm">
-                        ability to add new drop directly from dashboard instead
-                        of having to contact us to add it manually
+                        instantly create new drops—directly from dashboard
+                        instead of through The Drop team
                       </p>
                     </div>
                   </div>
@@ -316,8 +316,8 @@ const TheDrop: FC = () => {
                     </div>
                     <div className="max-w-96 border border-black bg-white p-4 shadow-[-6px_6px_0px_#FFD218]">
                       <p className="text-xs md:text-sm">
-                        all drops viewable rather than just information about
-                        the singel latest drop set up
+                        multiple drops—allowing sellers to see history and plan
+                        ahead for the future rather than a single drop at a time
                       </p>
                     </div>
                   </div>
@@ -329,8 +329,8 @@ const TheDrop: FC = () => {
                     </div>
                     <div className="max-w-96 border border-black bg-white p-4 shadow-[-6px_6px_0px_#FFD218]">
                       <p className="text-xs md:text-sm">
-                        image preview so sellers can tell what items have
-                        already been uploaded, differentiating between drops
+                        item preview—improves upload process,know your progress
+                        and prevents duplication
                       </p>
                     </div>
                   </div>
