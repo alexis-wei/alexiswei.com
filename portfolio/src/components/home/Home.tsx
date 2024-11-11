@@ -91,7 +91,9 @@ const Home = () => {
           className="w-6 text-stone-400"
           variant="ghost"
           size="icon"
-          onClick={() => window.open("mailto:hi@alexiswei.com", "_blank")}
+          onClick={() =>
+            window.open("mailto:alexisw.contact@gmail.com", "_blank")
+          }
         >
           <IconHeroiconsEnvelope />
         </Button>
