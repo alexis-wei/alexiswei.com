@@ -47,7 +47,6 @@ const TheDrop: FC = () => {
 
     const transitionVal = (slideWidth * 2) / 5;
     const opacity = calculateOpacity(slideWidth, transitionVal, scrollLeft);
-    console.log("opacity:", opacity);
     setDashboardCarouselScroll(opacity);
 
     setDashboardCarouselCard(currentCard);
