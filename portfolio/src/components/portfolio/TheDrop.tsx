@@ -8,7 +8,7 @@ import Header, { HeaderProps } from "./Header";
 const TheDrop: FC = () => {
   const containerRef = useRef(null);
   const carouselRef = useRef<HTMLDivElement>(null);
-  const [dashboardCarouselCard, setDashboardCarouselCard] = useState(1);
+  const [dashboardCarouselCard, setDashboardCarouselCard] = useState(0);
   const [dashboardCarouselScroll, setDashboardCarouselScroll] = useState(1);
 
   const customListClass =
