@@ -11,11 +11,11 @@ interface PortfolioProps {
 }
 
 const Main: FC<PortfolioProps> = (props: PortfolioProps): JSX.Element => {
-  let [page, updatePage] = useState(1);
+  const [page, updatePage] = useState(1);
   const router = useRouter();
 
   useEffect(() => {
-    page = props.page;
+    updatePage(props.page);
   }, []);
 
   const handleUpdatePage = (newPage: number) => {
