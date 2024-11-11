@@ -80,39 +80,42 @@ const TheDrop: FC = () => {
             These points acted as primary building blocks during design
           </p>
         </motion.div>
-        <div className="max-w-dvw relative flex h-full w-full justify-between overflow-hidden lg:max-w-[1000px]">
-          <div className="absolute left-0 top-0 z-10 h-full w-1/6 bg-gradient-to-r from-white to-transparent"></div>
-          <div className="absolute right-0 top-0 z-10 h-full w-1/6 bg-gradient-to-l from-white to-transparent"></div>
-          <div className="flex w-full shrink-0 items-center gap-8 overflow-x-scroll px-[14dvw] lg:max-w-[1000px]">
+
+        <div className="no-scrollbar w-full overflow-x-scroll">
+          <div className="flex h-full w-fit items-center gap-8">
             <Highlight
               type="image"
               src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/landing-collage.png"
-              description="created a fun graphic putting together sellers that our team
-                admires, the kind of creatives we hope to attract to our platform"
+              subheading="creative graphics"
+              description="fill with sellers that our team
+                  admires, the kind of creatives we hope to attract to our platform"
               alt="collage"
             />
             <Highlight
               type="video"
               src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/first-video.mp4"
+              subheading="focused landing"
               description="immediate clear focus on vintage sellers who want to sell from
-                their social media"
+                  their social media"
               alt="landing page first screen"
             />
             <Highlight
               type="image"
               src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/sticky.png"
+              subheading="considerate CTA"
               description="button sticky on bottom for constant visibility and reminder"
               alt="sticky button on bottom desc"
             />
             <Highlight
               type="video"
               src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/drop%20countdown.mp4"
-              description="active countdown showcasing the same excitement that your buyers
-                would have during a drop moment"
+              subheading="fun animation"
+              description="active countdown showcasing bringing the energy and excitment of a drop"
               alt="landing page first screen"
             />
           </div>
         </div>
+
         <div className="flex w-full flex-col justify-center gap-8">
           <div className="flex w-full flex-col items-start gap-4">
             <div className="flex w-full flex-col items-start gap-1">
@@ -241,26 +244,28 @@ const TheDrop: FC = () => {
               </ul>
             </div>
           </div>
-          <div className="max-w-dvw relative flex h-full w-full justify-between overflow-hidden lg:max-w-[1000px]">
-            <div className="absolute left-0 top-0 z-10 h-full w-1/6 bg-gradient-to-r from-white to-transparent"></div>
-            <div className="absolute right-0 top-0 z-10 h-full w-1/6 bg-gradient-to-l from-white to-transparent"></div>
-            <div className="flex w-full shrink-0 items-center gap-8 overflow-x-scroll px-[10dvw] lg:max-w-[1000px]">
+
+          <div className="no-scrollbar w-full overflow-x-scroll">
+            <div className="flex h-full w-fit items-center gap-8">
               <Highlight
                 type="image"
                 src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/email%20catcher.png"
-                description="worked so surprisingly well, unexpectedly our best performing feature"
+                subheading="email catcher"
+                description="helping sellers build an audience automatically, unexpectedly our best performing feature"
                 alt="email catcher"
               />
               <Highlight
                 type="video"
                 src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/discover-short.mp4"
-                description="with a goal for buyers to discover other similar sellers and see if there was the possiblity of cross pollination"
+                subheading="discovery page"
+                description="testing out the possiblity of cross pollination through discovery similar sellers"
                 alt="discover page"
               />
               <Highlight
                 type="video"
                 src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/transition.mp4"
-                description="initial transition on store load for a smooth entry experience"
+                subheading="entry transition"
+                description="on store load for a smooth experience"
                 alt="landing page first screen"
               />
             </div>

@@ -33,9 +33,9 @@ export interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
   return (
-    <div className="flex h-full w-full max-w-[dvw] grow flex-col items-center gap-8">
+    <div className="flex h-fit w-full max-w-[dvw] grow flex-col items-center gap-8">
       <div
-        className="flex h-[50dvw] min-h-72 w-full grow items-center justify-center"
+        className="flex h-[50dvw] min-h-72 w-full items-center justify-center md:h-96"
         style={{ backgroundColor: props.bgColor }}
       >
         <div className="relative h-16 w-16">
