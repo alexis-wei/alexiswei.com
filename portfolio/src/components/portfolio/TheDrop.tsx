@@ -9,7 +9,7 @@ const TheDrop: FC = () => {
   const containerRef = useRef(null);
 
   const customListClass =
-    "text-sm before:inline-block before:pr-1 before:align-top before:text-[16px] before:content-['•']";
+    "text-sm before:inline-block before:pr-1 before:align-top before:text-[16px] before:content-['•'] md:text-base";
 
   // const { scrollYProgress } = useScroll({
   //   target: containerRef,
@@ -30,8 +30,10 @@ const TheDrop: FC = () => {
     category: "0   →   1 product",
     title: "the drop",
     bgColor: "#FFD218",
-    summary:
-      "I started working on the drop when it was just a basic MVP figma prototype with 0 lines of code. Over the next 3 months, my co-founders and I built out the platform, onboarded 20+ sellers, conducted >$30k of transactions on our platform and was a part of the microsoft startup program. As the sole designer & engineer, my work consisted of landing pages, seller dashboards, component design, and anything you can think of, truly bring the product to life from 0 → 1",
+    summary: `I started working on the drop when it was a basic figma prototype. 
+    I designed and built out the platform over the next 3 months. We onboarded 20+ sellers, 
+    conducted >$30k of transactions and was a part of the microsoft startup program. My work consisted of landing pages, 
+    seller dashboards, component design, and anything you can think of, bring the product from 0 → 1`,
     about:
       "a video based shoppable link in bio – think simplified shopify made for sellers on social media",
     focus: [
@@ -56,7 +58,7 @@ const TheDrop: FC = () => {
         <motion.div className="flex w-full flex-col items-start gap-4">
           <div className="flex w-full flex-col items-start gap-1">
             <h4>landing page</h4>
-            <p className="text-sm">key messaging: </p>
+            <p className="text-sm md:text-base">key messaging: </p>
             <ul className="ml-1 flex list-inside list-none flex-col gap-0.5">
               <li className={`${customListClass} before:pr-2`}>
                 fun, energetic and lively
@@ -72,64 +74,67 @@ const TheDrop: FC = () => {
               </li>
             </ul>
           </div>
-          <p className="max-w-[600px] text-sm">
+          <p className="max-w-[600px] text-sm md:text-base">
             this is ultimately a page for the sellers, to convince them to join
             and choose “the drop” as their platform and link in bio of choice.
             These points acted as primary building blocks during design
           </p>
         </motion.div>
-        <div className="max-w-dvw relative flex h-full w-full justify-between overflow-hidden lg:max-w-[1000px]">
-          <div className="absolute left-0 top-0 z-10 h-full w-1/6 bg-gradient-to-r from-white to-transparent"></div>
-          <div className="absolute right-0 top-0 z-10 h-full w-1/6 bg-gradient-to-l from-white to-transparent"></div>
-          <div className="flex w-full shrink-0 items-center gap-8 overflow-x-scroll px-[14dvw] lg:max-w-[1000px]">
+
+        <div className="no-scrollbar w-full overflow-x-scroll">
+          <div className="flex h-full w-fit items-center gap-8">
             <Highlight
               type="image"
               src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/landing-collage.png"
-              description="created a fun graphic putting together sellers that our team
-                admires, the kind of creatives we hope to attract to our platform"
+              subheading="creative graphics"
+              description="fill with sellers that our team
+                  admires, the kind of creatives we hope to attract to our platform"
               alt="collage"
             />
             <Highlight
               type="video"
               src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/first-video.mp4"
+              subheading="focused landing"
               description="immediate clear focus on vintage sellers who want to sell from
-                their social media"
+                  their social media"
               alt="landing page first screen"
             />
             <Highlight
               type="image"
               src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/sticky.png"
+              subheading="considerate CTA"
               description="button sticky on bottom for constant visibility and reminder"
               alt="sticky button on bottom desc"
             />
             <Highlight
               type="video"
               src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/drop%20countdown.mp4"
-              description="active countdown showcasing the same excitement that your buyers
-                would have during a drop moment"
+              subheading="fun animation"
+              description="active countdown showcasing bringing the energy and excitment of a drop"
               alt="landing page first screen"
             />
           </div>
         </div>
+
         <div className="flex w-full flex-col justify-center gap-8">
           <div className="flex w-full flex-col items-start gap-4">
             <div className="flex w-full flex-col items-start gap-1">
               <h4>seller dashboard</h4>
-              <p className="max-w-[600px] text-sm">
+              <p className="max-w-[600px] text-sm md:text-base">
                 not something particularly sexy, but something we know sellers
                 have to interact with on a daily basis to track what’s going on.
                 The two key design goals were to be <u>clear</u> and{" "}
                 <u>informative</u>.
               </p>
             </div>
-            <p className="max-w-[600px] text-sm">
+            <p className="max-w-[600px] text-sm md:text-base">
               this started off extremely scrappy with bare minimum features at
               launch, but is a place where we actively listened to client
               feedback to understand what they needed for it to work well for
               them. The v0 we started with vs. 2 months later was truly night
               and day.
             </p>
-            <p className="max-w-[600px] text-sm">
+            <p className="max-w-[600px] text-sm md:text-base">
               the dashboard actually prioritized a desktop first format since
               sellers were more comfortable dealing with payments and tracking
               logistics through their laptops. We were really able to shine here
@@ -212,7 +217,7 @@ const TheDrop: FC = () => {
           <div className="flex w-full flex-col items-start gap-4">
             <div className="flex w-full flex-col items-start gap-1">
               <h4>storefront</h4>
-              <p className="max-w-[600px] text-sm">
+              <p className="max-w-[600px] text-sm md:text-base">
                 beyond having a UX with good media load speed and a simple
                 checkout process, this is the place where we experimented the
                 most with UI—knowing with each new store and drop, we had a new
@@ -220,7 +225,9 @@ const TheDrop: FC = () => {
               </p>
             </div>
             <div className="flex w-full flex-col items-start gap-1">
-              <p className="text-sm">some ideas that we played with: </p>
+              <p className="text-sm md:text-base">
+                some ideas that we played with:{" "}
+              </p>
               <ul className="ml-1 flex list-inside list-none flex-col gap-0.5">
                 <li className={`${customListClass} before:pr-2`}>
                   email catcher
@@ -237,26 +244,28 @@ const TheDrop: FC = () => {
               </ul>
             </div>
           </div>
-          <div className="max-w-dvw relative flex h-full w-full justify-between overflow-hidden lg:max-w-[1000px]">
-            <div className="absolute left-0 top-0 z-10 h-full w-1/6 bg-gradient-to-r from-white to-transparent"></div>
-            <div className="absolute right-0 top-0 z-10 h-full w-1/6 bg-gradient-to-l from-white to-transparent"></div>
-            <div className="flex w-full shrink-0 items-center gap-8 overflow-x-scroll px-[10dvw] lg:max-w-[1000px]">
+
+          <div className="no-scrollbar w-full overflow-x-scroll">
+            <div className="flex h-full w-fit items-center gap-8">
               <Highlight
                 type="image"
                 src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/email%20catcher.png"
-                description="worked so surprisingly well, unexpectedly our best performing feature"
+                subheading="email catcher"
+                description="helping sellers build an audience automatically, unexpectedly our best performing feature"
                 alt="email catcher"
               />
               <Highlight
                 type="video"
                 src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/discover-short.mp4"
-                description="with a goal for buyers to discover other similar sellers and see if there was the possiblity of cross pollination"
+                subheading="discovery page"
+                description="testing out the possiblity of cross pollination through discovery similar sellers"
                 alt="discover page"
               />
               <Highlight
                 type="video"
                 src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/transition.mp4"
-                description="initial transition on store load for a smooth entry experience"
+                subheading="entry transition"
+                description="on store load for a smooth experience"
                 alt="landing page first screen"
               />
             </div>

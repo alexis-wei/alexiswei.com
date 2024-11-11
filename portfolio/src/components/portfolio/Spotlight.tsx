@@ -37,7 +37,7 @@ const Spotlight: FC = () => {
           <div className="flex w-full flex-col items-start gap-1">
             <h4>conceptualization</h4>
             <div className="flex flex-col gap-4">
-              <p className="max-w-[600px] text-sm">
+              <p className="max-w-[600px] text-sm md:text-base">
                 as an engineer, what you often care the most about are the tools
                 you are building with and who you are building for. Keeping in
                 mind that with each hackathon, there&apos;s a different focus,
@@ -45,13 +45,13 @@ const Spotlight: FC = () => {
                 interests, it&apos;s key to keep the core concept relevant, but
                 showcases the differences.
               </p>
-              <p className="max-w-[600px] text-sm">
+              <p className="max-w-[600px] text-sm md:text-base">
                 zooming into this idea of <u>focus</u>, what better way is there
                 to put attention on something than to shine a literal spotlight
                 over them? They are the star, the topic of discussion, and what
                 the audience is here for.
               </p>
-              <p className="max-w-[600px] text-sm">
+              <p className="max-w-[600px] text-sm md:text-base">
                 the idea and name of &quot;spotlight&quot; stood out. simple yet
                 customizable for each event
               </p>
@@ -71,17 +71,23 @@ const Spotlight: FC = () => {
                   />
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-sm font-semibold">press start 2p</span>
-                  <span className="text-sm text-stone-600">regular</span>
-                  <span className="text-sm text-stone-600">uppercase -7%</span>
+                  <span className="text-sm font-semibold md:text-base">
+                    press start 2p
+                  </span>
+                  <span className="text-sm text-stone-600 md:text-base">
+                    regular
+                  </span>
+                  <span className="text-sm text-stone-600 md:text-base">
+                    uppercase -7%
+                  </span>
                 </div>
               </div>
               <div className="flex flex-col gap-4">
-                <p className="max-w-[600px] text-sm">
+                <p className="max-w-[600px] text-sm md:text-base">
                   press start 2p was chosen as the title font— it is a bitmap
                   font inspired by 1980s arcade games.
                 </p>
-                <p className="max-w-[600px] text-sm">
+                <p className="max-w-[600px] text-sm md:text-base">
                   I wanted this series of hackathons to be more than just a
                   place to try out new technology. hackathons are spaces to
                   combine technology and community, to meet new people and bond
@@ -96,22 +102,22 @@ const Spotlight: FC = () => {
         <div className="flex w-full flex-col items-center gap-8 md:gap-4">
           <div className="flex w-full flex-col items-start gap-1">
             <h4>final assets</h4>
-            <p className="max-w-[600px] text-sm">
+            <p className="max-w-[600px] text-sm md:text-base">
               branding + hackathon #1 — focused on consumer technology on AI
               models on embedded devices.
             </p>
           </div>
-          <div className="flex max-w-[1220px] flex-col items-center justify-center gap-4 overflow-visible lg:px-20">
+          <div className="flex flex-col items-center justify-center gap-4 overflow-visible">
             <motion.div
               initial={{ x: -240 }}
               whileInView={{ x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 1, ease: "easeInOut", delay: 0.2 }}
-              className="flex w-full flex-wrap items-center justify-center gap-4"
+              className="flex w-fit flex-wrap items-center justify-center gap-4"
             >
-              <div className="flex w-[90dvw] flex-col items-center justify-center gap-2 border border-stone-300 p-4 shadow-md md:w-fit">
+              <div className="flex flex-col items-center justify-center gap-4 border border-stone-300 p-4 shadow-md md:w-fit">
                 <div className="flex w-full gap-2 md:w-fit">
-                  <div className="relative aspect-square w-full md:w-60">
+                  <div className="relative aspect-square w-full md:min-w-[240px]">
                     <Image
                       src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/spotlight/sponsor_announce_meta.jpg"
                       fill
@@ -120,7 +126,7 @@ const Spotlight: FC = () => {
                       className="object-fit"
                     />
                   </div>
-                  <div className="relative aspect-square w-full md:w-60">
+                  <div className="relative aspect-square w-full md:min-w-[240px]">
                     <Image
                       src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/spotlight/sponsor_announce_hugging_face.jpg"
                       fill
@@ -129,7 +135,7 @@ const Spotlight: FC = () => {
                       className="object-fit"
                     />
                   </div>
-                  <div className="relative aspect-square w-full md:w-60">
+                  <div className="relative aspect-square w-full md:min-w-[240px]">
                     <Image
                       src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/spotlight/sponsor_announce_scaleway.jpg"
                       fill
@@ -139,12 +145,12 @@ const Spotlight: FC = () => {
                     />
                   </div>
                 </div>
-                <p className="text-xs text-stone-500">
+                <p className="text-xs text-stone-500 md:text-sm">
                   sponsor announcement posts
                 </p>
               </div>
-              <div className="flex w-[90dvw] max-w-[280px] grow flex-col items-center justify-center gap-2 border border-stone-300 p-4 shadow-md sm:w-fit">
-                <div className="relative aspect-square w-full sm:w-60">
+              <div className="flex flex-col items-center justify-center gap-4 border border-stone-300 p-4 shadow-md sm:w-fit">
+                <div className="relative aspect-square w-full sm:w-[240px]">
                   <Image
                     src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/spotlight/announcement_v2.jpg"
                     fill
@@ -153,7 +159,9 @@ const Spotlight: FC = () => {
                     className="object-fit"
                   />
                 </div>
-                <p className="text-xs text-stone-500">announcement v2</p>
+                <p className="text-xs text-stone-500 md:text-sm">
+                  announcement v2
+                </p>
               </div>
             </motion.div>
             <motion.div
@@ -163,7 +171,7 @@ const Spotlight: FC = () => {
               transition={{ duration: 1, ease: "easeInOut", delay: 0.2 }}
               className="flex w-full flex-wrap items-center justify-center gap-4"
             >
-              <div className="flex w-[90dvw] max-w-[320px] flex-col items-center justify-center gap-2 border border-stone-300 p-4 shadow-md sm:w-fit">
+              <div className="flex w-[90dvw] max-w-[320px] flex-col items-center justify-center gap-4 border border-stone-300 p-4 shadow-md sm:w-fit">
                 <div className="relative aspect-[7/10] h-[393px] w-auto">
                   <Image
                     src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/spotlight/sticker_sheet.jpg"
@@ -173,9 +181,11 @@ const Spotlight: FC = () => {
                     className="object-fit"
                   />
                 </div>
-                <p className="text-xs text-stone-500">sticker sheet</p>
+                <p className="text-xs text-stone-500 md:text-sm">
+                  sticker sheet
+                </p>
               </div>
-              <div className="flex w-[90dvw] flex-col items-center justify-center gap-2 border border-stone-300 p-4 shadow-md md:w-fit">
+              <div className="flex w-[90dvw] flex-col items-center justify-center gap-4 border border-stone-300 p-4 shadow-md md:w-fit">
                 <div className="relative aspect-video h-auto w-full md:h-[393px] md:w-fit">
                   <Image
                     src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/spotlight/horizontal.jpg"
@@ -185,7 +195,7 @@ const Spotlight: FC = () => {
                     className="object-fit"
                   />
                 </div>
-                <p className="text-xs text-stone-500">
+                <p className="text-xs text-stone-500 md:text-sm">
                   horizontal banner for social media
                 </p>
               </div>

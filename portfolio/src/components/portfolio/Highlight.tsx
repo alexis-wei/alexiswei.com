@@ -3,10 +3,12 @@
 import { motion } from "framer-motion";
 
 import { FC, useEffect, useRef, useState } from "react";
+import Image from "next/image";
 
 interface HighlightProps {
   src: string;
   alt: string;
+  subheading: string;
   description: string;
   type: "image" | "video";
 }
@@ -31,9 +33,9 @@ const Highlight: FC<HighlightProps> = (props: HighlightProps) => {
 
   if (!isClient && props.type === "video") {
     return (
-      <motion.div className="flex h-fit w-72 shrink-0 flex-col items-center gap-2 rounded-xl p-5 shadow">
-        <div className="h-[424px] w-[220px] animate-pulse rounded-3xl bg-stone-100"></div>
-        <p className="text-center text-xs text-stone-600">
+      <motion.div className="flex h-[520px] w-[320px] shrink-0 flex-col items-center gap-4 p-5 shadow">
+        <div className="h-[388px] w-[220px] animate-pulse rounded-3xl bg-stone-100"></div>
+        <p className="text-center text-xs text-stone-600 md:text-sm">
           {props.description}
         </p>
       </motion.div>
@@ -42,16 +44,23 @@ const Highlight: FC<HighlightProps> = (props: HighlightProps) => {
 
   return (
     <motion.div
-      className="flex h-fit w-72 shrink-0 flex-col items-center gap-2 rounded-xl p-5 shadow"
+      className="flex h-[520px] w-[320px] shrink-0 flex-col items-center gap-4 bg-white p-5 shadow"
       // style={{ scale: scale }}
       ref={divRef}
     >
       {props.type === "image" ? (
-        <img src={props.src} alt={props.alt} className="h-auto w-[220px]" />
+        <div className="relative h-[440px] w-full">
+          <Image
+            src={props.src}
+            alt={props.alt}
+            sizes="440px"
+            fill
+            className="object-contain"
+          />
+        </div>
       ) : (
         <video
-          width="220"
-          height="auto"
+          className="h-[388px] w-auto object-contain"
           ref={videoRef}
           playsInline
           muted
@@ -63,7 +72,10 @@ const Highlight: FC<HighlightProps> = (props: HighlightProps) => {
         </video>
       )}
 
-      <p className="text-center text-xs text-stone-600">{props.description}</p>
+      <p className="h-fit grow-0 text-center text-xs text-stone-600 md:text-sm">
+        <b>{props.subheading}: </b>
+        {props.description}
+      </p>
     </motion.div>
   );
 };
