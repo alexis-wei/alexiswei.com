@@ -33,7 +33,7 @@ const TheDrop: FC = () => {
     title: "the drop",
     bgColor: "#FFD218",
     summary: `I started working on the drop when it was a basic figma prototype. 
-    I designed and built out the platform over the next 3 months. We onboarded 20+ sellers, 
+    I designed & built out the platform over the next 3 months. We onboarded 20+ sellers, 
     conducted >$30k of transactions and was a part of the microsoft startup program. My work consisted of landing pages, 
     seller dashboards, component design, and anything you can think of, bring the product from 0 → 1`,
     about:
@@ -165,7 +165,7 @@ const TheDrop: FC = () => {
                 ref={carouselRef}
                 onScroll={handleScroll}
               >
-                <div className="flex min-w-full snap-center flex-col items-center justify-center gap-2 px-12 md:flex-row">
+                <div className="flex min-w-full snap-center flex-col items-center justify-center gap-2 md:flex-row md:px-12">
                   <div className="flex h-fit w-full justify-center md:justify-end">
                     <div className="relative h-[136px] w-[220px]">
                       <Image
@@ -173,47 +173,46 @@ const TheDrop: FC = () => {
                         alt="origin payments section"
                         sizes="220px"
                         fill
-                        className="object-fit"
+                        className="object-contain"
                       />
                     </div>
                   </div>
                   <IconHeroiconsArrowRight className="hidden shrink-0 md:flex" />
                   <IconHeroiconsArrowDown className="shrink-0 md:hidden" />
-                  <div className="relative flex w-fit items-center justify-center overflow-visible md:justify-start">
+                  <div className="relative flex w-full items-center justify-center overflow-visible md:justify-start">
                     <div className="relative h-[208px] w-[220px] sm:h-[286px] sm:w-[300px]">
                       <Image
                         src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/payment%20improved.png"
                         alt="updated payments section"
                         sizes="300px"
                         fill
-                        className="object-fit"
+                        className="object-contain"
                       />
                     </div>
                   </div>
                 </div>
 
-                <div className="flex min-w-full snap-center flex-col items-center justify-center gap-2 px-12 md:flex-row">
-                  <div className="w-fit">
-                    <div className="relative h-[258px] w-[220px]">
-                      <Image
-                        src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/drop%20original.png"
-                        alt="original drops section"
-                        sizes="220px"
-                        fill
-                        className="object-fit"
-                      />
-                    </div>
+                <div className="flex min-w-full snap-center flex-col items-center justify-center gap-2 md:flex-row md:px-12">
+                  <div className="relative h-[258px] w-[220px] sm:h-[286px] sm:w-[240px]">
+                    <Image
+                      src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/drop%20original.png"
+                      alt="original drops section"
+                      sizes="220px"
+                      fill
+                      className="object-contain"
+                    />
                   </div>
+
                   <IconHeroiconsArrowRight className="hidden shrink-0 md:flex" />
                   <IconHeroiconsArrowDown className="shrink-0 md:hidden" />
                   <div className="w-fit">
-                    <div className="relative h-[258px] w-[220px]">
+                    <div className="relative h-[258px] w-[220px] sm:h-[286px] sm:w-[240px]">
                       <Image
                         src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/drops_improved.png"
                         alt="updated drops section"
                         sizes="220px"
                         fill
-                        className="object-fit"
+                        className="object-contain"
                       />
                     </div>
                   </div>
