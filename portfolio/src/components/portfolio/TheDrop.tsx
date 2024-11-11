@@ -81,7 +81,7 @@ const TheDrop: FC = () => {
           </p>
         </motion.div>
 
-        <div className="no-scrollbar w-full overflow-x-scroll">
+        <div className="no-scrollbar w-full overflow-x-scroll py-4">
           <div className="flex h-full w-fit items-center gap-8">
             <Highlight
               type="image"
@@ -250,7 +250,7 @@ const TheDrop: FC = () => {
             </div>
           </div>
 
-          <div className="no-scrollbar w-full overflow-x-scroll">
+          <div className="no-scrollbar w-full overflow-x-scroll py-4">
             <div className="flex h-full w-fit items-center gap-8">
               <Highlight
                 type="image"
