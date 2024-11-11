@@ -7,6 +7,7 @@ import Header, { HeaderProps } from "./Header";
 
 const TheDrop: FC = () => {
   const containerRef = useRef(null);
+  const carouselRef = useRef<HTMLDivElement>(null);
   const [dashboardCarouselPos, setDashboardCarouselPos] = useState(1);
 
   const customListClass =
@@ -46,6 +47,16 @@ const TheDrop: FC = () => {
     role: "a bit of everything",
     timeline: "3 months",
     projectType: "mobile web app",
+  };
+
+  const handleScroll = () => {
+    if (!carouselRef.current) return;
+
+    const scrollLeft = carouselRef.current.scrollLeft;
+    const slideWidth = carouselRef.current.clientWidth;
+
+    const currentSlide = Math.round(scrollLeft / slideWidth);
+    setDashboardCarouselPos(currentSlide);
   };
 
   return (
@@ -144,12 +155,17 @@ const TheDrop: FC = () => {
             </p>
           </div>
           <div className="flex h-full min-w-full grow snap-center flex-col items-center justify-center border-4 border-[#FFD218] lg:h-[540px] lg:flex-row">
-            <div className="relative flex h-full w-full flex-col items-center justify-center bg-[#FFD218] px-8 py-24 lg:w-[680px]">
+            <div className="relative flex h-full w-full items-center justify-center bg-[#FFD218] px-8 py-24 lg:w-[680px]">
               <span className="absolute top-8 font-bold uppercase tracking-widest text-black">
                 ELEMENT
               </span>
-              {dashboardCarouselPos === 0 ? (
-                <div className="flex flex-col items-center justify-center gap-2 px-20 md:flex-row">
+
+              <div
+                className="no-scrollbar relative flex snap-x snap-mandatory flex-row overflow-scroll"
+                ref={carouselRef}
+                onScroll={handleScroll}
+              >
+                <div className="flex min-w-full snap-center flex-col items-center justify-center gap-2 px-12 md:flex-row">
                   <div className="flex h-fit w-full justify-center md:justify-end">
                     <div className="relative h-[136px] w-[220px]">
                       <Image
@@ -175,8 +191,8 @@ const TheDrop: FC = () => {
                     </div>
                   </div>
                 </div>
-              ) : (
-                <div className="flex flex-col items-center justify-center gap-2 px-20 md:flex-row">
+
+                <div className="flex min-w-full snap-center flex-col items-center justify-center gap-2 px-12 md:flex-row">
                   <div className="w-fit">
                     <div className="relative h-[258px] w-[220px]">
                       <Image
@@ -202,10 +218,15 @@ const TheDrop: FC = () => {
                     </div>
                   </div>
                 </div>
-              )}
+              </div>
+
               <div className="absolute bottom-8 flex h-[28px] w-fit gap-2 rounded-full bg-black bg-opacity-70 px-4 py-3">
-                <div className="h-1 w-8 rounded-full bg-white"></div>
-                <div className="h-1 w-1 rounded-full bg-white"></div>
+                <div
+                  className={`h-1 rounded-full bg-white transition-all duration-700 ease-out ${dashboardCarouselPos === 0 ? "w-8" : "w-1"}`}
+                ></div>
+                <div
+                  className={`h-1 rounded-full bg-white transition-all duration-700 ease-out ${dashboardCarouselPos === 0 ? "w-1" : "w-8"}`}
+                ></div>
               </div>
             </div>
             <div className="relative flex h-full w-full flex-col items-center justify-center px-8 pb-16 pt-24">
