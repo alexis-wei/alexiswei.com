@@ -142,44 +142,48 @@ const TheDrop: FC = () => {
               easy to navigate.
             </p>
           </div>
-          <div className="flex w-full snap-x snap-mandatory overflow-x-auto pb-12">
-            <div className="flex min-w-full grow snap-center flex-col items-center justify-center gap-2 px-4 md:flex-row">
-              <div className="flex h-fit w-full justify-center md:justify-end">
-                <div className="relative h-[136px] w-[220px]">
-                  <Image
-                    src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/payment%20original.png"
-                    alt="origin payments section"
-                    sizes="220px"
-                    fill
-                    className="object-fit"
-                  />
+          <div className="no-scrollbar flex w-full snap-x snap-mandatory overflow-x-auto pb-12">
+            <div className="flex min-w-full grow snap-center flex-col items-center justify-center gap-6 px-4 md:flex-row md:gap-10">
+              <div className="flex flex-col items-center justify-center gap-2 md:flex-row">
+                <div className="flex h-fit w-full justify-center md:justify-end">
+                  <div className="relative h-[136px] w-[220px]">
+                    <Image
+                      src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/payment%20original.png"
+                      alt="origin payments section"
+                      sizes="220px"
+                      fill
+                      className="object-fit"
+                    />
+                  </div>
+                </div>
+                <IconHeroiconsArrowRight className="hidden shrink-0 md:flex" />
+                <IconHeroiconsArrowDown className="shrink-0 md:hidden" />
+                <div className="relative flex w-fit items-center justify-center overflow-visible md:justify-start">
+                  <div className="relative h-[208px] w-[220px] sm:h-[286px] sm:w-[300px]">
+                    <Image
+                      src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/payment%20improved.png"
+                      alt="updated payments section"
+                      sizes="300px"
+                      fill
+                      className="object-fit"
+                    />
+                  </div>
                 </div>
               </div>
-              <IconHeroiconsArrowRight className="hidden shrink-0 md:flex" />
-              <IconHeroiconsArrowDown className="shrink-0 md:hidden" />
-              <div className="relative flex w-full items-center justify-center overflow-visible md:justify-start">
-                <div className="relative h-[208px] w-[220px] sm:h-[286px] sm:w-[300px]">
-                  <Image
-                    src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/payment%20improved.png"
-                    alt="updated payments section"
-                    sizes="300px"
-                    fill
-                    className="object-fit"
-                  />
-                </div>
-                <div className="absolute w-[168px] -translate-y-[76px] translate-x-[88px] rounded bg-[#FEF8E8] px-3 py-2 shadow sm:-translate-y-[100px] sm:translate-x-[84px] md:translate-x-[164px]">
-                  <p className="text-xxs">
+              <div className="flex max-w-96 flex-col gap-4">
+                <div className="bg-[#ffe680] p-4 shadow shadow-[#FFD218]">
+                  <p className="text-xs font-medium md:text-sm">
                     clear account balance shown directly on dashboard instead of
                     redirecting to Stripe
                   </p>
                 </div>
-                <div className="absolute w-[130px] -translate-y-[8px] translate-x-[120px] rounded bg-[#FEF8E8] px-3 py-2 shadow sm:translate-x-[170px] sm:translate-y-[50px] md:translate-x-[260px]">
-                  <p className="text-xxs">
+                <div className="bg-[#ffe680] p-4 shadow shadow-[#FFD218]">
+                  <p className="text-xs font-medium md:text-sm">
                     info banner after sellers were confused about payout delays
                   </p>
                 </div>
-                <div className="absolute w-[220px] -translate-x-[40px] translate-y-[128px] rounded bg-[#FEF8E8] px-3 py-2 shadow sm:-translate-x-[124px] sm:translate-y-[160px] md:-translate-x-[40px]">
-                  <p className="text-xxs">
+                <div className="bg-[#ffe680] p-4 shadow shadow-[#FFD218]">
+                  <p className="text-xs font-medium md:text-sm">
                     directly able to get payout on seller side instead of
                     needing to be triggered from our end
                   </p>
@@ -198,7 +202,8 @@ const TheDrop: FC = () => {
                   />
                 </div>
               </div>
-              <IconHeroiconsArrowRight />
+              <IconHeroiconsArrowRight className="hidden shrink-0 md:flex" />
+              <IconHeroiconsArrowDown className="shrink-0 md:hidden" />
               <div className="w-fit">
                 <div className="relative h-[258px] w-[220px]">
                   <Image
