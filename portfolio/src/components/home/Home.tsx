@@ -48,13 +48,9 @@ const Home = () => {
       setIsTransitioning(true);
       setTimeout(() => {
         setIsTransitioning(false);
-      }, 800);
+      }, 700);
     } else if (scrollDir === "up" && yValue === 0) {
-      setYValue(window.innerHeight + 10);
-      setIsTransitioning(true);
-      setTimeout(() => {
-        setIsTransitioning(false);
-      }, 800);
+      hideAbout();
     }
   };
 
@@ -63,9 +59,10 @@ const Home = () => {
   };
 
   useEffect(() => {
-    setYValue(window.innerHeight + 10);
+    hideAbout();
 
     const handleResize = () => {
+      console.log("resize being called");
       if (yValue !== 0) setYValue(window.innerHeight + 10);
     };
     window.addEventListener("resize", handleResize);
@@ -74,6 +71,14 @@ const Home = () => {
     };
   }, []);
 
+  const hideAbout = () => {
+    setYValue(window.innerHeight + 10);
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setIsTransitioning(false);
+    }, 700);
+  };
+
   return (
     <div
       className="max-w-dvw fixed flex max-h-dvh flex-col items-start overflow-hidden"
@@ -81,7 +86,7 @@ const Home = () => {
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
     >
-      <div className="flex h-dvh w-dvw shrink-0 flex-col items-stretch justify-between p-9 transition-all duration-700 fade-out sm:flex-row">
+      <div className="flex h-dvh w-dvw shrink-0 flex-col items-start justify-between p-9 transition-all duration-700 fade-out sm:flex-row">
         <MovingGradient color={color} />
         <div className="flex h-full w-full flex-col gap-2.5 text-stone-900">
           <div className="flex flex-col gap-0.5">
@@ -180,10 +185,10 @@ const Home = () => {
       </div>
 
       <div
-        className="absolute flex h-dvh w-dvw shrink-0 flex-col items-center justify-between bg-black p-9 text-white transition-all duration-700 fade-out"
+        className="absolute flex h-dvh w-dvw shrink-0 flex-row items-stretch justify-start gap-6 bg-black p-9 text-white transition-all duration-700 fade-out"
         style={{ top: yValue }}
       >
-        <div className="flex w-full flex-col gap-1">
+        <div className="flex w-full flex-col justify-start gap-1">
           <div className="flex items-baseline gap-1">
             <p className="text-lg font-medium leading-none tracking-tighter">
               hi, i&apos;m
@@ -209,6 +214,14 @@ const Home = () => {
             </p>
           </div>
         </div>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="text-white"
+          onClick={() => hideAbout()}
+        >
+          <IconHeroiconsXMark className="text-white" />
+        </Button>
       </div>
     </div>
   );
