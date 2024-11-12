@@ -15,7 +15,7 @@ const Spotlight: FC = () => {
     summary: `a partnership with Entrepreneur First, a leading global accelerator,
       to create brand designs for a series of hackathons to run throughout the year.
       I got to develop the designs from scratch, from the name of the event & logo
-      to social media posts & merch ideas. With a goal for this to be a series to
+      to social media posts & merch ideas, with a goal for this to be a series to
       be remembered in the european technology startup space.`,
     about:
       "a series of hackathons hosted by Entrepreneur First, each with a different theme (hardware, consumer, gaming, etc)",
@@ -48,7 +48,7 @@ const Spotlight: FC = () => {
               <p className="max-w-[600px] text-sm md:text-base">
                 zooming into this idea of <u>focus</u>, what better way is there
                 to put attention on something than to shine a literal spotlight
-                over them? They are the star, the topic of discussion, and what
+                over them? they are the star, the topic of discussion, and what
                 the audience is here for.
               </p>
               <p className="max-w-[600px] text-sm md:text-base">
@@ -84,7 +84,7 @@ const Spotlight: FC = () => {
               </div>
               <div className="flex flex-col gap-4">
                 <p className="max-w-[600px] text-sm md:text-base">
-                  press start 2p was chosen as the title font— it is a bitmap
+                  press start 2p was chosen as the title font—it is a bitmap
                   font inspired by 1980s arcade games.
                 </p>
                 <p className="max-w-[600px] text-sm md:text-base">
