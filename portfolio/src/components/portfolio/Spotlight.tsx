@@ -115,7 +115,7 @@ const Spotlight: FC = () => {
               transition={{ duration: 1, ease: "easeInOut", delay: 0.2 }}
               className="flex w-fit flex-wrap items-center justify-center gap-4"
             >
-              <div className="flex flex-col items-center justify-center gap-4 border border-stone-300 p-4 shadow-md md:w-fit">
+              <div className="flex w-full flex-col items-center justify-center gap-4 border border-stone-300 p-4 shadow-md md:w-fit">
                 <div className="flex w-full gap-2 md:w-fit">
                   <div className="relative aspect-square w-full md:min-w-[240px]">
                     <Image
@@ -149,7 +149,7 @@ const Spotlight: FC = () => {
                   sponsor announcement posts
                 </p>
               </div>
-              <div className="flex flex-col items-center justify-center gap-4 border border-stone-300 p-4 shadow-md sm:w-fit">
+              <div className="flex w-full flex-col items-center justify-center gap-4 border border-stone-300 p-4 shadow-md sm:w-fit">
                 <div className="relative aspect-square w-full sm:w-[240px]">
                   <Image
                     src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/spotlight/announcement_v2.jpg"
