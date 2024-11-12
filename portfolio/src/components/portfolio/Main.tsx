@@ -60,24 +60,36 @@ const Main: FC<PortfolioProps> = (props: PortfolioProps): JSX.Element => {
         {portfolioPages[props.page].component}
         <div className="flex w-full flex-col items-center gap-4">
           <div className="flex w-full justify-between px-4 sm:px-8">
-            <Button
-              variant="ghost"
-              className={`${props.page <= 0 && "disabled invisible"}`}
-              onClick={() => handleUpdatePage(props.page - 1)}
-            >
-              &#171; &nbsp;{" "}
-              {props.page === 0 ? "" : portfolioPages[props.page - 1].name}
-            </Button>
-            <Button
-              variant="ghost"
-              className={`${props.page === portfolioPages.length - 1 && "disabled invisible"}`}
-              onClick={() => handleUpdatePage(props.page + 1)}
-            >
-              {props.page >= portfolioPages.length - 1
-                ? ""
-                : portfolioPages[props.page + 1].name}{" "}
-              &nbsp; &#187;
-            </Button>
+            {props.page <= 0 ? (
+              <Button
+                variant="ghost"
+                onClick={() => handleUpdatePage(portfolioPages.length - 1)}
+              >
+                &#171; &nbsp; {portfolioPages[portfolioPages.length - 1].name}
+              </Button>
+            ) : (
+              <Button
+                variant="ghost"
+                onClick={() => handleUpdatePage(props.page - 1)}
+              >
+                &#171; &nbsp; {portfolioPages[props.page - 1].name}
+              </Button>
+            )}
+
+            {props.page >= portfolioPages.length - 1 ? (
+              <Button variant="ghost" onClick={() => handleUpdatePage(0)}>
+                {portfolioPages[0].name}
+                &nbsp; &#187;
+              </Button>
+            ) : (
+              <Button
+                variant="ghost"
+                onClick={() => handleUpdatePage(props.page + 1)}
+              >
+                {portfolioPages[props.page + 1].name}
+                &nbsp; &#187;
+              </Button>
+            )}
           </div>
           <span className="pb-8 text-sm italic">
             love from,{" "}
