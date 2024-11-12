@@ -15,7 +15,7 @@ const Spotlight: FC = () => {
     summary: `a partnership with Entrepreneur First, a leading global accelerator,
       to create brand designs for a series of hackathons to run throughout the year.
       I got to develop the designs from scratch, from the name of the event & logo
-      to social media posts & merch ideas. with a goal for this to be a series to
+      to social media posts & merch ideas, with a goal for this to be a series to
       be remembered in the european technology startup space.`,
     about:
       "a series of hackathons hosted by Entrepreneur First, each with a different theme (hardware, consumer, gaming, etc)",
