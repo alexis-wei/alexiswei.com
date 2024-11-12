@@ -13,6 +13,7 @@ const Home = () => {
 
   const [color, setColor] = useState(white);
   const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [isTransitioning, setIsTransitioning] = useState<boolean>(false);
   const router = useRouter();
   const aboutY = useMotionValue(4000);
 
@@ -39,10 +40,22 @@ const Home = () => {
   };
 
   const updateAboutY = (scrollDir: "up" | "down") => {
+    if (isTransitioning) {
+      return;
+    }
+
     if (scrollDir === "down" && aboutY.get() !== 0) {
       aboutY.set(0);
+      setIsTransitioning(true);
+      setTimeout(() => {
+        setIsTransitioning(false);
+      }, 800);
     } else if (scrollDir === "up" && aboutY.get() === 0) {
       aboutY.set(window.innerHeight);
+      setIsTransitioning(true);
+      setTimeout(() => {
+        setIsTransitioning(false);
+      }, 800);
     }
   };
 
@@ -169,7 +182,7 @@ const Home = () => {
 
       <motion.div
         style={{ y: aboutY }}
-        transition={{ duration: 1 }}
+        transition={{ duration: 0.8 }}
         className="absolute flex h-dvh w-dvw shrink-0 flex-col items-center justify-between bg-black p-9 text-white transition-all duration-700 fade-out"
       >
         <div className="flex w-full flex-col gap-1">
