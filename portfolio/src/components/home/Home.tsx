@@ -3,7 +3,6 @@ import { useRouter } from "next/navigation";
 import { Button } from "../ui/button";
 import MovingGradient from "./MovingGradient";
 import { useEffect, useState } from "react";
-import { motion, useMotionValue } from "framer-motion";
 
 const Home = () => {
   const white = "#ffffff";
@@ -14,8 +13,8 @@ const Home = () => {
   const [color, setColor] = useState(white);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [isTransitioning, setIsTransitioning] = useState<boolean>(false);
+  const [yValue, setYValue] = useState<number>(4000);
   const router = useRouter();
-  const aboutY = useMotionValue(4000);
 
   const changeColor = (color: string) => {
     setColor(color);
@@ -44,14 +43,14 @@ const Home = () => {
       return;
     }
 
-    if (scrollDir === "down" && aboutY.get() !== 0) {
-      aboutY.set(0);
+    if (scrollDir === "down" && yValue !== 0) {
+      setYValue(0);
       setIsTransitioning(true);
       setTimeout(() => {
         setIsTransitioning(false);
       }, 800);
-    } else if (scrollDir === "up" && aboutY.get() === 0) {
-      aboutY.set(window.innerHeight);
+    } else if (scrollDir === "up" && yValue === 0) {
+      setYValue(window.innerHeight + 10);
       setIsTransitioning(true);
       setTimeout(() => {
         setIsTransitioning(false);
@@ -64,10 +63,10 @@ const Home = () => {
   };
 
   useEffect(() => {
-    aboutY.set(window.innerHeight);
+    setYValue(window.innerHeight + 10);
 
     const handleResize = () => {
-      if (aboutY.get() !== 0) aboutY.set(window.innerHeight);
+      if (yValue !== 0) setYValue(window.innerHeight + 10);
     };
     window.addEventListener("resize", handleResize);
     return () => {
@@ -77,7 +76,7 @@ const Home = () => {
 
   return (
     <div
-      className="max-w-dvw relative flex max-h-dvh flex-col items-start overflow-hidden"
+      className="max-w-dvw fixed flex max-h-dvh flex-col items-start overflow-hidden"
       onWheel={handleWheel}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
@@ -180,10 +179,9 @@ const Home = () => {
         </div>
       </div>
 
-      <motion.div
-        style={{ y: aboutY }}
-        transition={{ duration: 0.8 }}
+      <div
         className="absolute flex h-dvh w-dvw shrink-0 flex-col items-center justify-between bg-black p-9 text-white transition-all duration-700 fade-out"
+        style={{ top: yValue }}
       >
         <div className="flex w-full flex-col gap-1">
           <div className="flex items-baseline gap-1">
@@ -211,7 +209,7 @@ const Home = () => {
             </p>
           </div>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 };
