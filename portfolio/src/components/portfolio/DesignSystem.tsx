@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "../ui/button";
 import Header, { HeaderProps } from "./Header";
 
 const designSystemHeaderProps: HeaderProps = {
@@ -26,8 +27,21 @@ const designSystemHeaderProps: HeaderProps = {
 
 const DesignSystem = () => {
   return (
-    <div className="flex w-dvw flex-col items-start p-5">
+    <div className="flex w-dvw flex-col items-center gap-4 p-5 lg:gap-8">
       <Header {...designSystemHeaderProps} />
+      <div className="flex w-full max-w-[1200px] grow justify-end">
+        <Button
+          variant="outline"
+          className="rounded-none font-serif font-bold shadow-md hover:border-stone-600 hover:bg-[#E7E5E4] hover:shadow-none"
+          onClick={() => {
+            window.open(
+              "https://www.figma.com/design/mLZNKHrAKzrj7CFIGPLLGl/alexiswei.com-design-system?node-id=0-1&t=IwQpGyGOaysVkZgq-1",
+            );
+          }}
+        >
+          enter figma &#x21D7;
+        </Button>
+      </div>
     </div>
   );
 };
