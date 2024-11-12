@@ -1,11 +1,10 @@
 "use client";
 
-import { FC, useEffect, useState } from "react";
+import { FC } from "react";
 import TheDrop from "./TheDrop";
 import Spotlight from "./Spotlight";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
-import classes from "@/lib/global.module.css";
 import DesignSystem from "./DesignSystem";
 
 interface PortfolioProps {
@@ -24,14 +23,7 @@ const portfolioPages: PortfolioPage[] = [
 ];
 
 const Main: FC<PortfolioProps> = (props: PortfolioProps): JSX.Element => {
-  const [hideLoader, setHideLoader] = useState(false);
   const router = useRouter();
-
-  useEffect(() => {
-    setTimeout(() => {
-      setHideLoader(true);
-    }, 260);
-  }, []);
 
   const handleUpdatePage = (newPage: number) => {
     router.push(`/portfolio?page=${newPage}`);
