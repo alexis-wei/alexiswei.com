@@ -11,7 +11,7 @@ const designSystemHeaderProps: HeaderProps = {
   bgColor: "#E7E5E4",
   summary: `a company, brand or product cannot exist without its guiding principles and the bits and pieces that make up the greater picture. 
           this is an exploration to document, build and learn best practices while sharing a bit about my background processes. 
-          i'll also be showing a bit of my inner dialogue, things that inspire me, and how i think through design.`,
+          i'll be showing a bit of my inner dialogue, things that inspire me, and how i think through design.`,
   about:
     "personalized design system encompassing components and thoughts that created [alexiswei.com]",
   focus: [
