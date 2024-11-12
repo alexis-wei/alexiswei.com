@@ -21,7 +21,7 @@ const TheDrop: FC = () => {
     title: "the drop",
     bgColor: "#FFD218",
     summary: `I started working on the drop when it was a basic figma prototype. 
-    I designed & built out the platform over the next 3 months. We onboarded 20+ sellers, 
+    I designed & built out the platform over the next 3 months. we onboarded 20+ sellers, 
     conducted >$30k of transactions and was a part of the microsoft startup program. my work consisted of landing pages, 
     seller dashboards, component design, and anything you can think of, bring the product from 0 → 1`,
     about:
