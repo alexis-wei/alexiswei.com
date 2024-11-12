@@ -12,6 +12,7 @@ const Home = () => {
   const green = "#d8f5a2";
 
   const [color, setColor] = useState(white);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
   const router = useRouter();
   const aboutY = useMotionValue(4000);
 
@@ -25,13 +26,28 @@ const Home = () => {
 
   const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
     const scrollDirection = e.deltaY > 0 ? "down" : "up";
-    if (scrollDirection === "down" && aboutY.get() !== 0) {
+    updateAboutY(scrollDirection);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (touchStart === null) return;
+
+    const currentTouch = e.touches[0].clientY;
+    const diff = touchStart - currentTouch;
+    const scrollDirection = diff > 0 ? "down" : "up";
+    updateAboutY(scrollDirection);
+  };
+
+  const updateAboutY = (scrollDir: "up" | "down") => {
+    if (scrollDir === "down" && aboutY.get() !== 0) {
       aboutY.set(0);
-      return;
-    }
-    if (scrollDirection === "up" && aboutY.get() === 0) {
+    } else if (scrollDir === "up" && aboutY.get() === 0) {
       aboutY.set(window.innerHeight);
     }
+  };
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    setTouchStart(e.touches[0].clientY);
   };
 
   useEffect(() => {
@@ -41,13 +57,17 @@ const Home = () => {
       if (aboutY.get() !== 0) aboutY.set(window.innerHeight);
     };
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
   return (
     <div
       className="max-w-dvw relative flex max-h-dvh flex-col items-start overflow-hidden"
       onWheel={handleWheel}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
     >
       <div className="flex h-dvh w-dvw shrink-0 flex-col items-stretch justify-between p-9 transition-all duration-700 fade-out sm:flex-row">
         <MovingGradient color={color} />
