@@ -62,7 +62,6 @@ const Home = () => {
     hideAbout();
 
     const handleResize = () => {
-      console.log("resize being called");
       if (yValue !== 0) setYValue(window.innerHeight + 10);
     };
     window.addEventListener("resize", handleResize);
