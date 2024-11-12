@@ -107,7 +107,7 @@ const Home = () => {
               className={`rounded-none font-serif font-bold shadow-md hover:border-stone-600 hover:bg-[#ffec99] hover:shadow-none`}
               variant="outline"
               onMouseEnter={() => changeColor(yellow)}
-              onClick={() => handleEnterPortfolio(1)}
+              onClick={() => handleEnterPortfolio(0)}
             >
               0 &#x2192; 1 product
             </Button>
@@ -115,7 +115,7 @@ const Home = () => {
               className={`rounded-none font-serif font-bold shadow-md hover:border-stone-600 hover:bg-[#bfe0ff] hover:shadow-none`}
               variant="outline"
               onMouseEnter={() => changeColor(blue)}
-              onClick={() => handleEnterPortfolio(2)}
+              onClick={() => handleEnterPortfolio(1)}
             >
               branding
             </Button>
