@@ -3,7 +3,6 @@ import { useRouter } from "next/navigation";
 import { Button } from "../ui/button";
 import MovingGradient from "./MovingGradient";
 import { useEffect, useState } from "react";
-import { motion, useMotionValue } from "framer-motion";
 
 const Home = () => {
   const white = "#ffffff";
@@ -14,8 +13,8 @@ const Home = () => {
   const [color, setColor] = useState(white);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [isTransitioning, setIsTransitioning] = useState<boolean>(false);
+  const [yValue, setYValue] = useState<number>(4000);
   const router = useRouter();
-  const aboutY = useMotionValue(4000);
 
   const changeColor = (color: string) => {
     setColor(color);
@@ -44,18 +43,14 @@ const Home = () => {
       return;
     }
 
-    if (scrollDir === "down" && aboutY.get() !== 0) {
-      aboutY.set(0);
+    if (scrollDir === "down" && yValue !== 0) {
+      setYValue(0);
       setIsTransitioning(true);
       setTimeout(() => {
         setIsTransitioning(false);
-      }, 800);
-    } else if (scrollDir === "up" && aboutY.get() === 0) {
-      aboutY.set(window.innerHeight);
-      setIsTransitioning(true);
-      setTimeout(() => {
-        setIsTransitioning(false);
-      }, 800);
+      }, 700);
+    } else if (scrollDir === "up" && yValue === 0) {
+      hideAbout();
     }
   };
 
@@ -64,10 +59,11 @@ const Home = () => {
   };
 
   useEffect(() => {
-    aboutY.set(window.innerHeight);
+    hideAbout();
 
     const handleResize = () => {
-      if (aboutY.get() !== 0) aboutY.set(window.innerHeight);
+      console.log("resize being called");
+      if (yValue !== 0) setYValue(window.innerHeight + 10);
     };
     window.addEventListener("resize", handleResize);
     return () => {
@@ -75,14 +71,22 @@ const Home = () => {
     };
   }, []);
 
+  const hideAbout = () => {
+    setYValue(window.innerHeight + 10);
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setIsTransitioning(false);
+    }, 700);
+  };
+
   return (
     <div
-      className="max-w-dvw relative flex max-h-dvh flex-col items-start overflow-hidden"
+      className="max-w-dvw fixed flex max-h-dvh flex-col items-start overflow-hidden"
       onWheel={handleWheel}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
     >
-      <div className="flex h-dvh w-dvw shrink-0 flex-col items-stretch justify-between p-9 transition-all duration-700 fade-out sm:flex-row">
+      <div className="flex h-dvh w-dvw shrink-0 flex-col items-start justify-between p-9 transition-all duration-700 fade-out sm:flex-row">
         <MovingGradient color={color} />
         <div className="flex h-full w-full flex-col gap-2.5 text-stone-900">
           <div className="flex flex-col gap-0.5">
@@ -180,12 +184,11 @@ const Home = () => {
         </div>
       </div>
 
-      <motion.div
-        style={{ y: aboutY }}
-        transition={{ duration: 0.8 }}
-        className="absolute flex h-dvh w-dvw shrink-0 flex-col items-center justify-between bg-black p-9 text-white transition-all duration-700 fade-out"
+      <div
+        className="absolute flex h-dvh w-dvw shrink-0 flex-row gap-6 bg-black p-9 text-white transition-all duration-700 fade-out"
+        style={{ top: yValue }}
       >
-        <div className="flex w-full flex-col gap-1">
+        <div className="flex w-full flex-col justify-start gap-1">
           <div className="flex items-baseline gap-1">
             <p className="text-lg font-medium leading-none tracking-tighter">
               hi, i&apos;m
@@ -211,7 +214,15 @@ const Home = () => {
             </p>
           </div>
         </div>
-      </motion.div>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="absolute right-4 top-4 gap-0 rounded-none text-white [&_svg]:pointer-events-auto [&_svg]:size-6"
+          onClick={() => hideAbout()}
+        >
+          <IconHeroiconsXMark className="h-full w-full text-white" />
+        </Button>
+      </div>
     </div>
   );
 };
