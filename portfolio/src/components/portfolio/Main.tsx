@@ -44,7 +44,7 @@ const Main: FC<PortfolioProps> = (props: PortfolioProps): JSX.Element => {
   return (
     <div className="flex min-h-screen flex-col items-center">
       <div
-        className={`relative flex w-full flex-col items-center transition-opacity duration-300 fade-in fade-out`}
+        className={`relative flex h-full min-h-screen w-full flex-col items-center justify-between transition-opacity duration-300 fade-in fade-out`}
       >
         <Button
           className="absolute left-6 top-8 z-10 flex items-center text-stone-800 hover:font-bold hover:text-stone-950"
@@ -58,36 +58,38 @@ const Main: FC<PortfolioProps> = (props: PortfolioProps): JSX.Element => {
           </span>
         </Button>
         {portfolioPages[props.page].component}
-        <div className="flex w-full justify-between px-4 sm:px-8">
-          <Button
-            variant="ghost"
-            className={`${props.page <= 0 && "disabled invisible"}`}
-            onClick={() => handleUpdatePage(props.page - 1)}
-          >
-            &#171; &nbsp;{" "}
-            {props.page === 0 ? "" : portfolioPages[props.page - 1].name}
-          </Button>
-          <Button
-            variant="ghost"
-            className={`${props.page === portfolioPages.length - 1 && "disabled invisible"}`}
-            onClick={() => handleUpdatePage(props.page + 1)}
-          >
-            {props.page >= portfolioPages.length - 1
-              ? ""
-              : portfolioPages[props.page + 1].name}{" "}
-            &nbsp; &#187;
-          </Button>
+        <div className="flex w-full flex-col items-center gap-4">
+          <div className="flex w-full justify-between px-4 sm:px-8">
+            <Button
+              variant="ghost"
+              className={`${props.page <= 0 && "disabled invisible"}`}
+              onClick={() => handleUpdatePage(props.page - 1)}
+            >
+              &#171; &nbsp;{" "}
+              {props.page === 0 ? "" : portfolioPages[props.page - 1].name}
+            </Button>
+            <Button
+              variant="ghost"
+              className={`${props.page === portfolioPages.length - 1 && "disabled invisible"}`}
+              onClick={() => handleUpdatePage(props.page + 1)}
+            >
+              {props.page >= portfolioPages.length - 1
+                ? ""
+                : portfolioPages[props.page + 1].name}{" "}
+              &nbsp; &#187;
+            </Button>
+          </div>
+          <span className="pb-8 text-sm italic">
+            love from,{" "}
+            <Button
+              variant="ghost"
+              className="px-0 pb-8 text-sm italic"
+              onClick={handleGoHome}
+            >
+              alexis
+            </Button>
+          </span>
         </div>
-        <span className="pb-8 pt-4 text-sm italic">
-          love from,{" "}
-          <Button
-            variant="ghost"
-            className="px-0 pb-8 text-sm italic"
-            onClick={handleGoHome}
-          >
-            alexis
-          </Button>
-        </span>
       </div>
     </div>
   );
