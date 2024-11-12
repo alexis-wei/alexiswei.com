@@ -22,7 +22,7 @@ const TheDrop: FC = () => {
     bgColor: "#FFD218",
     summary: `I started working on the drop when it was a basic figma prototype. 
     I designed & built out the platform over the next 3 months. We onboarded 20+ sellers, 
-    conducted >$30k of transactions and was a part of the microsoft startup program. My work consisted of landing pages, 
+    conducted >$30k of transactions and was a part of the microsoft startup program. my work consisted of landing pages, 
     seller dashboards, component design, and anything you can think of, bring the product from 0 → 1`,
     about:
       "a video based shoppable link in bio – think simplified shopify made for sellers on social media",
@@ -94,7 +94,7 @@ const TheDrop: FC = () => {
           <p className="max-w-[600px] text-sm md:text-base">
             this is ultimately a page for the sellers, to convince them to join
             and choose “the drop” as their platform and link in bio of choice.
-            These points acted as primary building blocks during design
+            these points acted as primary building blocks during design
           </p>
         </motion.div>
 
@@ -140,7 +140,7 @@ const TheDrop: FC = () => {
               <p className="max-w-[600px] text-sm md:text-base">
                 not something particularly sexy, but something we know sellers
                 have to interact with on a daily basis to track what’s going on.
-                The two key design goals were to be <u>clear</u> and{" "}
+                the two key design goals were to be <u>clear</u> and{" "}
                 <u>informative</u>.
               </p>
             </div>
@@ -148,13 +148,13 @@ const TheDrop: FC = () => {
               this started off extremely scrappy with bare minimum features at
               launch, but is a place where we actively listened to client
               feedback to understand what they needed for it to work well for
-              them. The v0 we started with vs. 2 months later was truly night
+              them. the v0 we started with vs. 2 months later was truly night
               and day.
             </p>
             <p className="max-w-[600px] text-sm md:text-base">
               the dashboard actually prioritized a desktop first format since
               sellers were more comfortable dealing with payments and tracking
-              logistics through their laptops. We were really able to shine here
+              logistics through their laptops. we were really able to shine here
               for older audiences who found the platform straight forward and
               easy to navigate.
             </p>
@@ -262,7 +262,7 @@ const TheDrop: FC = () => {
                     <div className="max-w-96 border border-black bg-white p-4 shadow-[-6px_6px_0px_#FFD218]">
                       <p className="text-xs md:text-sm">
                         increased visibility of earnings—viewable directly on
-                        dashboard instead of needing to find through Stripe
+                        dashboard instead of needing to find through stripe
                       </p>
                     </div>
                   </div>
@@ -329,7 +329,7 @@ const TheDrop: FC = () => {
                     </div>
                     <div className="max-w-96 border border-black bg-white p-4 shadow-[-6px_6px_0px_#FFD218]">
                       <p className="text-xs md:text-sm">
-                        item preview—improves upload process,know your progress
+                        item preview—improves upload process, know your progress
                         and prevents duplication
                       </p>
                     </div>
@@ -344,15 +344,15 @@ const TheDrop: FC = () => {
             <div className="flex w-full flex-col items-start gap-1">
               <h4>storefront</h4>
               <p className="max-w-[600px] text-sm md:text-base">
-                beyond having a UX with good media load speed and a simple
+                beyond having a ux with good media load speed and a simple
                 checkout process, this is the place where we experimented the
-                most with UI—knowing with each new store and drop, we had a new
+                most with ui with each new store and drop, we had a new
                 opportunity to test new experiences with fresh eyes.
               </p>
             </div>
             <div className="flex w-full flex-col items-start gap-1">
               <p className="text-sm md:text-base">
-                some ideas that we played with:{" "}
+                some ideas that we played with:
               </p>
               <ul className="ml-1 flex list-inside list-none flex-col gap-0.5">
                 <li className={`${customListClass} before:pr-2`}>
