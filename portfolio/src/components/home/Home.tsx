@@ -185,7 +185,7 @@ const Home = () => {
       </div>
 
       <div
-        className="absolute flex h-dvh w-dvw shrink-0 flex-row items-stretch justify-start gap-6 bg-black p-9 text-white transition-all duration-700 fade-out"
+        className="absolute flex h-dvh w-dvw shrink-0 flex-row gap-6 bg-black p-9 text-white transition-all duration-700 fade-out"
         style={{ top: yValue }}
       >
         <div className="flex w-full flex-col justify-start gap-1">
@@ -217,10 +217,10 @@ const Home = () => {
         <Button
           variant="ghost"
           size="icon"
-          className="text-white"
+          className="absolute right-4 top-4 gap-0 rounded-none text-white [&_svg]:pointer-events-auto [&_svg]:size-6"
           onClick={() => hideAbout()}
         >
-          <IconHeroiconsXMark className="text-white" />
+          <IconHeroiconsXMark className="h-full w-full text-white" />
         </Button>
       </div>
     </div>
