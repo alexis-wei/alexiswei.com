@@ -7,7 +7,7 @@ import { Suspense } from "react";
 function MainDiv() {
   const searchParams = useSearchParams();
 
-  const page = Number(searchParams?.get("page")) || 1;
+  const page = Number(searchParams?.get("page")) || 0;
 
   return <Main page={page} />;
 }
