@@ -39,7 +39,7 @@ const DesignSystem = () => {
             );
           }}
         >
-          enter figma &#x21D7;
+          enter figma <span className="mb-1 p-0 text-2xl">&#x21D7;</span>
         </Button>
       </div>
     </div>
