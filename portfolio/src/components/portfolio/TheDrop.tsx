@@ -98,8 +98,8 @@ const TheDrop: FC = () => {
           </p>
         </motion.div>
 
-        <div className="no-scrollbar w-full overflow-x-scroll py-4">
-          <div className="flex h-full w-fit items-center gap-8 pl-[1px] pr-2">
+        <div className="no-scrollbar w-full overflow-y-hidden overflow-x-scroll py-4">
+          <div className="flex h-full w-fit items-center gap-4 pl-[1px] pr-2">
             <Highlight
               type="image"
               src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/landing-collage.png"
@@ -371,8 +371,8 @@ const TheDrop: FC = () => {
             </div>
           </div>
 
-          <div className="no-scrollbar w-full overflow-x-scroll py-4">
-            <div className="flex h-full w-fit items-center gap-8 pl-[1px] pr-2">
+          <div className="no-scrollbar w-full overflow-y-hidden overflow-x-scroll py-4">
+            <div className="flex h-full w-fit items-center gap-4 pl-[1px] pr-2">
               <Highlight
                 type="image"
                 src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/email%20catcher.png"
