@@ -98,7 +98,7 @@ const TheDrop: FC = () => {
           </p>
         </motion.div>
 
-        <div className="no-scrollbar w-full overflow-y-hidden overflow-x-scroll overscroll-none py-4">
+        <div className="no-scrollbar w-full overflow-y-hidden overflow-x-scroll py-4">
           <div className="flex h-full w-fit items-center gap-4 pl-[1px] pr-2">
             <Highlight
               type="image"
@@ -166,7 +166,7 @@ const TheDrop: FC = () => {
               </span>
 
               <div
-                className="no-scrollbar relative flex snap-x snap-mandatory flex-row overflow-scroll overscroll-none scroll-smooth"
+                className="no-scrollbar relative flex snap-x snap-mandatory flex-row overflow-scroll scroll-smooth"
                 ref={carouselRef}
                 onScroll={handleScroll}
               >
