@@ -184,7 +184,7 @@ const Home = () => {
       </div>
 
       <div
-        className="absolute flex h-dvh w-dvw shrink-0 flex-row gap-6 bg-black p-9 text-white transition-all duration-700 fade-out"
+        className="absolute flex h-dvh w-dvw shrink-0 flex-col justify-between gap-6 bg-black p-9 text-white transition-all duration-700 fade-out"
         style={{ top: yValue }}
       >
         <div className="flex w-full flex-col justify-start gap-1">
@@ -212,6 +212,15 @@ const Home = () => {
               you.
             </p>
           </div>
+        </div>
+        <div className="flex w-full justify-end">
+          <Button
+            variant="ghost"
+            className="text-white hover:font-semibold hover:text-white"
+            onClick={() => router.push("/portfolio")}
+          >
+            see works &#187;
+          </Button>
         </div>
         <Button
           variant="ghost"
