@@ -49,56 +49,66 @@ const Circles: React.FC = () => {
   useAnimationFrame(() => {});
 
   return (
-    <div className="flex h-dvh w-dvw flex-col items-center justify-center gap-8">
-      <div className="flex flex-col items-center gap-2">
-        <svg
-          height="84"
-          viewBox="0 0 204 84"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          onMouseEnter={() => {
-            cancelCurrentAnimationFrame();
-            requestAnimationFrame(() => animateWidth(100, 1));
-          }}
-          onMouseLeave={() => {
-            cancelCurrentAnimationFrame();
-            requestAnimationFrame(() => animateWidth(40, -1));
-          }}
-          className="w-fit grow"
-        >
-          <path
-            id="circle-1"
-            d={`M ${String(102 + xRad)} 42 A ${xRad} 40 0 1 1 ${String(102 + xRad)} 41.999`}
-            stroke="black"
-            strokeWidth={2}
-            fill="none"
-          />
-        </svg>
-        <p className="text-sm">using requestAnimationFrame</p>
+    <div className="flex h-dvh w-dvw flex-col items-center justify-between gap-8 p-5">
+      <div className="flex h-fit w-full flex-col items-start text-black">
+        <h2 className="tracking-tighter">animating svgs</h2>
+        <p className="font-serif text-xs font-bold text-stone-600">15/11/24</p>
+        <p className="max-w-[400px] text-sm tracking-tighter">
+          an exploration of editing raw svgs, comparing techniques between js,
+          Motion (prev. framer motion) and GSAP
+        </p>
       </div>
-
-      <div className="flex flex-col items-center gap-2">
-        <svg
-          height="84"
-          viewBox="0 0 84 84"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          onMouseEnter={() => {
-            cancelCurrentAnimationFrame();
-            requestAnimationFrame(() => animateWidth(100, 1));
-          }}
-          onMouseLeave={() => animateWidth(42, -1)}
-          className="w-fit"
-        >
-          <path
-            id="circle-2"
-            d={`M 82 42 A ${xRad2} 40 0 1 1 82 41.999`}
-            stroke="black"
-            strokeWidth={2}
+      <div className="flex h-full flex-col gap-2">
+        <div className="flex flex-col items-center gap-2">
+          <svg
+            height="84"
+            viewBox="0 0 204 84"
             fill="none"
-          />
-        </svg>
-        <p className="text-sm">using motion useAnimationFrame</p>
+            xmlns="http://www.w3.org/2000/svg"
+            onMouseEnter={() => {
+              cancelCurrentAnimationFrame();
+              requestAnimationFrame(() => animateWidth(100, 1));
+            }}
+            onMouseLeave={() => {
+              cancelCurrentAnimationFrame();
+              requestAnimationFrame(() => animateWidth(40, -1));
+            }}
+            className="w-fit grow"
+          >
+            <path
+              id="circle-1"
+              d={`M ${String(102 + xRad)} 42 A ${xRad} 40 0 1 1 ${String(102 + xRad)} 41.999`}
+              stroke="black"
+              strokeWidth={2}
+              fill="none"
+            />
+          </svg>
+          <p className="text-sm">using requestAnimationFrame</p>
+        </div>
+
+        <div className="flex flex-col items-center gap-2">
+          <svg
+            height="84"
+            viewBox="0 0 84 84"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            onMouseEnter={() => {
+              cancelCurrentAnimationFrame();
+              requestAnimationFrame(() => animateWidth(100, 1));
+            }}
+            onMouseLeave={() => animateWidth(42, -1)}
+            className="w-fit"
+          >
+            <path
+              id="circle-2"
+              d={`M 82 42 A ${xRad2} 40 0 1 1 82 41.999`}
+              stroke="black"
+              strokeWidth={2}
+              fill="none"
+            />
+          </svg>
+          <p className="text-sm">using motion useAnimationFrame</p>
+        </div>
       </div>
     </div>
   );
