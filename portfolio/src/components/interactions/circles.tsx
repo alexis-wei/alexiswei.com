@@ -53,19 +53,22 @@ const Circles: React.FC = () => {
       <div className="flex flex-col items-center gap-2">
         <svg
           height="84"
-          viewBox="0 0 204 100"
+          viewBox="0 0 204 84"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
           onMouseEnter={() => {
             cancelCurrentAnimationFrame();
             requestAnimationFrame(() => animateWidth(100, 1));
           }}
-          onMouseLeave={() => animateWidth(40, -1)}
+          onMouseLeave={() => {
+            cancelCurrentAnimationFrame();
+            requestAnimationFrame(() => animateWidth(40, -1));
+          }}
           className="w-fit grow"
         >
           <path
             id="circle-1"
-            d={`M ${String(102 + xRad + 1)} 42 A ${xRad} 40 0 1 1 ${String(102 + xRad + 1)} 41.999`}
+            d={`M ${String(102 + xRad)} 42 A ${xRad} 40 0 1 1 ${String(102 + xRad)} 41.999`}
             stroke="black"
             strokeWidth={2}
             fill="none"
