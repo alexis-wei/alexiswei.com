@@ -1,7 +1,7 @@
-import Circles from "@/components/interactions/circles";
+import Main from "@/components/interactions/00-animating-svgs/Main";
 
 const Interactions = () => {
-  return <Circles />;
+  return <Main />;
 };
 
 export default Interactions;
