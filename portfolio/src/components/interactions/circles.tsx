@@ -58,7 +58,7 @@ const Circles: React.FC = () => {
           Motion (prev. framer motion) and GSAP
         </p>
       </div>
-      <div className="flex h-full flex-col gap-2">
+      <div className="flex h-full flex-col gap-6">
         <div className="flex flex-col items-center gap-2">
           <svg
             height="84"
@@ -83,7 +83,9 @@ const Circles: React.FC = () => {
               fill="none"
             />
           </svg>
-          <p className="text-sm">using requestAnimationFrame</p>
+          <p className="text-sm">
+            using <span className="font-mono">requestAnimationFrame</span>
+          </p>
         </div>
 
         <div className="flex flex-col items-center gap-2">

@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans, Libre_Baskerville } from "next/font/google";
+import {
+  Plus_Jakarta_Sans,
+  Libre_Baskerville,
+  IBM_Plex_Mono,
+} from "next/font/google";
 import "./globals.css";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -17,6 +21,14 @@ const libreBaskerville = Libre_Baskerville({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-libre-baskerville",
+});
+
+const ibmPlexMono = IBM_Plex_Mono({
+  weight: ["400", "600", "700"],
+  style: ["italic", "normal"],
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-ibm-plex-mono",
 });
 
 export const metadata: Metadata = {
@@ -48,7 +60,7 @@ export default function RootLayout({
       <meta name="apple-mobile-web-app-title" content="alexiswei" />
       <link rel="manifest" href="/site.webmanifest" />
       <body
-        className={`${plusJakartaSans.variable} ${libreBaskerville.variable} antialiased`}
+        className={`${plusJakartaSans.variable} ${libreBaskerville.variable} ${ibmPlexMono.variable} antialiased`}
       >
         {children}
       </body>
