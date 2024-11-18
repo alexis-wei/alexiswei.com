@@ -1,0 +1,16 @@
+.circle-css {
+  transform: scale(1, 0.5);
+  transition: transform 2s;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1, 0.5);
+  }
+  50% {
+    transform: scale(1.2, 0.6);
+  }
+  100% {
+    transform: scale(1, 0.5);
+  }
+}

@@ -15,6 +15,7 @@ const config: Config = {
       fontFamily: {
         sans: ["var(--font-plus-jakarta-sans)", "Inter", "Helvetica"],
         serif: ["var(--font-libre-baskerville)"],
+        mono: ["var(--font-ibm-plex-mono)"],
       },
       colors: {
         black: "#1f1f1f",

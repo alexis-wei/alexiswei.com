@@ -8,10 +8,10 @@ export default function Custom404() {
     <div className="flex h-dvh w-dvw items-center justify-center">
       <div className="flex max-w-[280px] grow flex-col gap-4 p-4">
         <div className="w-full items-start">
-          <h2>a little lost?</h2>
+          <h6>a little lost?</h6>
         </div>
         <div className="w-full items-end text-end">
-          <h2>don&apos;t worry, i got you</h2>
+          <h6>don&apos;t worry, i got you</h6>
         </div>
         <div className="w-full items-start pt-4">
           <Button
