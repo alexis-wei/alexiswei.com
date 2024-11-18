@@ -23,6 +23,7 @@ const UseAnimationFrame = () => {
       }
     }
   });
+
   return (
     <div className="flex flex-col items-center gap-2">
       <svg
@@ -32,7 +33,7 @@ const UseAnimationFrame = () => {
         xmlns="http://www.w3.org/2000/svg"
         onMouseEnter={() => setAnimationState("grow")}
         onMouseLeave={() => setAnimationState("shrink")}
-        className="w-fit"
+        className="w-fit cursor-pointer"
       >
         <path
           id="circle-2"
