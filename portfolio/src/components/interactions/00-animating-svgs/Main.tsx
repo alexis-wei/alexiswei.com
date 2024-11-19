@@ -11,8 +11,9 @@ const Main: React.FC = () => {
         <h2 className="leading-none tracking-tighter">animating svgs</h2>
         <p className="font-serif text-xs font-bold text-stone-600">11/15/24</p>
         <p className="max-w-[400px] text-sm tracking-tighter">
-          an exploration of editing raw svgs, comparing techniques between js
-          and Motion (prev. framer motion)
+          an exploration of editing raw svgs, comparing techniques between js &
+          Motion (prev. framer motion) and testing out unique svg attributes
+          that allow for animations
         </p>
       </div>
       <div className="flex w-full max-w-[800px] flex-col items-start gap-12">
@@ -23,13 +24,15 @@ const Main: React.FC = () => {
             <RequestAnimationFrame />
             <UseAnimationFrame />
           </div>
-          <p className="text-sm">
-            getting the same simple effect of expand on hover, where using{" "}
+          <p className="w-full text-sm">
+            while getting the same simple effect of expand on hover, where using{" "}
             <code>useAnimationFrame</code> about halves the amount of logic that
-            needs to go into the code. However it is something that gets called
-            on every single frame render and something that doesn't appear to
-            have a way of stopping after component mount, and ticks off that
-            little worry in my head on possible performance hit.
+            needs to go into the code. however <code>useAnimationFrame</code>{" "}
+            ends up being a hook that gets called on every single frame render
+            and something that doesn't appear to have a way of stopping after
+            component mount. that lowkey ticks off a little worry in my head on
+            possible performance hit. so although quite convenient, wouldn't be
+            my go-to without thinking about it more
           </p>
         </div>
         <div className="flex w-full flex-col items-start justify-start gap-4">
