@@ -43,8 +43,15 @@ const UseAnimationFrame = () => {
           fill="none"
         />
       </svg>
-      <p className="text-sm">
-        using motion <span className="font-mono">useAnimationFrame</span>
+      <p className="max-w-72 text-center text-sm">
+        using{" "}
+        <a
+          href="https://motion.dev/docs/react-use-animation-frame"
+          target="_blank"
+          className="hover:underline"
+        >
+          motion <code>useAnimationFrame</code>
+        </a>
       </p>
     </div>
   );
