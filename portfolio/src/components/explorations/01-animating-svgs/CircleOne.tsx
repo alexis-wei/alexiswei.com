@@ -12,7 +12,7 @@ const CircleOne = () => {
   });
 
   return (
-    <div className="flex items-start justify-start gap-8 border px-8 py-6">
+    <div className="flex h-24 max-w-60 items-center justify-start gap-6 border px-6 py-3">
       <svg
         height="44"
         viewBox="0 0 44 44"
@@ -30,7 +30,9 @@ const CircleOne = () => {
           fill="none"
         />
       </svg>
-      <p className="w-20 text-wrap text-xs">possible loader animation</p>
+      <p className="w-full text-xs">
+        changing <code>strokeDashArray</code> to animate through the svg itself
+      </p>
     </div>
   );
 };

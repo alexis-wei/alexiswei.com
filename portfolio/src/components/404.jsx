@@ -16,7 +16,7 @@ export default function Custom404() {
         <div className="w-full items-start pt-4">
           <Button
             variant="outline"
-            className="rounded-none font-serif font-bold shadow-md hover:border-stone-600 hover:bg-[#ffec99] hover:shadow-none"
+            className="font-serif font-bold hover:bg-[#ffec99]"
             onClick={() => {
               router.push("/");
             }}

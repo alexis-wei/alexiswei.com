@@ -24,7 +24,7 @@ const libreBaskerville = Libre_Baskerville({
 });
 
 const ibmPlexMono = IBM_Plex_Mono({
-  weight: ["400", "600", "700"],
+  weight: ["400", "500", "600", "700"],
   style: ["italic", "normal"],
   subsets: ["latin"],
   display: "swap",

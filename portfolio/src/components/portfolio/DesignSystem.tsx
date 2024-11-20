@@ -32,7 +32,7 @@ const DesignSystem = () => {
       <div className="flex w-full max-w-[1200px] grow justify-end">
         <Button
           variant="outline"
-          className="rounded-none font-serif font-bold shadow-md hover:border-stone-600 hover:bg-[#E7E5E4] hover:shadow-none"
+          className="font-serif font-bold hover:bg-[#E7E5E4]"
           onClick={() => {
             window.open(
               "https://www.figma.com/design/mLZNKHrAKzrj7CFIGPLLGl/alexiswei.com-design-system?node-id=0-1&t=IwQpGyGOaysVkZgq-1",

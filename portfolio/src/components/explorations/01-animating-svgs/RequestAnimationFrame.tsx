@@ -68,8 +68,16 @@ const RequestAnimationFrame: React.FC = () => {
           fill="none"
         />
       </svg>
-      <p className="text-sm">
-        using <span className="font-mono">requestAnimationFrame</span>
+      <p className="max-w-72 text-center text-sm">
+        using{" "}
+        <a
+          href="https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame"
+          target="_blank"
+          className="hover:underline"
+        >
+          <code>requestAnimationFrame</code>
+        </a>
+        , a part of the standard <code>js</code> library
       </p>
     </div>
   );
