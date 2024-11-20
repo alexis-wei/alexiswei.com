@@ -1,7 +1,7 @@
-import Main from "@/components/explorations/01-animating-svgs/index";
+import ExplorationsHome from "@/components/explorations";
 
 const Explorations = () => {
-  return <Main />;
+  return <ExplorationsHome />;
 };
 
 export default Explorations;
