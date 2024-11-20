@@ -1,6 +1,7 @@
 "use client";
 
 import CircleOne from "./CircleOne";
+import MorphingCircle from "./MorphingCircle";
 import RequestAnimationFrame from "./RequestAnimationFrame";
 import UseAnimationFrame from "./UseAnimationFrame";
 
@@ -19,7 +20,7 @@ const Main: React.FC = () => {
       <div className="flex w-full max-w-[800px] flex-col items-start gap-12">
         <div className="flex h-full w-full flex-col gap-8">
           <h6>vanilla js vs using a library</h6>
-
+          <p className="text-sm">hover to animate</p>
           <div className="flex w-full flex-wrap items-start justify-center gap-8 sm:gap-12">
             <RequestAnimationFrame />
             <UseAnimationFrame />
@@ -39,6 +40,7 @@ const Main: React.FC = () => {
           <h6>animation playground—testing out svg attributes</h6>
           <div className="flex flex-wrap gap-8">
             <CircleOne />
+            <MorphingCircle />
           </div>
         </div>
       </div>
