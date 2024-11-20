@@ -1,7 +1,7 @@
-import Main from "@/components/interactions/00-animating-svgs/index";
+import Main from "@/components/explorations/01-animating-svgs/index";
 
-const Interactions = () => {
+const Explorations = () => {
   return <Main />;
 };
 
-export default Interactions;
+export default Explorations;
