@@ -10,7 +10,12 @@ const config: Config = {
   theme: {
     extend: {
       fontSize: {
-        xxs: "10px",
+        xxs: [
+          "10px",
+          {
+            lineHeight: "0.875rem",
+          },
+        ],
       },
       fontFamily: {
         sans: ["var(--font-plus-jakarta-sans)", "Inter", "Helvetica"],
