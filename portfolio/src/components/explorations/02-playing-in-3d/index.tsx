@@ -18,7 +18,7 @@ const GlassSphere = () => {
 const GlassCylinder = () => {
   return (
     <GlassObject>
-      <cylinderGeometry args={[1, 1, 0.1, 32]} />
+      <cylinderGeometry args={[1, 1, 0.2, 32]} />
     </GlassObject>
   );
 };
@@ -75,10 +75,11 @@ const Shaders = () => {
         <h2 className="leading-none tracking-tighter">02-playing in 3d</h2>
         <p className="font-serif text-xs font-bold text-stone-600">11/21/24</p>
         <p className="max-w-[400px] text-sm tracking-tighter">
-          from setting up a scene in 3js to how to use shaders. a total wide
-          range of topics with so many variables to think through. trying to
-          explore how to make realistic effects with each of these tools,
-          understanding how parameters change the effects
+          from setting up a scene in 3js to how to use shaders. a wide range of
+          topics with so many variables to think through. trying to explore how
+          to make realistic effects through combining tools and available
+          libraries such as react 3 fiber and drei, trying to understand how
+          each parameter can change the effects
         </p>
       </div>
       <div className="flex flex-col gap-2">
@@ -133,10 +134,11 @@ const Shaders = () => {
           </div>
         </div>
         <p className="max-w-[500px] text-sm tracking-tighter">
-          in the 3d world, the way you think about the impact of structure is
-          very different than in 2d, with the same exact materials applied to a
-          sphere vs a cylinder, the glass and distortion effects change
-          completely
+          in the 3d world, you <i>actually</i> have to switch your brain to
+          think about the third dimension. the physical shape of an object
+          largely changes what you see on screen and the effect lighting has on
+          it. with the same exact materials applied to a sphere vs a cylinder,
+          the shape changes if there is glass distortion vs not
         </p>
       </div>
     </div>
