@@ -9,7 +9,7 @@ const Main: React.FC = () => {
   return (
     <div className="flex min-h-dvh w-dvw flex-col items-center justify-start gap-8 p-5 pb-32">
       <div className="flex h-fit w-full flex-col items-start gap-1 text-black">
-        <h2 className="leading-none tracking-tighter">animating svgs</h2>
+        <h2 className="leading-none tracking-tighter">01-animating svgs</h2>
         <p className="font-serif text-xs font-bold text-stone-600">11/15/24</p>
         <p className="max-w-[400px] text-sm tracking-tighter">
           an exploration of editing raw svgs, comparing techniques between js &
