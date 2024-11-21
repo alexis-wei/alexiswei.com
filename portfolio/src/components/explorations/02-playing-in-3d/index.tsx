@@ -85,7 +85,7 @@ const Shaders = () => {
       <div className="flex flex-col gap-2">
         <h6>draggable glass study</h6>
 
-        <div className="flex gap-4">
+        <div className="flex flex-wrap gap-4">
           <div className="relative">
             <Canvas style={canvasSize}>
               <mesh position={[0, 0, 0]}>
