@@ -4,12 +4,11 @@ import {
   useHelper,
 } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { DoubleSide, SpotLight, SpotLightHelper } from "three";
+import { SpotLight, SpotLightHelper } from "three";
 import { useControls } from "leva";
 import { MutableRefObject, useRef, useState } from "react";
 import { Slider } from "@/components/ui/slider";
-import { m, useAnimationFrame } from "framer-motion";
-import { roughness } from "three/webgpu";
+import { useAnimationFrame } from "framer-motion";
 
 function GlassPyramid() {
   const [rotationY, setRotationY] = useState(0);
