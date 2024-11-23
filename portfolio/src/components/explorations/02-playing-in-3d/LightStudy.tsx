@@ -187,7 +187,7 @@ export default function LightStudy() {
         </div>
       </div>
       <p className="max-w-[500px] text-sm tracking-tighter">
-        colorful light effect. i spent about 3 hours trying to get the spotlight
+        moving light effect. i spent about 3 hours trying to get the spotlight
         to look like the beam of light on the 'dark side of the moon' album
         cover but didn't quite go as expected. however end up with this very
         cool spotlight experiment that i'm happy with and experimented with
