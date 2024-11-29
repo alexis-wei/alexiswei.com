@@ -32,9 +32,8 @@ const ibmPlexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "alexis wei | design engineer",
-  description:
-    "alexis wei is an independent design engineer creating unique experiences with startups",
+  title: "ying's ar puzzle",
+  description: "a puzzle for ying <3",
 };
 
 export default function RootLayout({

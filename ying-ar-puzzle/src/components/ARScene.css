@@ -53,21 +53,6 @@ canvas.a-canvas {
   background: rgba(0, 0, 0, 0.8);
 }
 
-.ar-start-button {
-  padding: 1rem 2rem;
-  font-size: 1.2rem;
-  background: #007bff;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-
-.ar-start-button:hover {
-  background: #0056b3;
-}
-
 .ar-stop-button {
   position: fixed;
   bottom: 20px;

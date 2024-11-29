@@ -12,48 +12,48 @@ const polaroids = [
     videoSrc: "/ar-targets/photography.mp4",
     width: 1.125,
     height: 2,
+    letterFound: "y",
   },
   {
     text: "s[i]nging",
     videoSrc: "/ar-targets/singing.mp4",
     width: 1.134,
     height: 2,
+    letterFound: "i",
   },
   {
     text: "pla[n]ning",
     videoSrc: "/ar-targets/singing.mp4",
     width: 1.134,
     height: 2,
+    letterFound: "n",
   },
   {
     text: "skatin[g]",
-    videoSrc: "/ar-targets/singing.mp4",
+    videoSrc: "/ar-targets/skating.mp4",
     width: 1.134,
     height: 2,
+    letterFound: "g",
   },
   {
     text: "[dog momming]",
-    videoSrc: "/ar-targets/singing.mp4",
+    videoSrc: "/ar-targets/dog-mom.mp4",
     width: 1.134,
     height: 2,
+    letterFound: " 🐶",
   },
   {
     text: "cookin[g]",
-    videoSrc: "/ar-targets/singing.mp4",
+    videoSrc: "/ar-targets/cooking.mp4",
     width: 1.134,
     height: 2,
   },
   {
     text: "danc[e]",
-    videoSrc: "/ar-targets/singing.mp4",
+    videoSrc: "/ar-targets/dance.mp4",
     width: 1.134,
     height: 2,
-  },
-  {
-    text: "s[i]nging",
-    videoSrc: "/ar-targets/singing.mp4",
-    width: 1.134,
-    height: 2,
+    letterFound: "e",
   },
 ];
 
@@ -290,7 +290,6 @@ export default function ARScene() {
                       scale="1 1 1"
                       align="center"
                       color="#ffffff"
-                      // font="#libreBaskerville"
                       shadow="cast: true; receive: true"
                     ></a-text>
                     <a-video
@@ -308,7 +307,10 @@ export default function ARScene() {
                 ))}
               </a-scene>
             </div>
-            <button className="ar-stop-button" onClick={stopAR}>
+            <button
+              className="z-1000 fixed bottom-5 left-1/2 -translate-x-1/2 rounded-lg bg-red-500 px-12 py-2 font-serif font-bold text-white"
+              onClick={stopAR}
+            >
               pause AR
             </button>
           </>
