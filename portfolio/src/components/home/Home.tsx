@@ -68,7 +68,7 @@ const Home = () => {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [yValue]);
 
   const hideAbout = () => {
     setYValue(window.innerHeight + 10);
