@@ -16,7 +16,9 @@ const nextConfig = {
       ...config.resolve.fallback,
       fs: false,
     };
-
+    config.externals.push({
+      canvas: "canvas",
+    });
     return config;
   },
 };
