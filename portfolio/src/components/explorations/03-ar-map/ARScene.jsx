@@ -192,28 +192,6 @@ export default function ARScene() {
                   </h3>
                 </div>
               ))}
-
-              {/* <div className="flex h-10 w-10 items-center justify-center rounded-sm border border-[#AFA794]">
-                <h3 className="leading-none">y</h3>
-              </div>
-              <div className="flex h-10 w-10 items-center justify-center rounded-sm border border-[#AFA794]">
-                <h3 className="leading-none">i</h3>
-              </div>
-              <div className="flex h-10 w-10 items-center justify-center rounded-sm border border-[#AFA794]">
-                <h3 className="leading-none">n</h3>
-              </div>
-              <div className="flex h-10 w-10 items-center justify-center rounded-sm border border-[#AFA794]">
-                <h3 className="leading-none">g</h3>
-              </div>
-              <div className="flex h-10 w-10 items-center justify-center rounded-sm border border-[#AFA794]">
-                <h3 className="leading-none">-</h3>
-              </div>
-              <div className="flex h-10 w-10 items-center justify-center rounded-sm border border-[#AFA794]">
-                <h3 className="leading-none">g</h3>
-              </div>
-              <div className="flex h-10 w-10 items-center justify-center rounded-sm border border-[#AFA794]">
-                <h3 className="leading-none">e</h3>
-              </div> */}
             </div>
             <div className="flex w-[260px] flex-col items-start gap-1 text-start">
               <p className="text-sm font-semibold">instructions:</p>
