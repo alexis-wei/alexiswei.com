@@ -12,14 +12,48 @@ const polaroids = [
     videoSrc: "/ar-targets/photography.mp4",
     width: 1.125,
     height: 2,
-    letterIndex: 0,
   },
   {
     text: "s[i]nging",
     videoSrc: "/ar-targets/singing.mp4",
     width: 1.134,
     height: 2,
-    letterIndex: 1,
+  },
+  {
+    text: "pla[n]ning",
+    videoSrc: "/ar-targets/singing.mp4",
+    width: 1.134,
+    height: 2,
+  },
+  {
+    text: "skatin[g]",
+    videoSrc: "/ar-targets/singing.mp4",
+    width: 1.134,
+    height: 2,
+  },
+  {
+    text: "[dog momming]",
+    videoSrc: "/ar-targets/singing.mp4",
+    width: 1.134,
+    height: 2,
+  },
+  {
+    text: "cookin[g]",
+    videoSrc: "/ar-targets/singing.mp4",
+    width: 1.134,
+    height: 2,
+  },
+  {
+    text: "danc[e]",
+    videoSrc: "/ar-targets/singing.mp4",
+    width: 1.134,
+    height: 2,
+  },
+  {
+    text: "s[i]nging",
+    videoSrc: "/ar-targets/singing.mp4",
+    width: 1.134,
+    height: 2,
   },
 ];
 
@@ -57,13 +91,13 @@ export default function ARScene() {
       console.log("not current scene");
       return;
     }
+    pauseAllVideos();
 
     setTimeout(() => {
       // Wait for scene to load before adding listeners
       const scene = sceneRef.current.querySelector("a-scene");
 
       scene.addEventListener("arReady", () => {
-        pauseAllVideos();
         targets = Array.from({ length: polaroids.length }, (_, i) => {
           const target = sceneRef.current.querySelector(`#target-${i}`);
           target.addEventListener("targetFound", () => {
@@ -72,7 +106,7 @@ export default function ARScene() {
             // Update puzzle status and local storage
             setPuzzleStatus((prev) => {
               const newStatus = [...prev];
-              newStatus[polaroids[i].letterIndex] = true;
+              newStatus[i] = true;
               localStorage.setItem("puzzleStatus", JSON.stringify(newStatus));
               return newStatus;
             });
@@ -185,7 +219,7 @@ export default function ARScene() {
             </p>
 
             <div className="flex gap-1">
-              {["y", "i", "n", "g", "-", "g", "e"].map((letter, index) => (
+              {["y", "i", "n", "g", "🐶", "g", "e"].map((letter, index) => (
                 <div
                   key={index}
                   className="flex h-10 w-10 items-center justify-center rounded-sm border border-[#AFA794]"
