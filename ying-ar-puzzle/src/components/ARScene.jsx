@@ -77,8 +77,14 @@ export default function ARScene() {
       if (videoEntity) {
         const videoEl = videoEntity.components.material.material.map.image;
         if (videoEl) {
-          videoEl.play().catch(() => {});
+          // Force video to load but stay paused
+          videoEl.load();
           videoEl.pause();
+          videoEl.currentTime = 0;
+          // Prevent autoplay
+          videoEl.setAttribute("playsinline", "");
+          videoEl.setAttribute("webkit-playsinline", "");
+          videoEl.autoplay = false;
         }
       }
     });
@@ -103,6 +109,8 @@ export default function ARScene() {
           target.addEventListener("targetFound", () => {
             console.log(`target ${i} found`);
             setCurrentlyScanned(i);
+            // Pause all other videos first
+            pauseAllVideos();
             // Update puzzle status and local storage
             setPuzzleStatus((prev) => {
               const newStatus = [...prev];
@@ -317,6 +325,7 @@ export default function ARScene() {
                       height={polaroid.height}
                       playsinline // Add this
                       webkit-playsinline // Add this
+                      autoplay="false"
                       crossorigin="anonymous" // Add this
                     ></a-video>
                   </a-entity>
