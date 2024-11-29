@@ -324,7 +324,7 @@ export default function ARScene() {
               </a-scene>
             </div>
             <button
-              className="fixed bottom-5 left-1/2 z-[9999] -translate-x-1/2 cursor-pointer rounded-lg bg-red-500 px-12 py-2 font-serif font-bold text-white hover:bg-red-700"
+              className="fixed bottom-5 left-1/2 z-[9999] -translate-x-1/2 cursor-pointer rounded-lg border border-red-600 bg-red-500 px-12 py-2 font-serif font-bold text-white hover:bg-red-700"
               onClick={stopAR}
             >
               pause AR
