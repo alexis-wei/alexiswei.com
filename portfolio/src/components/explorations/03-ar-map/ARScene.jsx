@@ -34,6 +34,20 @@ export default function ARScene() {
   });
 
   let targets = [];
+
+  const pauseAllVideos = () => {
+    polaroids.forEach((_, i) => {
+      const videoEntity = sceneRef.current.querySelector(`#video-${i}`);
+      if (videoEntity) {
+        const videoEl = videoEntity.components.material.material.map.image;
+        if (videoEl) {
+          videoEl.play().catch(() => {});
+          videoEl.pause();
+        }
+      }
+    });
+  };
+
   const addEventListeners = () => {
     console.log("add event listeners called");
 
@@ -47,17 +61,7 @@ export default function ARScene() {
       const scene = sceneRef.current.querySelector("a-scene");
 
       scene.addEventListener("arReady", () => {
-        // Pre-load and pause all videos
-        polaroids.forEach((_, i) => {
-          const videoEntity = sceneRef.current.querySelector(`#video-${i}`);
-          if (videoEntity) {
-            const videoEl = videoEntity.components.material.material.map.image;
-            if (videoEl) {
-              videoEl.play().catch(() => {});
-              videoEl.pause();
-            }
-          }
-        });
+        pauseAllVideos();
         targets = Array.from({ length: polaroids.length }, (_, i) => {
           const target = sceneRef.current.querySelector(`#target-${i}`);
           target.addEventListener("targetFound", () => {
@@ -129,6 +133,7 @@ export default function ARScene() {
   const stopAR = () => {
     setShowStartScreen(true);
     if (sceneRef.current) {
+      pauseAllVideos();
       // Stop any ongoing AR sessions
       const scene = sceneRef.current.querySelector("a-scene");
       if (scene) {
