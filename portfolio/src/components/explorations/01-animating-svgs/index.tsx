@@ -30,10 +30,10 @@ const Main: React.FC = () => {
             <code>useAnimationFrame</code> about halves the amount of logic that
             needs to go into the code. however <code>useAnimationFrame</code>{" "}
             ends up being a hook that gets called on every single frame render
-            and something that doesn't appear to have a way of stopping after
-            component mount. that lowkey ticks off a little worry in my head on
-            possible performance hit. so although quite convenient, wouldn't be
-            my go-to without thinking about it more
+            and something that doesn&apos;t appear to have a way of stopping
+            after component mount. that lowkey ticks off a little worry in my
+            head on possible performance hit. so although quite convenient,
+            wouldn&apos;t be my go-to without thinking about it more
           </p>
         </div>
         <div className="flex w-full flex-col items-start justify-start gap-4">

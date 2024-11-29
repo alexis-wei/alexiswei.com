@@ -4,12 +4,10 @@ import {
   useHelper,
 } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { DoubleSide, SpotLight, SpotLightHelper } from "three";
-import { useControls } from "leva";
+import { SpotLight, SpotLightHelper } from "three";
 import { MutableRefObject, useRef, useState } from "react";
 import { Slider } from "@/components/ui/slider";
-import { m, useAnimationFrame } from "framer-motion";
-import { roughness } from "three/webgpu";
+import { useAnimationFrame } from "framer-motion";
 
 function GlassPyramid() {
   const [rotationY, setRotationY] = useState(0);
@@ -113,7 +111,7 @@ export default function LightStudy() {
 
   const [lastSwitchedTime, setLastSwitchedTime] = useState<number>(0);
 
-  useAnimationFrame((time, _) => {
+  useAnimationFrame((time) => {
     if (settingX === true) {
       setSpotlightXPos(
         Number((Math.sin(time * ((2 * Math.PI) / 6000)) * 3 + 3).toFixed(2)),
@@ -188,11 +186,11 @@ export default function LightStudy() {
       </div>
       <p className="max-w-[500px] text-sm tracking-tighter">
         moving light effect. i spent about 3 hours trying to get the spotlight
-        to look like the beam of light on the 'dark side of the moon' album
-        cover but didn't quite go as expected. however end up with this very
-        cool spotlight experiment that i'm happy with and experimented with
-        material properties. you can follow visually where the lights are with
-        the gray helper outlines and see them move in real time
+        to look like the beam of light on the &apos;dark side of the moon&apos;
+        album cover but didn&apos;t quite go as expected. however end up with
+        this very cool spotlight experiment that i&apos;m happy with and
+        experimented with material properties. you can follow visually where the
+        lights are with the gray helper outlines and see them move in real time
       </p>
       <p className="max-w-[500px] text-sm tracking-tighter">
         also learned that pyramids are really just cones with less radial
