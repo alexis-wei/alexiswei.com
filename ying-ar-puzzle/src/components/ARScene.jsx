@@ -22,8 +22,8 @@ const polaroids = [
     letterFound: "i",
   },
   {
-    text: "pla[n]ning",
-    videoSrc: "/ar-targets/singing.mp4",
+    text: "hosti[n]g",
+    videoSrc: "/ar-targets/hosting.mp4",
     width: 1.134,
     height: 2,
     letterFound: "n",
@@ -96,7 +96,7 @@ export default function ARScene() {
     setTimeout(() => {
       // Wait for scene to load before adding listeners
       const scene = sceneRef.current.querySelector("a-scene");
-
+      pauseAllVideos();
       scene.addEventListener("arReady", () => {
         targets = Array.from({ length: polaroids.length }, (_, i) => {
           const target = sceneRef.current.querySelector(`#target-${i}`);
