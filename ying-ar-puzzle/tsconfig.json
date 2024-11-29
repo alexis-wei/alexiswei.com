@@ -20,7 +20,6 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-    "types": ["unplugin-icons/types/react"],
     "typeRoots": ["./node_modules/@types", "./types"]
   },
   "include": [
