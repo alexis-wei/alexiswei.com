@@ -3,7 +3,6 @@
     "next/core-web-vitals",
     "next/typescript",
     "./.eslintrc-auto-import.json",
-    "plugin:react-hooks/recommended",
     "plugin:prettier/recommended"
   ],
   "rules": {
