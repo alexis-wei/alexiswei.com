@@ -43,8 +43,6 @@ export default function ARScene() {
       const scene = sceneRef.current.querySelector("a-scene");
 
       scene.addEventListener("arReady", () => {
-        console.log("arReady get called");
-
         // Pre-load and pause all videos
         polaroids.forEach((_, i) => {
           const videoEntity = sceneRef.current.querySelector(`#video-${i}`);
@@ -118,7 +116,16 @@ export default function ARScene() {
       // Stop any ongoing AR sessions
       const scene = sceneRef.current.querySelector("a-scene");
       if (scene) {
-        scene.systems["mindar-image-system"]?.pause();
+        // Remove all existing UI elements first
+        const existingUIs = document.querySelectorAll(
+          ".mindar-ui-overlay, .mindar-ui-scanning",
+        );
+        existingUIs.forEach((ui) => ui.remove());
+
+        // Stop the AR system
+        if (scene.systems["mindar-image-system"]) {
+          scene.systems["mindar-image-system"].stop();
+        }
       }
     }
   };
@@ -196,6 +203,7 @@ export default function ARScene() {
                 renderer="colorManagement: true, physicallyCorrectLights"
                 vr-mode-ui="enabled: false"
                 device-orientation-permission-ui="enabled: false"
+                autostart="false"
               >
                 <a-assets>
                   <a-asset-item
@@ -240,7 +248,7 @@ export default function ARScene() {
               </a-scene>
             </div>
             <button className="ar-stop-button" onClick={stopAR}>
-              Stop AR
+              pause AR
             </button>
           </>
         )}
