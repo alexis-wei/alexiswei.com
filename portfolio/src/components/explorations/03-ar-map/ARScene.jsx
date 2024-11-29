@@ -27,6 +27,7 @@ export default function ARScene() {
   const [showStartScreen, setShowStartScreen] = useState(true);
   const [permissionGranted, setPermissionGranted] = useState(false);
   const [currentlyScanned, setCurrentlyScanned] = useState(1000);
+  const [puzzleStatus, setPuzzleStatus] = useState(Array(7).fill(false));
 
   let targets = [];
   const addEventListeners = () => {
@@ -34,6 +35,7 @@ export default function ARScene() {
 
     if (!sceneRef.current) {
       console.log("not current scene");
+      return;
     }
 
     setTimeout(() => {
@@ -85,7 +87,7 @@ export default function ARScene() {
 
           return target;
         });
-      }); // Add event listeners after scene is loaded
+      });
     }, 200);
   };
 
@@ -133,25 +135,56 @@ export default function ARScene() {
         initScene();
       }
     }
-    // return {
-    //   if(targets) {
-    //     targets.forEach((target) => {
-    //       if (target) {
-    //         target.removeEventListener("targetFound", () => {});
-    //         target.removeEventListener("targetLost", () => {});
-    //       }
-    //     });
-    //   },
-    // };
   }, []);
 
   return (
     <>
       <div ref={sceneRef} className="h-dwh w-dvw">
         {showStartScreen ? (
-          <div className="ar-start-screen">
-            <button className="ar-start-button" onClick={handleStartAR}>
-              Start AR Experience
+          <div className="flex h-dvh w-dvw flex-col items-center justify-center gap-12 bg-[#FDF7E9] text-center">
+            <h5 className="text-center font-normal">
+              welcome to <br />
+              <i>ying's ar puzzle</i>
+            </h5>
+            <p className="w-[280px] text-sm font-semibold">
+              Ying’s our favourite girlie with a million hobbies, find all
+              pieces of her that we know and love to complete the puzzle
+            </p>
+            <div className="flex gap-1">
+              <div className="flex h-10 w-10 items-center justify-center rounded-sm border border-[#AFA794]">
+                <h3 className="leading-none">y</h3>
+              </div>
+              <div className="flex h-10 w-10 items-center justify-center rounded-sm border border-[#AFA794]">
+                <h3 className="leading-none">i</h3>
+              </div>
+              <div className="flex h-10 w-10 items-center justify-center rounded-sm border border-[#AFA794]">
+                <h3 className="leading-none">n</h3>
+              </div>
+              <div className="flex h-10 w-10 items-center justify-center rounded-sm border border-[#AFA794]">
+                <h3 className="leading-none">g</h3>
+              </div>
+              <div className="flex h-10 w-10 items-center justify-center rounded-sm border border-[#AFA794]">
+                <h3 className="leading-none">-</h3>
+              </div>
+              <div className="flex h-10 w-10 items-center justify-center rounded-sm border border-[#AFA794]">
+                <h3 className="leading-none">g</h3>
+              </div>
+              <div className="flex h-10 w-10 items-center justify-center rounded-sm border border-[#AFA794]">
+                <h3 className="leading-none">e</h3>
+              </div>
+            </div>
+            <div className="flex w-[260px] flex-col items-start gap-1 text-start">
+              <p className="text-sm font-semibold">instructions:</p>
+              <p className="text-xs">
+                scattered around the venue are polaroids of Ying, turn on the AR
+                scanner using the button below and scan away :)
+              </p>
+            </div>
+            <button
+              className="rounded-lg border border-[#595447] bg-[#AFA794] px-12 py-2 font-serif font-bold text-white"
+              onClick={handleStartAR}
+            >
+              enter AR
             </button>
           </div>
         ) : (
@@ -204,24 +237,6 @@ export default function ARScene() {
                     ></a-video>
                   </a-entity>
                 ))}
-                {/* <a-entity mindar-image-target="targetIndex: 1">
-                  <a-text
-                    value="photograph[y]"
-                    position="0 0.5 0"
-                    rotation="0 0 0"
-                    scale="1 1 1"
-                    align="center"
-                    color="#cccccc"
-                  ></a-text>
-                  <a-video
-                    src="/ar-targets/photography.mp4"
-                    position="0 0 0"
-                    rotation="0 0 0"
-                    width="0.552"
-                    height="1"
-                    play="false"
-                  ></a-video>
-                </a-entity> */}
               </a-scene>
             </div>
             <button className="ar-stop-button" onClick={stopAR}>
