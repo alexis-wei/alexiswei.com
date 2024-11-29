@@ -106,6 +106,22 @@ export default function ARScene() {
             // Update puzzle status and local storage
             setPuzzleStatus((prev) => {
               const newStatus = [...prev];
+              if (!prev[i] && polaroid.letterFound) {
+                const foundText = sceneRef.current
+                  .querySelector(`#target-${i}`)
+                  .appendChild(document.createElement("a-text"));
+                foundText.setAttribute(
+                  "value",
+                  `you found ${polaroids[i].letterFound}!`,
+                );
+                foundText.setAttribute("position", "0 -1 0");
+                foundText.setAttribute("align", "center");
+                foundText.setAttribute("color", "#ffffff");
+                foundText.setAttribute("scale", "0.8 0.8 0.8");
+                setTimeout(() => {
+                  foundText.remove();
+                }, 2000);
+              }
               newStatus[i] = true;
               localStorage.setItem("puzzleStatus", JSON.stringify(newStatus));
               return newStatus;
