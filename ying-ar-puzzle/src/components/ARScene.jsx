@@ -12,14 +12,48 @@ const polaroids = [
     videoSrc: "/ar-targets/photography.mp4",
     width: 1.125,
     height: 2,
-    letterIndex: 0,
+    letterFound: "y",
   },
   {
     text: "s[i]nging",
     videoSrc: "/ar-targets/singing.mp4",
     width: 1.134,
     height: 2,
-    letterIndex: 1,
+    letterFound: "i",
+  },
+  {
+    text: "hosti[n]g",
+    videoSrc: "/ar-targets/hosting.mp4",
+    width: 1.134,
+    height: 2,
+    letterFound: "n",
+  },
+  {
+    text: "skatin[g]",
+    videoSrc: "/ar-targets/skating.mp4",
+    width: 1.134,
+    height: 2,
+    letterFound: "g",
+  },
+  {
+    text: "[dog momming]",
+    videoSrc: "/ar-targets/dog-mom.mp4",
+    width: 1.134,
+    height: 2,
+    letterFound: " 🐶",
+  },
+  {
+    text: "cookin[g]",
+    videoSrc: "/ar-targets/cooking.mp4",
+    width: 1.134,
+    height: 2,
+  },
+  {
+    text: "danc[e]",
+    videoSrc: "/ar-targets/dance.mp4",
+    width: 1.134,
+    height: 2,
+    letterFound: "e",
   },
 ];
 
@@ -57,13 +91,13 @@ export default function ARScene() {
       console.log("not current scene");
       return;
     }
+    pauseAllVideos();
 
     setTimeout(() => {
       // Wait for scene to load before adding listeners
       const scene = sceneRef.current.querySelector("a-scene");
-
+      pauseAllVideos();
       scene.addEventListener("arReady", () => {
-        pauseAllVideos();
         targets = Array.from({ length: polaroids.length }, (_, i) => {
           const target = sceneRef.current.querySelector(`#target-${i}`);
           target.addEventListener("targetFound", () => {
@@ -72,7 +106,23 @@ export default function ARScene() {
             // Update puzzle status and local storage
             setPuzzleStatus((prev) => {
               const newStatus = [...prev];
-              newStatus[polaroids[i].letterIndex] = true;
+              if (!prev[i] && polaroids[i].letterFound) {
+                const foundText = sceneRef.current
+                  .querySelector(`#target-${i}`)
+                  .appendChild(document.createElement("a-text"));
+                foundText.setAttribute(
+                  "value",
+                  `you found "${polaroids[i].letterFound}"!`,
+                );
+                foundText.setAttribute("position", "0 -1 0");
+                foundText.setAttribute("align", "center");
+                foundText.setAttribute("color", "#ffffff");
+                foundText.setAttribute("scale", "0.8 0.8 0.8");
+                setTimeout(() => {
+                  foundText.remove();
+                }, 2000);
+              }
+              newStatus[i] = true;
               localStorage.setItem("puzzleStatus", JSON.stringify(newStatus));
               return newStatus;
             });
@@ -185,7 +235,7 @@ export default function ARScene() {
             </p>
 
             <div className="flex gap-1">
-              {["y", "i", "n", "g", "-", "g", "e"].map((letter, index) => (
+              {["y", "i", "n", "g", "🐶", "g", "e"].map((letter, index) => (
                 <div
                   key={index}
                   className="flex h-10 w-10 items-center justify-center rounded-sm border border-[#AFA794]"
@@ -256,7 +306,6 @@ export default function ARScene() {
                       scale="1 1 1"
                       align="center"
                       color="#ffffff"
-                      // font="#libreBaskerville"
                       shadow="cast: true; receive: true"
                     ></a-text>
                     <a-video
@@ -274,7 +323,10 @@ export default function ARScene() {
                 ))}
               </a-scene>
             </div>
-            <button className="ar-stop-button" onClick={stopAR}>
+            <button
+              className="fixed bottom-5 left-1/2 z-[9999] -translate-x-1/2 cursor-pointer rounded-lg border border-red-600 bg-red-500 px-12 py-2 font-serif font-bold text-white hover:bg-red-700"
+              onClick={stopAR}
+            >
               pause AR
             </button>
           </>
