@@ -106,13 +106,13 @@ export default function ARScene() {
             // Update puzzle status and local storage
             setPuzzleStatus((prev) => {
               const newStatus = [...prev];
-              if (!prev[i] && polaroid.letterFound) {
+              if (!prev[i] && polaroids[i].letterFound) {
                 const foundText = sceneRef.current
                   .querySelector(`#target-${i}`)
                   .appendChild(document.createElement("a-text"));
                 foundText.setAttribute(
                   "value",
-                  `you found ${polaroids[i].letterFound}!`,
+                  `you found "${polaroids[i].letterFound}"!`,
                 );
                 foundText.setAttribute("position", "0 -1 0");
                 foundText.setAttribute("align", "center");
@@ -324,7 +324,7 @@ export default function ARScene() {
               </a-scene>
             </div>
             <button
-              className="z-1000 fixed bottom-5 left-1/2 -translate-x-1/2 rounded-lg bg-red-500 px-12 py-2 font-serif font-bold text-white"
+              className="fixed bottom-5 left-1/2 z-[9999] -translate-x-1/2 cursor-pointer rounded-lg bg-red-500 px-12 py-2 font-serif font-bold text-white hover:bg-red-700"
               onClick={stopAR}
             >
               pause AR
