@@ -28,6 +28,7 @@ export default function ARScene() {
   const [permissionGranted, setPermissionGranted] = useState(false);
   const [currentlyScanned, setCurrentlyScanned] = useState(1000);
 
+  let targets = [];
   const addEventListeners = () => {
     console.log("add event listeners called");
 
@@ -41,35 +42,48 @@ export default function ARScene() {
 
       scene.addEventListener("arReady", () => {
         console.log("arReady get called");
-        const target0 = sceneRef.current.querySelector("#target-0");
-        const target1 = sceneRef.current.querySelector("#target-1");
 
-        if (!target0) {
-          console.log("target 0 not found");
-        }
-
-        if (!target1) {
-          console.log("target 1 not found");
-        }
-
-        target0.addEventListener("targetFound", (event) => {
-          console.log("target 0 found");
-          setCurrentlyScanned(0);
+        // Pre-load and pause all videos
+        polaroids.forEach((_, i) => {
+          const videoEntity = sceneRef.current.querySelector(`#video-${i}`);
+          if (videoEntity) {
+            const videoEl = videoEntity.components.material.material.map.image;
+            if (videoEl) {
+              videoEl.play().catch(() => {});
+              videoEl.pause();
+            }
+          }
         });
+        targets = Array.from({ length: polaroids.length }, (_, i) => {
+          const target = sceneRef.current.querySelector(`#target-${i}`);
+          target.addEventListener("targetFound", () => {
+            console.log(`target ${i} found`);
+            setCurrentlyScanned(i);
+            // Explicitly handle video playback
+            const videoEntity = sceneRef.current.querySelector(`#video-${i}`);
+            if (videoEntity) {
+              const videoEl =
+                videoEntity.components.material.material.map.image;
+              if (videoEl) {
+                videoEl.play().catch(console.error);
+              }
+            }
+          });
 
-        target0.addEventListener("targetLost", (event) => {
-          console.log("target 0 lost");
-          setCurrentlyScanned(1000);
-        });
+          target.addEventListener("targetLost", () => {
+            console.log(`target ${i} lost`);
+            setCurrentlyScanned(1000);
+            const videoEntity = sceneRef.current.querySelector(`#video-${i}`);
+            if (videoEntity) {
+              const videoEl =
+                videoEntity.components.material.material.map.image;
+              if (videoEl) {
+                videoEl.pause();
+              }
+            }
+          });
 
-        target1.addEventListener("targetFound", (event) => {
-          console.log("target 1 found");
-          setCurrentlyScanned(1);
-        });
-
-        target1.addEventListener("targetLost", (event) => {
-          console.log("target 1 lost");
-          setCurrentlyScanned(1000);
+          return target;
         });
       }); // Add event listeners after scene is loaded
     }, 200);
@@ -119,6 +133,16 @@ export default function ARScene() {
         initScene();
       }
     }
+    // return {
+    //   if(targets) {
+    //     targets.forEach((target) => {
+    //       if (target) {
+    //         target.removeEventListener("targetFound", () => {});
+    //         target.removeEventListener("targetLost", () => {});
+    //       }
+    //     });
+    //   },
+    // };
   }, []);
 
   return (
@@ -168,12 +192,15 @@ export default function ARScene() {
                       shadow="cast: true; receive: true"
                     ></a-text>
                     <a-video
+                      id={`video-${index}`}
                       src={polaroid.videoSrc}
                       position="0 -0.5 0"
                       rotation="0 0 0"
                       width={polaroid.width}
                       height={polaroid.height}
-                      play={currentlyScanned === index}
+                      playsinline // Add this
+                      webkit-playsinline // Add this
+                      crossorigin="anonymous" // Add this
                     ></a-video>
                   </a-entity>
                 ))}
