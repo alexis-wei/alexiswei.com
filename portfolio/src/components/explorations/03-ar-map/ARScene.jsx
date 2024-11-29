@@ -27,7 +27,11 @@ export default function ARScene() {
   const [showStartScreen, setShowStartScreen] = useState(true);
   const [permissionGranted, setPermissionGranted] = useState(false);
   const [currentlyScanned, setCurrentlyScanned] = useState(1000);
-  const [puzzleStatus, setPuzzleStatus] = useState(Array(7).fill(false));
+  const [puzzleStatus, setPuzzleStatus] = useState(() => {
+    // Check localStorage on initial load
+    const savedStatus = localStorage.getItem("puzzleStatus");
+    return savedStatus ? JSON.parse(savedStatus) : Array(7).fill(false);
+  });
 
   let targets = [];
   const addEventListeners = () => {
@@ -59,6 +63,13 @@ export default function ARScene() {
           target.addEventListener("targetFound", () => {
             console.log(`target ${i} found`);
             setCurrentlyScanned(i);
+            // Update puzzle status and local storage
+            setPuzzleStatus((prev) => {
+              const newStatus = [...prev];
+              newStatus[polaroids[i].letterIndex] = true;
+              localStorage.setItem("puzzleStatus", JSON.stringify(newStatus));
+              return newStatus;
+            });
             // Explicitly handle video playback
             const videoEntity = sceneRef.current.querySelector(`#video-${i}`);
             if (videoEntity) {
@@ -96,6 +107,11 @@ export default function ARScene() {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const handleReset = () => {
+    setPuzzleStatus(Array(7).fill(false));
+    localStorage.setItem("puzzleStatus", JSON.stringify(Array(7).fill(false)));
   };
 
   const requestCameraPermission = async () => {
@@ -142,6 +158,9 @@ export default function ARScene() {
         initScene();
       }
     }
+    return () => {
+      stopAR();
+    };
   }, []);
 
   return (
@@ -157,8 +176,24 @@ export default function ARScene() {
               Ying’s our favourite girlie with a million hobbies, find all
               pieces of her that we know and love to complete the puzzle
             </p>
+
             <div className="flex gap-1">
-              <div className="flex h-10 w-10 items-center justify-center rounded-sm border border-[#AFA794]">
+              {["y", "i", "n", "g", "-", "g", "e"].map((letter, index) => (
+                <div
+                  key={index}
+                  className="flex h-10 w-10 items-center justify-center rounded-sm border border-[#AFA794]"
+                >
+                  <h3
+                    className={`leading-none ${
+                      puzzleStatus[index] ? "" : "hidden"
+                    }`}
+                  >
+                    {letter}
+                  </h3>
+                </div>
+              ))}
+
+              {/* <div className="flex h-10 w-10 items-center justify-center rounded-sm border border-[#AFA794]">
                 <h3 className="leading-none">y</h3>
               </div>
               <div className="flex h-10 w-10 items-center justify-center rounded-sm border border-[#AFA794]">
@@ -178,7 +213,7 @@ export default function ARScene() {
               </div>
               <div className="flex h-10 w-10 items-center justify-center rounded-sm border border-[#AFA794]">
                 <h3 className="leading-none">e</h3>
-              </div>
+              </div> */}
             </div>
             <div className="flex w-[260px] flex-col items-start gap-1 text-start">
               <p className="text-sm font-semibold">instructions:</p>
@@ -192,6 +227,12 @@ export default function ARScene() {
               onClick={handleStartAR}
             >
               enter AR
+            </button>
+            <button
+              className="px-4 font-serif text-xs font-bold text-[#595447]"
+              onClick={handleReset}
+            >
+              reset
             </button>
           </div>
         ) : (
@@ -207,8 +248,8 @@ export default function ARScene() {
               >
                 <a-assets>
                   <a-asset-item
-                    id="raccoonModel"
-                    src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/band-example/raccoon/scene.gltf"
+                    id="libreBaskerville"
+                    src="/fonts/libre_baskerville_bold.json"
                   ></a-asset-item>
                 </a-assets>
 
@@ -225,17 +266,18 @@ export default function ARScene() {
                   >
                     <a-text
                       value={polaroid.text}
-                      position="0 1.5 0"
+                      position="0 0.8 0"
                       rotation="0 0 0"
                       scale="1 1 1"
                       align="center"
                       color="#ffffff"
+                      // font="#libreBaskerville"
                       shadow="cast: true; receive: true"
                     ></a-text>
                     <a-video
                       id={`video-${index}`}
                       src={polaroid.videoSrc}
-                      position="0 -0.5 0"
+                      position="0 -0.4 0"
                       rotation="0 0 0"
                       width={polaroid.width}
                       height={polaroid.height}
