@@ -28,6 +28,62 @@ export default function ARScene() {
   const [permissionGranted, setPermissionGranted] = useState(false);
   const [currentlyScanned, setCurrentlyScanned] = useState(1000);
 
+  const addEventListeners = () => {
+    console.log("add event listeners called");
+
+    if (!sceneRef.current) {
+      console.log("not current scene");
+    }
+
+    setTimeout(() => {
+      // Wait for scene to load before adding listeners
+      const scene = sceneRef.current.querySelector("a-scene");
+
+      scene.addEventListener("arReady", () => {
+        console.log("arReady get called");
+        const target0 = sceneRef.current.querySelector("#target-0");
+        const target1 = sceneRef.current.querySelector("#target-1");
+
+        if (!target0) {
+          console.log("target 0 not found");
+        }
+
+        if (!target1) {
+          console.log("target 1 not found");
+        }
+
+        target0.addEventListener("targetFound", (event) => {
+          console.log("target 0 found");
+          setCurrentlyScanned(0);
+        });
+
+        target0.addEventListener("targetLost", (event) => {
+          console.log("target 0 lost");
+          setCurrentlyScanned(1000);
+        });
+
+        target1.addEventListener("targetFound", (event) => {
+          console.log("target 1 found");
+          setCurrentlyScanned(1);
+        });
+
+        target1.addEventListener("targetLost", (event) => {
+          console.log("target 1 lost");
+          setCurrentlyScanned(1000);
+        });
+      }); // Add event listeners after scene is loaded
+    }, 200);
+  };
+
+  const handleStartAR = async () => {
+    try {
+      await requestCameraPermission();
+      addEventListeners();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const requestCameraPermission = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -53,43 +109,9 @@ export default function ARScene() {
 
   useEffect(() => {
     if (typeof window !== "undefined" && !sceneLoaded.current) {
-      const addEventListeners = () => {
-        console.log("add event listeners called");
-
-        // Add event listeners after scene is loaded
-        const target0 = document.querySelector("#target-0");
-        const target1 = document.querySelector("#target-1");
-
-        target0.addEventListener("targetFound", (event) => {
-          console.log("target 0 found");
-          setCurrentlyScanned(0);
-        });
-
-        target0.addEventListener("targetLost", (event) => {
-          console.log("target 0 lost");
-          setCurrentlyScanned(1000);
-        });
-
-        target1.addEventListener("targetFound", (event) => {
-          console.log("target 1 found");
-          setCurrentlyScanned(1);
-        });
-
-        target1.addEventListener("targetLost", (event) => {
-          console.log("target 1 lost");
-          setCurrentlyScanned(1000);
-        });
-      };
       const initScene = () => {
         if (window.AFRAME && window.MINDAR && !sceneLoaded.current) {
-          const sceneEl = document.querySelector("a-scene");
-
-          // Wait for scene to be loaded before adding AR target listeners
-          sceneEl?.addEventListener("loaded", () => {
-            console.log("A-Frame scene loaded");
-            sceneLoaded.current = true;
-            addEventListeners();
-          });
+          sceneLoaded.current = true;
         }
       };
 
@@ -101,19 +123,16 @@ export default function ARScene() {
 
   return (
     <>
-      <div className="h-dwh w-dvw">
+      <div ref={sceneRef} className="h-dwh w-dvw">
         {showStartScreen ? (
           <div className="ar-start-screen">
-            <button
-              className="ar-start-button"
-              onClick={requestCameraPermission}
-            >
+            <button className="ar-start-button" onClick={handleStartAR}>
               Start AR Experience
             </button>
           </div>
         ) : (
           <>
-            <div ref={sceneRef} className="ar-scene-container">
+            <div className="ar-scene-container">
               <a-scene
                 mindar-image="imageTargetSrc: /ar-targets/targets.mind;"
                 color-space="sRGB"
