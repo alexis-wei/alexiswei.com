@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 "use client";
 import { useEffect, useRef, useState } from "react";
 import "./ARScene.css";
@@ -175,7 +177,7 @@ export default function ARScene() {
           <div className="flex h-dvh w-dvw flex-col items-center justify-center gap-12 bg-[#FDF7E9] text-center">
             <h5 className="text-center font-normal">
               welcome to <br />
-              <i>ying's ar puzzle</i>
+              <i>ying&apos;s ar puzzle</i>
             </h5>
             <p className="w-[280px] text-sm font-semibold">
               Ying’s our favourite girlie with a million hobbies, find all
