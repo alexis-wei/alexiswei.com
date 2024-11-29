@@ -18,7 +18,16 @@ const nextConfig = {
     };
     config.externals.push({
       canvas: "canvas",
+      bufferutil: "bufferutil",
+      "utf-8-validate": "utf-8-validate",
     });
+
+    // Ignore canvas-related modules
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      canvas: false,
+      "canvas-prebuilt": false,
+    };
     return config;
   },
 };
