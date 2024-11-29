@@ -1,15 +1,32 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import Script from "next/script";
 import "./ARScene.css";
 import "aframe";
 import "mind-ar/dist/mindar-image-aframe.prod.js";
+
+const polaroids = [
+  {
+    text: "photograph[y]",
+    videoSrc: "/ar-targets/photography.mp4",
+    width: 1.125,
+    height: 2,
+    letterIndex: 0,
+  },
+  {
+    text: "s[i]nging",
+    videoSrc: "/ar-targets/singing.mp4",
+    width: 1.134,
+    height: 2,
+    letterIndex: 1,
+  },
+];
 
 export default function ARScene() {
   const sceneRef = useRef(null);
   const sceneLoaded = useRef(false);
   const [showStartScreen, setShowStartScreen] = useState(true);
   const [permissionGranted, setPermissionGranted] = useState(false);
+  const [currentlyScanned, setCurrentlyScanned] = useState(1000);
 
   const requestCameraPermission = async () => {
     try {
@@ -36,9 +53,43 @@ export default function ARScene() {
 
   useEffect(() => {
     if (typeof window !== "undefined" && !sceneLoaded.current) {
+      const addEventListeners = () => {
+        console.log("add event listeners called");
+
+        // Add event listeners after scene is loaded
+        const target0 = document.querySelector("#target-0");
+        const target1 = document.querySelector("#target-1");
+
+        target0.addEventListener("targetFound", (event) => {
+          console.log("target 0 found");
+          setCurrentlyScanned(0);
+        });
+
+        target0.addEventListener("targetLost", (event) => {
+          console.log("target 0 lost");
+          setCurrentlyScanned(1000);
+        });
+
+        target1.addEventListener("targetFound", (event) => {
+          console.log("target 1 found");
+          setCurrentlyScanned(1);
+        });
+
+        target1.addEventListener("targetLost", (event) => {
+          console.log("target 1 lost");
+          setCurrentlyScanned(1000);
+        });
+      };
       const initScene = () => {
         if (window.AFRAME && window.MINDAR && !sceneLoaded.current) {
-          sceneLoaded.current = true;
+          const sceneEl = document.querySelector("a-scene");
+
+          // Wait for scene to be loaded before adding AR target listeners
+          sceneEl?.addEventListener("loaded", () => {
+            console.log("A-Frame scene loaded");
+            sceneLoaded.current = true;
+            addEventListeners();
+          });
         }
       };
 
@@ -50,19 +101,6 @@ export default function ARScene() {
 
   return (
     <>
-      {/* <Script
-        src="https://aframe.io/releases/1.5.0/aframe.min.js"
-        strategy="beforeInteractive"
-      /> */}
-      {/* <Script
-        src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v7.0.0/dist/aframe-extras.min.js"
-        strategy="beforeInteractive"
-      />
-      <Script
-        src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"
-        strategy="beforeInteractive"
-      /> */}
-
       <div className="h-dwh w-dvw">
         {showStartScreen ? (
           <div className="ar-start-screen">
@@ -77,7 +115,7 @@ export default function ARScene() {
           <>
             <div ref={sceneRef} className="ar-scene-container">
               <a-scene
-                mindar-image="imageTargetSrc: /ar-targets/singing.mind;"
+                mindar-image="imageTargetSrc: /ar-targets/targets.mind;"
                 color-space="sRGB"
                 renderer="colorManagement: true, physicallyCorrectLights"
                 vr-mode-ui="enabled: false"
@@ -95,9 +133,34 @@ export default function ARScene() {
                   look-controls="enabled: false"
                 ></a-camera>
 
-                <a-entity mindar-image-target="targetIndex: 0">
+                {polaroids.map((polaroid, index) => (
+                  <a-entity
+                    key={index}
+                    id={`target-${index}`}
+                    mindar-image-target={`targetIndex: ${index}`}
+                  >
+                    <a-text
+                      value={polaroid.text}
+                      position="0 1.5 0"
+                      rotation="0 0 0"
+                      scale="1 1 1"
+                      align="center"
+                      color="#ffffff"
+                      shadow="cast: true; receive: true"
+                    ></a-text>
+                    <a-video
+                      src={polaroid.videoSrc}
+                      position="0 -0.5 0"
+                      rotation="0 0 0"
+                      width={polaroid.width}
+                      height={polaroid.height}
+                      play={currentlyScanned === index}
+                    ></a-video>
+                  </a-entity>
+                ))}
+                {/* <a-entity mindar-image-target="targetIndex: 1">
                   <a-text
-                    value="sing[I]ng"
+                    value="photograph[y]"
                     position="0 0.5 0"
                     rotation="0 0 0"
                     scale="1 1 1"
@@ -105,14 +168,14 @@ export default function ARScene() {
                     color="#cccccc"
                   ></a-text>
                   <a-video
-                    src="/ar-targets/singing.mp4"
+                    src="/ar-targets/photography.mp4"
                     position="0 0 0"
                     rotation="0 0 0"
                     width="0.552"
                     height="1"
-                    play="true"
+                    play="false"
                   ></a-video>
-                </a-entity>
+                </a-entity> */}
               </a-scene>
             </div>
             <button className="ar-stop-button" onClick={stopAR}>
