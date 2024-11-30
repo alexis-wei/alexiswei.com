@@ -77,18 +77,8 @@ export default function ARScene() {
       if (videoEntity) {
         const videoEl = videoEntity.components.material.material.map.image;
         if (videoEl) {
-          // Force video to load but stay paused
-          // videoEl.load();
-
-          videoEl.controls = false;
-          videoEl.autoplay = false;
-          videoEl.preload = "none"; // Prevent preloading
+          videoEl.play().catch(() => {});
           videoEl.pause();
-          videoEl.currentTime = 0;
-          // Prevent autoplay
-          // videoEl.setAttribute("playsinline", "");
-          // videoEl.setAttribute("webkit-playsinline", "");
-          // videoEl.autoplay = false;
         }
       }
     });
@@ -101,13 +91,13 @@ export default function ARScene() {
       console.log("not current scene");
       return;
     }
-    pauseAllVideos();
+    // pauseAllVideos();
 
     setTimeout(() => {
       // Wait for scene to load before adding listeners
       const scene = sceneRef.current.querySelector("a-scene");
-      pauseAllVideos();
       scene.addEventListener("arReady", () => {
+        pauseAllVideos();
         targets = Array.from({ length: polaroids.length }, (_, i) => {
           const target = sceneRef.current.querySelector(`#target-${i}`);
           target.addEventListener("targetFound", () => {
