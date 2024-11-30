@@ -128,6 +128,12 @@ export default function ARScene() {
               }
               newStatus[i] = true;
               localStorage.setItem("puzzleStatus", JSON.stringify(newStatus));
+
+              if (newStatus.every((status) => status === true)) {
+                setTimeout(() => {
+                  stopAR();
+                }, 5000);
+              }
               return newStatus;
             });
             // Explicitly handle video playback
@@ -261,12 +267,18 @@ export default function ARScene() {
                 scanner using the button below and scan away :)
               </p>
             </div>
-            <button
-              className="rounded-lg border border-[#595447] bg-[#AFA794] px-12 py-2 font-serif font-bold text-white"
-              onClick={handleStartAR}
-            >
-              enter AR
-            </button>
+            {puzzleStatus.every((status) => status) ? (
+              <p className="font-serif font-bold text-[#595447]">
+                you've completed the puzzle! reset to try again
+              </p>
+            ) : (
+              <button
+                className="rounded-lg border border-[#595447] bg-[#AFA794] px-12 py-2 font-serif font-bold text-white"
+                onClick={handleStartAR}
+              >
+                enter AR
+              </button>
+            )}
             <button
               className="px-4 font-serif text-xs font-bold text-[#595447]"
               onClick={handleReset}
