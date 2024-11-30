@@ -78,13 +78,17 @@ export default function ARScene() {
         const videoEl = videoEntity.components.material.material.map.image;
         if (videoEl) {
           // Force video to load but stay paused
-          videoEl.load();
+          // videoEl.load();
+
+          videoEl.controls = false;
+          videoEl.autoplay = false;
+          videoEl.preload = "none"; // Prevent preloading
           videoEl.pause();
           videoEl.currentTime = 0;
           // Prevent autoplay
-          videoEl.setAttribute("playsinline", "");
-          videoEl.setAttribute("webkit-playsinline", "");
-          videoEl.autoplay = false;
+          // videoEl.setAttribute("playsinline", "");
+          // videoEl.setAttribute("webkit-playsinline", "");
+          // videoEl.autoplay = false;
         }
       }
     });
