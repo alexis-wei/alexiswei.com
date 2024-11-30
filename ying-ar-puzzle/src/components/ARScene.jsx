@@ -332,7 +332,6 @@ export default function ARScene() {
                       playsinline // Add this
                       webkit-playsinline // Add this
                       autoplay="false"
-                      autoplay="false"
                       crossorigin="anonymous" // Add this
                     ></a-video>
                   </a-entity>
