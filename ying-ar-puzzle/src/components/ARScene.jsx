@@ -115,6 +115,8 @@ export default function ARScene() {
             setCurrentlyScanned(i);
             // Pause all other videos first
             pauseAllVideos();
+            // Pause all other videos first
+            pauseAllVideos();
             // Update puzzle status and local storage
             setPuzzleStatus((prev) => {
               const newStatus = [...prev];
@@ -329,6 +331,7 @@ export default function ARScene() {
                       height={polaroid.height}
                       playsinline // Add this
                       webkit-playsinline // Add this
+                      autoplay="false"
                       autoplay="false"
                       crossorigin="anonymous" // Add this
                     ></a-video>
