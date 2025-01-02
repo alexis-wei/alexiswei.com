@@ -4,9 +4,18 @@ import { OrbitControls } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { useRef } from "react";
 import { BufferGeometry, Points } from "three";
-import gsap from "gsap";
 
-const BasicParticles = () => {
+interface BasicFireworkProps {
+  radius?: number;
+  timeSustained?: number;
+  position?: [number, number, number];
+}
+
+const BasicFirework = ({
+  radius = 0.2,
+  timeSustained = 5,
+  position = [0, 0, 0],
+}: BasicFireworkProps) => {
   // This reference gives us direct access to our points
   const points = useRef<Points<BufferGeometry>>(null);
 
@@ -20,8 +29,8 @@ const BasicParticles = () => {
   // You can see that, like our mesh, points also takes a geometry and a material,
   // but a specific material => pointsMaterial
   return (
-    <points ref={points}>
-      <sphereGeometry args={[0.5, 18, 18]} />
+    <points ref={points} position={position}>
+      <sphereGeometry args={[radius, 18, 18]} />
 
       <shaderMaterial
         transparent
@@ -30,17 +39,12 @@ const BasicParticles = () => {
           size: { value: 0.1 },
           scale: { value: window.innerHeight / 2 }, // Scale factor based on screen size
           time: { value: 0 },
-          trailLength: { value: 0.6 },
         }}
         vertexShader={`
           uniform float scale;
           uniform float size;
           uniform float time;
-          uniform float trailLength;
-          
-          attribute float vertexIndex;
 
-          // Function to create a pseudo-random value
           float random(vec3 pos) {
             return fract(sin(dot(pos.xyz, vec3(12.9898, 78.233, 45.164))) * 43758.5453123);
           }
@@ -51,22 +55,17 @@ const BasicParticles = () => {
           
           void main() {
             vec3 pos = position;
-            float t = fract(time * 0.2); // Control explosion speed
+            float t = fract(time * ${1 / timeSustained}); // Control explosion speed
             
+
+            float explosionRadius = easeOutExpo(t) * 3.0; 
+            float gravity = -0.6 * t * t;
             
-            // Create outward explosion effect
-            float explosionRadius = easeOutExpo(t) * 3.0; // Adjust multiplier for explosion size
-            
-            // Add gravity effect
-            float gravity = -0.6 * t * t; // Quadratic fall-off
-            
-            // Combine effects
             vec3 offset = pos * explosionRadius;
             offset.y += gravity;
             
-            // Add some randomness to each particle
+
             float rand = random(position);
-            // Add more chaotic movement
             offset += vec3(
               cos(rand * 8.5) * 0.12,
               sin(rand * 9.42) * 0.15,
@@ -130,17 +129,17 @@ const BasicParticles = () => {
   );
 };
 
-const Scene = () => {
+const Scene2 = () => {
   return (
     <Canvas
       style={{ width: "100vw", height: "100vh", background: "#000324" }}
       camera={{ position: [1.5, 1.5, 1.5] }}
     >
       <ambientLight intensity={0.5} />
-      <BasicParticles />
+      <BasicFirework />
       <OrbitControls autoRotate={false} />
     </Canvas>
   );
 };
 
-export default Scene;
+export default Scene2;

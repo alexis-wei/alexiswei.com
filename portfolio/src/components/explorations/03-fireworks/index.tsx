@@ -1,7 +1,7 @@
 "use client";
 
-import Scene from "./Scene";
+import Scene2 from "./Scene2";
 
 export default function Fireworks() {
-  return <Scene />;
+  return <Scene2 />;
 }
