@@ -59,7 +59,7 @@ const BasicFirework = ({
           void main() {
             vec3 pos = position;
             float startDelay = ${startDelay.toFixed(1)};
-            float delay = 0.2; // Delay in seconds before explosion
+            float delay = ${Math.max(0.3, 0.3 * (position[1] + 1))}; // Delay in seconds before explosion
             float totalCycleTime = delay + ${timeSustained}.0; // Total time for one cycle
             float cycleTime = mod(time, totalCycleTime); // Time within current cycle
             float adjustedTime = max(0.0, cycleTime - delay);
@@ -158,31 +158,20 @@ const BasicFirework = ({
 const Scene2 = () => {
   return (
     <Canvas
-      style={{ width: "100vw", height: "100vh", background: "#000324" }}
-      camera={{ position: [1.5, 1.5, 1.5] }}
+      style={{ width: "100%", height: "100%", background: "#000324" }}
+      camera={{ position: [0, 0, 3] }}
     >
       <ambientLight intensity={0.5} />
-      <BasicFirework radius={0.1} position={[0.5, 0.92, 0]} timeSustained={8} />
-      <BasicFirework
-        radius={0.15}
-        position={[-1.0, 0.76, 0]}
-        timeSustained={6}
-      />
-      <BasicFirework
-        radius={0.18}
-        position={[-0.5, 0.5, 0]}
-        timeSustained={9}
-      />
+      <BasicFirework radius={0.25} position={[1.2, 1.2, 0]} timeSustained={7} />
+      <BasicFirework radius={0.2} position={[0.5, 0.92, 0]} timeSustained={8} />
+      <BasicFirework />
       <BasicFirework
         radius={0.1}
-        position={[-5.0, 0.92, 0]}
-        timeSustained={5}
+        position={[-1.2, -0.3, 0]}
+        timeSustained={6}
       />
-      <BasicFirework radius={0.1} position={[-3.0, 0, 0]} timeSustained={8} />
-      <BasicFirework radius={0.18} position={[-1.5, 0, 0]} timeSustained={7} />
-      <BasicFirework radius={0.1} position={[-2.0, 0.4, 0]} timeSustained={8} />
-      <BasicFirework radius={0.18} position={[1.5, 0.5, 0]} timeSustained={6} />
-      <BasicFirework />
+      <BasicFirework radius={0.2} position={[-1.9, 1.5, 0]} timeSustained={6} />
+
       <OrbitControls autoRotate={false} />
     </Canvas>
   );
