@@ -2,7 +2,7 @@
 import { notFound } from "next/navigation";
 import dynamic from "next/dynamic";
 
-export default async function ExplorationPage({
+export default function ExplorationPage({
   params: { slug },
 }: {
   params: { slug: string };
@@ -11,7 +11,8 @@ export default async function ExplorationPage({
   const ExplorationComponent = dynamic(
     () => import(`@/components/explorations/${slug}`).catch(() => notFound()),
     {
-      ssr: false, // Set to true if you want server-side rendering
+      ssr: false,
+      loading: () => <div>Loading...</div>,
     },
   );
 

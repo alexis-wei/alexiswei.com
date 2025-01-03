@@ -3,7 +3,7 @@
 import { FC } from "react";
 import Header, { HeaderProps } from "./Header";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 
 const Spotlight: FC = () => {
   const spotlightHeaderProps: HeaderProps = {

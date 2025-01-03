@@ -1,4 +1,4 @@
-import { useAnimationFrame } from "framer-motion";
+import { useAnimationFrame } from "motion/react";
 import { interpolate } from "flubber";
 import { useState, useMemo } from "react";
 

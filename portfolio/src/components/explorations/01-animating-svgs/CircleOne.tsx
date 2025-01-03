@@ -1,4 +1,4 @@
-import { useAnimationFrame } from "framer-motion";
+import { useAnimationFrame } from "motion/react";
 import { useState } from "react";
 const CircleOne = () => {
   const [percentage, setPercentage] = useState(1);

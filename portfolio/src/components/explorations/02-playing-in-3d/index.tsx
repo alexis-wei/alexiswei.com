@@ -3,7 +3,7 @@
 import GlassStudy from "./GlassStudy";
 import LightStudy from "./LightStudy";
 
-const Shaders = () => {
+const Main = () => {
   return (
     <div className="flex min-h-dvh w-dvw flex-col items-center justify-start gap-8 p-5 pb-32">
       <div className="flex h-fit w-full flex-col items-start gap-1 text-black">
@@ -25,4 +25,4 @@ const Shaders = () => {
   );
 };
 
-export default Shaders;
+export default Main;
