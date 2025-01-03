@@ -7,7 +7,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { SpotLight, SpotLightHelper } from "three";
 import { MutableRefObject, useRef, useState } from "react";
 import { Slider } from "@/components/ui/slider";
-import { useAnimationFrame } from "framer-motion";
+import { useAnimationFrame } from "motion/react";
 
 function GlassPyramid() {
   const [rotationY, setRotationY] = useState(0);
