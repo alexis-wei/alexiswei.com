@@ -9,12 +9,14 @@ interface BasicFireworkProps {
   radius?: number;
   timeSustained?: number;
   position?: [number, number, number];
+  startDelay?: number;
 }
 
 const BasicFirework = ({
   radius = 0.2,
   timeSustained = 5,
   position = [0, 0, 0],
+  startDelay = 0.5,
 }: BasicFireworkProps) => {
   // This reference gives us direct access to our points
   const points = useRef<Points<BufferGeometry>>(null);
@@ -56,6 +58,7 @@ const BasicFirework = ({
           
           void main() {
             vec3 pos = position;
+            float startDelay = ${startDelay.toFixed(1)};
             float delay = 0.2; // Delay in seconds before explosion
             float totalCycleTime = delay + ${timeSustained}.0; // Total time for one cycle
             float cycleTime = mod(time, totalCycleTime); // Time within current cycle
@@ -63,7 +66,7 @@ const BasicFirework = ({
             
             // Launch phase
             if (cycleTime < delay) {
-              float launchProgress = cycleTime / (delay + 0.4); // 0 to 1
+              float launchProgress = cycleTime  / (delay + 0.4); // 0 to 1
               float easeProgress = easeOutExpo(launchProgress); // Smooth out the movement
               
               // Start from below and move up to original position
@@ -159,6 +162,26 @@ const Scene2 = () => {
       camera={{ position: [1.5, 1.5, 1.5] }}
     >
       <ambientLight intensity={0.5} />
+      <BasicFirework radius={0.1} position={[0.5, 0.92, 0]} timeSustained={8} />
+      <BasicFirework
+        radius={0.15}
+        position={[-1.0, 0.76, 0]}
+        timeSustained={6}
+      />
+      <BasicFirework
+        radius={0.18}
+        position={[-0.5, 0.5, 0]}
+        timeSustained={9}
+      />
+      <BasicFirework
+        radius={0.1}
+        position={[-5.0, 0.92, 0]}
+        timeSustained={5}
+      />
+      <BasicFirework radius={0.1} position={[-3.0, 0, 0]} timeSustained={8} />
+      <BasicFirework radius={0.18} position={[-1.5, 0, 0]} timeSustained={7} />
+      <BasicFirework radius={0.1} position={[-2.0, 0.4, 0]} timeSustained={8} />
+      <BasicFirework radius={0.18} position={[1.5, 0.5, 0]} timeSustained={6} />
       <BasicFirework />
       <OrbitControls autoRotate={false} />
     </Canvas>
