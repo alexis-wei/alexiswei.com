@@ -52,10 +52,33 @@ const BasicFirework = ({
           float easeOutExpo(float x) {
             return x == 1.0 ? 1.0 : 1.0 - pow(2.0, -10.0 * x);
           }
+        
           
           void main() {
             vec3 pos = position;
-            float t = fract(time * ${1 / timeSustained}); // Control explosion speed
+            float delay = 0.2; // Delay in seconds before explosion
+            float totalCycleTime = delay + ${timeSustained}.0; // Total time for one cycle
+            float cycleTime = mod(time, totalCycleTime); // Time within current cycle
+            float adjustedTime = max(0.0, cycleTime - delay);
+            
+            // Launch phase
+            if (cycleTime < delay) {
+              float launchProgress = cycleTime / (delay + 0.4); // 0 to 1
+              float easeProgress = easeOutExpo(launchProgress); // Smooth out the movement
+              
+              // Start from below and move up to original position
+              vec3 startPos = pos * 0.1; // Original compressed sphere
+              startPos.y -= 2.0; // Start 2 units below
+              vec3 endPos = pos * 0.1; // Target position
+              vec3 launchPos = mix(startPos, endPos, easeProgress);
+              
+              vec4 mvPosition = modelViewMatrix * vec4(launchPos, 1.0);
+              gl_Position = projectionMatrix * mvPosition;
+              gl_PointSize = size * (scale / length(mvPosition.xyz));
+              return;
+            }
+
+            float t = adjustedTime / ${timeSustained}.0; // Control explosion speed
             
 
             float explosionRadius = easeOutExpo(t) * 3.0; 
