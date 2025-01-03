@@ -3,7 +3,16 @@
 import { OrbitControls } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { useRef } from "react";
-import { BufferGeometry, Points } from "three";
+import { BufferGeometry, Points, ShaderMaterial } from "three";
+
+// Add this interface to type the shader material uniforms
+interface FireworkShaderMaterial extends ShaderMaterial {
+  uniforms: {
+    time: { value: number };
+    size: { value: number };
+    scale: { value: number };
+  };
+}
 
 interface BasicFireworkProps {
   radius?: number;
@@ -24,7 +33,7 @@ const BasicFirework = ({
   // Add useFrame to update time uniform
   useFrame(({ clock }) => {
     if (points.current?.material) {
-      (points.current.material as any).uniforms.time.value =
+      (points.current.material as FireworkShaderMaterial).uniforms.time.value =
         clock.getElapsedTime();
     }
   });
@@ -155,7 +164,7 @@ const BasicFirework = ({
   );
 };
 
-const Scene2 = () => {
+const Fireworks = () => {
   return (
     <Canvas
       style={{ width: "100%", height: "100%", background: "#000324" }}
@@ -177,4 +186,4 @@ const Scene2 = () => {
   );
 };
 
-export default Scene2;
+export default Fireworks;
