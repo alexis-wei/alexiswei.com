@@ -19,7 +19,16 @@ const Main = () => {
         </p>
       </div>
       <div className="flex flex-col gap-6">
-        <a>&gt; visit apple iPhone 16 page clone &lt;</a>
+        <a href="/explorations/04-learning-from-apple/clone">
+          &gt; visit apple iPhone 16 page clone &lt;
+        </a>
+        <p className="max-w-[800px] text-sm tracking-tighter">
+          Learning how to do all the scroll detection animations with GSAP
+          ScrollTrigger. It's kind of weird actually trying to use this instead
+          of the built in eventListeners that I'm so used to using but this
+          makes scroll animations so much easier and smoother with much less
+          code
+        </p>
       </div>
     </div>
   );

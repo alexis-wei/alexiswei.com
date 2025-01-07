@@ -46,7 +46,7 @@ export default function AppleClone() {
           start: "left center",
           scroller: scrollContainer.current,
           horizontal: true,
-          markers: true,
+          // markers: true,
           toggleActions: "play none none reverse",
         },
         opacity: 1,
