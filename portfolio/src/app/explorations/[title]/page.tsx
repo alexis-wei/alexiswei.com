@@ -3,13 +3,13 @@ import { notFound } from "next/navigation";
 import dynamic from "next/dynamic";
 
 export default function ExplorationPage({
-  params: { slug },
+  params: { title },
 }: {
-  params: { slug: string };
+  params: { title: string };
 }) {
   // Dynamically import the component based on slug
   const ExplorationComponent = dynamic(
-    () => import(`@/components/explorations/${slug}`).catch(() => notFound()),
+    () => import(`@/components/explorations/${title}`).catch(() => notFound()),
     {
       ssr: false,
       loading: () => <div>Loading...</div>,
