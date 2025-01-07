@@ -13,11 +13,15 @@ export default function AppleClone() {
   const headlineRef = useRef(null);
   const imageRef = useRef(null);
   const backgroundRef = useRef(null);
+  const playRef = useRef<HTMLDivElement>(null);
+  const slideShowNavRef = useRef(null);
 
   const scrollContainer = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Initial state - elements hidden
+    const snapItems = document.querySelectorAll(".snap-start");
+
+    // Set all initial states for animations here
     gsap.set([headlineRef.current], {
       opacity: 0,
       y: 30,
@@ -29,12 +33,47 @@ export default function AppleClone() {
       scale: 0.9,
     });
 
+    snapItems.forEach((item) => {
+      const caption = item.querySelector("div.absolute p.apple-caption");
+      gsap.set(caption, {
+        opacity: 0,
+        x: -20,
+      });
+
+      gsap.to(caption, {
+        scrollTrigger: {
+          trigger: item,
+          start: "left center",
+          scroller: scrollContainer.current,
+          horizontal: true,
+          markers: true,
+          toggleActions: "play none none reverse",
+        },
+        opacity: 1,
+        x: 0,
+        duration: 0.5,
+        ease: "power2.out",
+      });
+    });
+
+    gsap.set([playRef.current], {
+      opacity: 0,
+      y: 10,
+      x: 20,
+    });
+
+    gsap.set([slideShowNavRef.current], {
+      opacity: 0,
+      y: 10,
+      x: -20,
+    });
+
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: sectionRef.current,
-        start: "top 50%", // Starts when the top of the section is 50% down the viewport
-        end: "+=400", // Ends 400px after the start
-        markers: true, // Helpful for debugging
+        start: "top 50%",
+        end: "+=400",
+        // markers: true,
       },
     });
 
@@ -64,59 +103,25 @@ export default function AppleClone() {
         "-=1",
       );
 
-    const snapItems = document.querySelectorAll(".snap-start");
-
-    const handlePositionChange = (element: Element) => {
-      const rect = element.getBoundingClientRect();
-      const containerRect = scrollContainer.current;
-      if (!containerRect) {
-        return;
-      }
-
-      const paddingLeft = parseInt(
-        getComputedStyle(containerRect).scrollPaddingLeft,
-      );
-      const isAtStart = Math.abs(rect.left - paddingLeft) < 50; // Tolerance of 50px
-
-      const caption = element.querySelector("div.absolute p.apple-caption");
-      if (!caption) return; // Safety check
-
-      if (isAtStart) {
-        gsap.to(caption, {
-          opacity: 1,
-          x: 0,
-          duration: 0.5,
-          ease: "power2.out",
-        });
-      } else {
-        gsap.to(caption, {
-          opacity: 0,
-          x: -20,
-          duration: 0.5,
-        });
-      }
-    };
-
-    // Set initial states
-    snapItems.forEach((item) => {
-      console.log("snap item found");
-      const caption = item.querySelector("div.absolute p.apple-caption");
-      console.log("caption:", caption);
-      gsap.set(caption, {
-        opacity: 0,
-        x: -20,
-      });
+    const tl2 = gsap.timeline({
+      scrollTrigger: {
+        trigger: scrollContainer.current,
+        start: "center 50%",
+        // markers: true,
+        toggleActions: "play none none reverse",
+      },
     });
 
-    const handleScroll = () => {
-      snapItems.forEach((item) => handlePositionChange(item));
-    };
-
-    scrollContainer.current?.addEventListener("scroll", handleScroll);
+    tl2.to([playRef.current, slideShowNavRef.current], {
+      opacity: 1,
+      y: 0,
+      x: 0,
+      duration: 0.5,
+      ease: "power2.out",
+    });
 
     return () => {
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
-      scrollContainer.current?.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
@@ -155,7 +160,7 @@ export default function AppleClone() {
           </div>
         </div>
       </section>
-      <section className="flex h-full min-h-dvh flex-col items-center gap-12 overflow-hidden bg-neutral-800 py-40">
+      <section className="relative flex h-full min-h-dvh flex-col items-center gap-12 overflow-hidden bg-neutral-800 py-40">
         <div className="w-full max-w-[1600px]">
           <h2 className="apple-headline text-6xl">Get the highlights.</h2>
         </div>
@@ -222,6 +227,30 @@ export default function AppleClone() {
               </div>
             </li>
           </ul>
+        </div>
+        <div className="fixed bottom-8 left-1/2 flex -translate-x-1/2 gap-8">
+          <div className="flex rounded-full bg-neutral-600 p-4" ref={playRef}>
+            <IconHeroiconsPlay20Solid />
+          </div>
+          <div
+            className="flex items-center rounded-full bg-neutral-600 px-6 py-4"
+            ref={slideShowNavRef}
+          >
+            <ul className="m-0 flex gap-4">
+              <li className="h-2 w-2 rounded-full bg-neutral-300">
+                <a></a>
+              </li>
+              <li className="h-2 w-2 rounded-full bg-neutral-300">
+                <a></a>
+              </li>
+              <li className="h-2 w-2 rounded-full bg-neutral-300">
+                <a></a>
+              </li>
+              <li className="h-2 w-2 rounded-full bg-neutral-300">
+                <a></a>
+              </li>
+            </ul>
+          </div>
         </div>
       </section>
     </div>
