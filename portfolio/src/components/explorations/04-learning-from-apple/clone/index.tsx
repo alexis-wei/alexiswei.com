@@ -131,7 +131,7 @@ export default function AppleClone() {
     >
       <section
         ref={sectionRef}
-        className="relative h-dvh min-h-[1600px] w-full overflow-hidden"
+        className="relative h-dvh min-h-[1000px] w-full overflow-hidden"
       >
         <img
           ref={backgroundRef}
@@ -139,7 +139,7 @@ export default function AppleClone() {
           src="/explorations/04-learning-from-apple/hero_startframe_xlarge.jpg"
           alt="herostart frame"
         />
-        <div className="relative flex w-full flex-col items-center justify-center pt-72">
+        <div className="relative flex w-full flex-col items-center justify-center pt-8 sm:pt-32 2xl:pt-72">
           <h1
             ref={headlineRef}
             className="apple-headline mb-[27px] mt-[17px] text-[28px] font-semibold opacity-90"
@@ -160,17 +160,33 @@ export default function AppleClone() {
           </div>
         </div>
       </section>
-      <section className="relative flex h-full min-h-dvh flex-col items-center gap-12 overflow-hidden bg-neutral-800 py-40">
-        <div className="w-full max-w-[1600px]">
-          <h2 className="apple-headline text-6xl">Get the highlights.</h2>
+      <section className="relative flex h-full min-h-dvh flex-col items-center overflow-hidden bg-neutral-800 py-24 md:py-28 xl:py-40">
+        <div className="mb-6 w-[87.5vw] max-w-[1600px] grow md:mb-8 lg:mb-10 xl:mb-12">
+          <h2 className="apple-headline text-3xl md:text-4xl lg:text-5xl xl:text-6xl">
+            Get the highlights.
+          </h2>
         </div>
 
         <div
           ref={scrollContainer}
-          className="margin no-scrollbar w-full snap-x snap-mandatory scroll-pl-[var(--media-padding)] overflow-x-scroll"
+          className="margin no-scrollbar h-full w-full snap-x snap-mandatory scroll-pl-[var(--media-padding)] overflow-y-hidden overflow-x-scroll"
         >
-          <ul className="media-left-padding relative grid h-[700px] w-max grid-flow-col gap-6 after:block after:w-[100vw]">
-            <li className="relative flex h-full w-[1400px] snap-start overflow-hidden rounded-xl">
+          <ul className="media-left-padding relative grid w-max grid-flow-col gap-6 after:block after:w-[100vw]">
+            <li className={` ${styles["media-slideshow-container"]}`}>
+              <figure className="absolute inset-0">
+                <video
+                  src="/explorations/04-learning-from-apple/section2_xlarge_2x.mp4"
+                  className="h-full w-full object-cover"
+                ></video>
+              </figure>
+              <div className="absolute left-8 top-6">
+                <p className="apple-caption w-80 text-xl font-semibold xl:text-2xl">
+                  the first iPhone built for Apple Intelligence. Personal,
+                  private, powerful
+                </p>
+              </div>
+            </li>
+            <li className={` ${styles["media-slideshow-container"]}`}>
               <figure className="absolute inset-0">
                 <video
                   src="/explorations/04-learning-from-apple/section2_xlarge_2x.mp4"
@@ -184,7 +200,7 @@ export default function AppleClone() {
                 </p>
               </div>
             </li>
-            <li className="relative flex h-full w-[1400px] snap-start overflow-hidden rounded-xl">
+            <li className={` ${styles["media-slideshow-container"]}`}>
               <figure className="absolute inset-0">
                 <video
                   src="/explorations/04-learning-from-apple/section2_xlarge_2x.mp4"
@@ -198,21 +214,7 @@ export default function AppleClone() {
                 </p>
               </div>
             </li>
-            <li className="relative flex h-full w-[1400px] snap-start overflow-hidden rounded-xl">
-              <figure className="absolute inset-0">
-                <video
-                  src="/explorations/04-learning-from-apple/section2_xlarge_2x.mp4"
-                  className="h-full w-full object-cover"
-                ></video>
-              </figure>
-              <div className="absolute left-8 top-6">
-                <p className="apple-caption w-80 text-2xl font-semibold">
-                  the first iPhone built for Apple Intelligence. Personal,
-                  private, powerful
-                </p>
-              </div>
-            </li>
-            <li className="relative flex h-full w-[1400px] snap-start overflow-hidden rounded-xl">
+            <li className={` ${styles["media-slideshow-container"]}`}>
               <figure className="absolute inset-0">
                 <video
                   src="/explorations/04-learning-from-apple/section2_xlarge_2x.mp4"

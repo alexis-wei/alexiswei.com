@@ -1,5 +1,13 @@
 :root {
   --media-padding: calc(max(6.25vw, (100vw - 1600px) / 2));
+  --global-scrollbar-width: 0px;
+  --media-slideshow-responsive-content-absolute-max-width: 1600px;
+  --media-slideshow-responsive-content-absolute-min-width: 280px;
+  --media-slideshow-viewport-content: max(
+    87.5vw - var(--global-scrollbar-width),
+    var(--media-slideshow-responsive-content-absolute-min-width)
+  );
+
   font-family:
     "Inter",
     -apple-system,

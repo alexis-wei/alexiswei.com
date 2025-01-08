@@ -3,3 +3,31 @@
 .container {
   font-family: "Inter", sans-serif;
 }
+
+.media-slideshow-container {
+  width: min(
+    var(--media-slideshow-viewport-content),
+    var(--media-slideshow-responsive-content-absolute-max-width)
+  );
+  position: relative;
+  display: flex;
+  height: 400px;
+  scroll-snap-align: start;
+  overflow: hidden;
+  border-radius: theme("borderRadius.xl");
+}
+
+@screen lg {
+  .media-slideshow-container {
+    height: 740px;
+  }
+}
+
+@screen md {
+  .media-slideshow-container {
+    height: 520px;
+  }
+}
+
+.media-slideshow-caption {
+}
