@@ -29,6 +29,12 @@ const Main = () => {
           but this makes scroll animations so much easier and smoother with much
           less code
         </p>
+        <p className="max-w-[800px] text-sm tracking-tighter">
+          Something that I didn&apos;t expect to learn from here is better use
+          of css variables. it&apos;s really interesting to see how Apple does
+          their sizing calculations in relation to screen. They use a vw
+          relative and has a min and max value for media sizing.
+        </p>
       </div>
     </div>
   );

@@ -31,3 +31,16 @@
 
 .media-slideshow-caption {
 }
+
+.glow-text {
+  font-size: 40px;
+  line-height: 1.05;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  text-align: center;
+}
+
+.color-style-media {
+  width: calc(min(1680px, 100vw));
+  height: 100vh;
+}
