@@ -20,9 +20,9 @@ const Home = () => {
     setColor(color);
   };
 
-  const handleEnterPortfolio = (page: number) => {
-    router.push(`/portfolio?page=${page}`);
-  };
+  // const handleEnterPortfolio = (page: number) => {
+  //   router.push(`/portfolio?page=${page}`);
+  // };
 
   const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
     const scrollDirection = e.deltaY > 0 ? "down" : "up";
@@ -96,7 +96,7 @@ const Home = () => {
               <h1 className="text-xl leading-none tracking-tighter">alexis</h1>
             </div>
             <p className="max-w-72 text-lg font-medium leading-[1.3] tracking-tighter">
-              a design engineer working with startups on:
+              an interactive design engineer working with companies on:
             </p>
           </div>
           <div
@@ -107,7 +107,6 @@ const Home = () => {
               className={`font-serif font-bold hover:bg-[#ffec99]`}
               variant="outline"
               onMouseEnter={() => changeColor(yellow)}
-              onClick={() => handleEnterPortfolio(0)}
             >
               0 &#x2192; 1 product
             </Button>
@@ -115,7 +114,6 @@ const Home = () => {
               className={`font-serif font-bold hover:bg-[#bfe0ff]`}
               variant="outline"
               onMouseEnter={() => changeColor(blue)}
-              onClick={() => handleEnterPortfolio(1)}
             >
               branding
             </Button>
@@ -134,8 +132,9 @@ const Home = () => {
             className="w-6 text-stone-400"
             variant="ghost"
             size="icon"
+            aria-label="calendar link to schedule initial consultation"
             onClick={() =>
-              window.open("https://www.cal.com/itsalexiswei", "_blank")
+              window.open("https://cal.com/itsalexiswei/30min", "_blank")
             }
           >
             <IconHeroiconsCalendar />
@@ -144,6 +143,7 @@ const Home = () => {
             className="w-6 text-stone-400"
             variant="ghost"
             size="icon"
+            aria-label="link to twitter/x profile"
             onClick={() =>
               window.open("https://www.x.com/itsalexiswei", "_blank")
             }
@@ -154,6 +154,7 @@ const Home = () => {
             className="w-6 text-stone-400"
             variant="ghost"
             size="icon"
+            aria-label="email alexis"
             onClick={() =>
               window.open("mailto:alexisw.contact@gmail.com", "_blank")
             }
@@ -164,6 +165,7 @@ const Home = () => {
             className="w-6 text-stone-400"
             variant="ghost"
             size="icon"
+            aria-label="link to visit alexis' substack"
             onClick={() =>
               window.open("https://alexiswei0108.substack.com/", "_blank")
             }
@@ -174,6 +176,7 @@ const Home = () => {
             className="w-6 text-stone-400"
             variant="ghost"
             size="icon"
+            aria-label="check out alexis' github page"
             onClick={() =>
               window.open("https://github.com/alexis-wei", "_blank")
             }
