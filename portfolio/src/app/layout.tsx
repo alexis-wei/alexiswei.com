@@ -5,6 +5,7 @@ import {
   IBM_Plex_Mono,
 } from "next/font/google";
 import "./globals.css";
+import { CSPostHogProvider } from "./providers";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   weight: "variable",
@@ -59,11 +60,13 @@ export default function RootLayout({
       />
       <meta name="apple-mobile-web-app-title" content="alexiswei" />
       <link rel="manifest" href="/site.webmanifest" />
-      <body
-        className={`${plusJakartaSans.variable} ${libreBaskerville.variable} ${ibmPlexMono.variable} antialiased`}
-      >
-        {children}
-      </body>
+      <CSPostHogProvider>
+        <body
+          className={`${plusJakartaSans.variable} ${libreBaskerville.variable} ${ibmPlexMono.variable} antialiased`}
+        >
+          {children}
+        </body>
+      </CSPostHogProvider>
     </html>
   );
 }
