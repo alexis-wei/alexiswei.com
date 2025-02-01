@@ -58,7 +58,6 @@ const ExplorationButton = ({
 };
 
 const ExplorationsHome = () => {
-  const router = useRouter();
   return (
     <main className="flex w-screen items-center justify-center">
       <div className="flex max-w-[1200px] flex-col items-center gap-8 p-6">

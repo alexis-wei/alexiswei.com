@@ -4,19 +4,19 @@ import CircleOne from "./CircleOne";
 import MorphingCircle from "./MorphingCircle";
 import RequestAnimationFrame from "./RequestAnimationFrame";
 import UseAnimationFrame from "./UseAnimationFrame";
+import { ExplorationIntro } from "../ui";
 
 const Main: React.FC = () => {
   return (
     <div className="flex min-h-dvh w-dvw flex-col items-center justify-start gap-8 p-5 pb-32">
-      <div className="flex h-fit w-full flex-col items-start gap-1 text-black">
-        <h2 className="leading-none tracking-tighter">01-animating svgs</h2>
-        <p className="font-serif text-xs font-bold text-stone-600">11/15/24</p>
-        <p className="max-w-[400px] text-sm tracking-tighter">
-          an exploration of editing raw svgs, comparing techniques between js &
+      <ExplorationIntro
+        name="01-animating svgs"
+        date="11/15/24"
+        description={`an exploration of editing raw svgs, comparing techniques between js &
           Motion (prev. framer motion) and testing out unique svg attributes
-          that allow for animations
-        </p>
-      </div>
+          that allow for animations`}
+      />
+
       <div className="flex w-full max-w-[800px] flex-col items-start gap-12">
         <div className="flex h-full w-full flex-col gap-8">
           <h6>vanilla js vs using a library</h6>
