@@ -8,6 +8,7 @@ import { SpotLight, SpotLightHelper } from "three";
 import { MutableRefObject, useRef, useState } from "react";
 import { Slider } from "@/components/ui/slider";
 import { useAnimationFrame } from "motion/react";
+import { DescriptionText } from "../ui";
 
 function GlassPyramid() {
   const [rotationY, setRotationY] = useState(0);
@@ -184,18 +185,18 @@ export default function LightStudy() {
           </div>
         </div>
       </div>
-      <p className="max-w-[500px] text-sm tracking-tighter">
+      <DescriptionText>
         moving light effect. i spent about 3 hours trying to get the spotlight
         to look like the beam of light on the &apos;dark side of the moon&apos;
         album cover but didn&apos;t quite go as expected. however end up with
         this very cool spotlight experiment that i&apos;m happy with and
         experimented with material properties. you can follow visually where the
         lights are with the gray helper outlines and see them move in real time
-      </p>
-      <p className="max-w-[500px] text-sm tracking-tighter">
+      </DescriptionText>
+      <DescriptionText>
         also learned that pyramids are really just cones with less radial
         segments
-      </p>
+      </DescriptionText>
     </div>
   );
 }

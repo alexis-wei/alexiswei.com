@@ -1,7 +1,7 @@
 "use client";
 
 import PhotoCanvasOne from "./PhotoCanvasOne";
-import { ExplorationIntro } from "../ui";
+import { DescriptionText, ExplorationIntro } from "../ui";
 
 export default function ShaderAnimations() {
   const introDescription = `vertex and color changes as a result of shader value tracking. 
@@ -15,6 +15,13 @@ export default function ShaderAnimations() {
       />
       <div className="flex flex-col gap-6">
         <PhotoCanvasOne />
+        <DescriptionText>
+          there are 2 ways in threejs to load photos onto your mesh to be
+          displayed, either through texture mapping or through shaders. to my
+          surprise, the color output from the two methods are actually
+          different, and as a basicMeshMaterial, a different color output than
+          as an img
+        </DescriptionText>
       </div>
     </div>
   );

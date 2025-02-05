@@ -17,3 +17,17 @@ export const ExplorationIntro = ({
     </div>
   );
 };
+
+export const DescriptionText = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
+  return (
+    <p className="w-full max-w-[500px] text-sm tracking-tighter">{children}</p>
+  );
+};
+
+export const Caption = ({ children }: { children: React.ReactNode }) => {
+  return <p className="w-full max-w-72 text-center text-sm">{children}</p>;
+};
