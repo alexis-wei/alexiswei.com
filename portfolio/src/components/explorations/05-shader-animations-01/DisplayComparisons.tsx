@@ -13,7 +13,7 @@ function ShaderPlane({ url }: { url: string }) {
   const texture = useLoader(TextureLoader, url);
 
   const imageAspect = texture.image.width / texture.image.height;
-  const scale = getMeshScale(imageAspect);
+  const scale = useGetMeshScale(imageAspect);
 
   const shaderMaterial = new THREE.ShaderMaterial({
     uniforms: {
@@ -50,7 +50,7 @@ function BasicPlane({ url }: { url: string }) {
   const texture = useLoader(TextureLoader, url);
 
   const imageAspect = texture.image.width / texture.image.height;
-  const scale = getMeshScale(imageAspect);
+  const scale = useGetMeshScale(imageAspect);
 
   return (
     <mesh scale={scale}>
@@ -60,7 +60,7 @@ function BasicPlane({ url }: { url: string }) {
   );
 }
 
-const getMeshScale = (imageAspect: number): THREE.Vector3 => {
+const useGetMeshScale = (imageAspect: number): THREE.Vector3 => {
   const { viewport } = useThree();
 
   const viewportAspect = viewport.width / viewport.height;
