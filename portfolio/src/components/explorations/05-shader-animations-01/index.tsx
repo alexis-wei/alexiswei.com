@@ -40,9 +40,9 @@ export default function ShaderAnimations() {
         <HoverToExpand />
         <DescriptionText>
           from this moment, things are starting to click. this hover transition
-          animation is incredibly smooth and it's from here where i see a lot of
-          possibilities of what shaders, the thoughtfulness behind the motion,
-          and the transitions that learning this can unlock
+          animation is incredibly smooth and it&apos;s from here where i see a
+          lot of possibilities of what shaders, the thoughtfulness behind the
+          motion, and the transitions that learning this can unlock
         </DescriptionText>
       </div>
     </div>
