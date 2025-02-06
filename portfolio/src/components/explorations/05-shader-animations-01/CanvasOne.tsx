@@ -10,6 +10,7 @@ import {
 } from "@react-three/fiber";
 import { TextureLoader } from "three/src/loaders/TextureLoader";
 import * as THREE from "three";
+import { Caption } from "../ui";
 
 const IMAGE_URLS = [
   process.env.NEXT_PUBLIC_MEDIA_URL + "/banff/banff-horizontal-1.jpg",
@@ -74,12 +75,14 @@ function ShaderPlaneWithHover() {
   const textures = useLoader(TextureLoader, IMAGE_URLS);
   const { viewport } = useThree();
   const [hoveredSlice, setHoveredSlice] = useState<number>(-1);
+  const [lastHoveredSlice, setLastHoveredSlice] = useState<number>(-1);
   const [transition, setTransition] = useState(0);
 
   const shaderMaterial = new THREE.ShaderMaterial({
     uniforms: {
       uTextures: { value: textures as THREE.Texture[] },
       uHoveredSlice: { value: hoveredSlice },
+      uLastHoveredSlice: { value: lastHoveredSlice },
       uTotalSlices: { value: 5.0 },
       uTransition: { value: transition },
     },
@@ -94,6 +97,7 @@ function ShaderPlaneWithHover() {
     fragmentShader: `
       uniform sampler2D uTextures[5];
       uniform float uHoveredSlice;
+      uniform float uLastHoveredSlice;
       uniform float uTotalSlices;
       uniform float uTransition;
       varying vec2 vUv;
@@ -104,40 +108,29 @@ function ShaderPlaneWithHover() {
 
       void main() {
         float sliceWidth = 1.0 / uTotalSlices;
-        float currentSlice = floor(vUv.x * uTotalSlices);
-        
-        // Each slice shows a portion of the full-width image
         vec2 finalUv = vUv;
-        finalUv.x = (currentSlice + vUv.x - floor(vUv.x * uTotalSlices)) / uTotalSlices;
-        
-        if (uHoveredSlice >= 0.0) {
-          float t = easeOutCubic(uTransition);
-          
-          if (currentSlice == uHoveredSlice) {
-            // For hovered slice, expand UV range to show more of the image
-            float startX = currentSlice / uTotalSlices;
-            float endX = (currentSlice + 1.0) / uTotalSlices;
-            float fullImageX = vUv.x;
-            
-            // Transition from slice view to full image view
-            finalUv.x = mix(
-              // Starting state: only show slice portion
-              mix(startX, endX, (vUv.x * uTotalSlices - currentSlice)),
-              // End state: show full width image
-              fullImageX,
-              t
-            );
-          } else {
-            // For non-hovered slices, push them off screen
-            float pushDirection = currentSlice < uHoveredSlice ? -1.0 : 1.0;
-            float offset = pushDirection * t;
-            finalUv.x += offset;
-          }
-        }
+        float currentSlice;
 
-        // Discard pixels outside valid range
-        if (finalUv.x < 0.0 || finalUv.x > 1.0) {
-          discard;
+        float activeSlice = uHoveredSlice >= 0.0 ? uHoveredSlice : uLastHoveredSlice;
+        
+        if (activeSlice >= 0.0) {
+          // on hover, the current slice changes
+          float t = easeOutCubic(uTransition);
+
+          // define left and right boundaries of hovered slice
+          float leftSpace = (sliceWidth * activeSlice);
+          float rightSpace = (sliceWidth * activeSlice) + sliceWidth;
+          float hoveredLeftPos = leftSpace - t * leftSpace;
+          float hoveredRightPos = rightSpace + t * (1.0 - rightSpace);
+
+          // if vUv.x is in between hoveredLeftPos and hoveredRightPos then it's on the hovering slice
+          if (vUv.x > hoveredLeftPos && vUv.x < hoveredRightPos) {
+            currentSlice = activeSlice;
+          } else {
+            currentSlice = floor(vUv.x * uTotalSlices);
+          }
+        } else {
+          currentSlice = floor(vUv.x * uTotalSlices);
         }
 
         // Sample from the appropriate texture
@@ -153,24 +146,36 @@ function ShaderPlaneWithHover() {
     `,
   });
 
-  useFrame((state, delta) => {
+  useFrame((_, delta) => {
     const targetTransition = hoveredSlice >= 0 ? 1 : 0;
-    const newTransition = THREE.MathUtils.lerp(
-      transition,
-      targetTransition,
-      delta * 1.5, // Adjust speed as needed
+    let speed: number;
+    if (hoveredSlice == -1) {
+      speed = delta * 6;
+    } else {
+      speed = delta * 2;
+    }
+
+    const newTransition = THREE.MathUtils.clamp(
+      THREE.MathUtils.lerp(transition, targetTransition, speed),
+      0,
+      1,
     );
     setTransition(newTransition);
     shaderMaterial.uniforms.uTransition.value = newTransition;
   });
 
   const handlePointerMove = (event: ThreeEvent<PointerEvent>) => {
-    const x = (event.point.x + viewport.width / 2) / viewport.width;
-    const sliceIndex = Math.floor(x * 5);
-    setHoveredSlice(sliceIndex);
+    // set hover slice ONLY if last slice is -1
+    if (hoveredSlice == -1) {
+      const x = (event.point.x + viewport.width / 2) / viewport.width;
+      const sliceIndex = Math.floor(x * 5);
+      setLastHoveredSlice(sliceIndex);
+      setHoveredSlice(sliceIndex);
+    }
   };
 
-  const handlePointerLeave = (event: ThreeEvent<PointerEvent>) => {
+  const handlePointerLeave = () => {
+    setLastHoveredSlice(hoveredSlice);
     setHoveredSlice(-1);
   };
 
@@ -198,7 +203,7 @@ export default function CanvasOne() {
   }
 
   return (
-    <div className="h-full w-full max-w-[1000px]">
+    <div className="flex h-full w-full max-w-[1000px] flex-col gap-4">
       <div className="aspect-[3/2] w-full">
         <Canvas
           camera={{ position: [0, 0, 1], fov: 50 }}
@@ -213,18 +218,21 @@ export default function CanvasOne() {
         </Canvas>
       </div>
 
-      <div className="aspect-[3/2] w-full">
-        <Canvas
-          camera={{ position: [0, 0, 1], fov: 50 }}
-          style={{
-            width: "100%",
-            height: "100%",
-          }}
-        >
-          <Suspense fallback={null}>
-            <ShaderPlaneWithHover />
-          </Suspense>
-        </Canvas>
+      <div className="flex flex-col items-center">
+        <div className="aspect-[3/2] w-full cursor-pointer">
+          <Canvas
+            camera={{ position: [0, 0, 1], fov: 50 }}
+            style={{
+              width: "100%",
+              height: "100%",
+            }}
+          >
+            <Suspense fallback={null}>
+              <ShaderPlaneWithHover />
+            </Suspense>
+          </Canvas>
+        </div>
+        <Caption>hover on each image slice to expand</Caption>
       </div>
     </div>
   );
