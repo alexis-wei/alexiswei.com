@@ -53,7 +53,7 @@ export default function ShaderAnimations() {
           adding the text and the animations in the way that i envisioned in my
           head was actually extremely easy from here. The most difficult part in
           this entire process was figuring out the right shader logic to create
-          smooth transitions. it's all design and intuition from here
+          smooth transitions. it&apos;s all design and intuition from here
         </DescriptionText>
         <DescriptionText>happy coding!</DescriptionText>
       </div>
