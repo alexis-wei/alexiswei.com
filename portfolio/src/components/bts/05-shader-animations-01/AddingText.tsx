@@ -11,8 +11,12 @@ import { Afacad } from "next/font/google";
 // Initialize the font at the module scope
 const afacad = Afacad({
   subsets: ["latin"],
-  weight: "700",
+  style: ["normal"],
+  weight: ["700"],
   display: "swap",
+  fallback: ["Inter"],
+  variable: "--font-afacad",
+  adjustFontFallback: false,
 });
 
 const IMAGE_URLS = [
@@ -176,7 +180,7 @@ function TextOverlay({
       {letters.map((letter, index) => (
         <span
           key={index}
-          className={`hover:text-shadow-gray-500 hover:text-shadow-sm cursor-pointer text-4xl text-white transition-all duration-300 hover:mix-blend-overlay ${afacad.className}`}
+          className={`hover:text-shadow-gray-500 cursor-pointer·text-4xl·text-white·transition-all·duration-300·hover:mix-blend-overlay·hover:text-shadow-sm ${afacad.variable}`}
           onMouseEnter={() => onHover(index)}
           onMouseLeave={onLeave}
         >
