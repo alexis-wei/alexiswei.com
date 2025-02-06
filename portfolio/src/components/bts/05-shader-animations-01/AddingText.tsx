@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { useState, useEffect, Suspense, useMemo } from "react";
 import { Canvas, useLoader, useThree, useFrame } from "@react-three/fiber";
 import { TextureLoader } from "three/src/loaders/TextureLoader";
@@ -7,11 +8,12 @@ import * as THREE from "three";
 import { Caption } from "../ui";
 import { Afacad } from "next/font/google";
 
-// Apply the font to a className we'll use
-const fontClass = Afacad({
+// Initialize the font at the module scope
+const afacad = Afacad({
   subsets: ["latin"],
-  weight: ["700"],
-}).className;
+  weight: "700",
+  display: "swap",
+});
 
 const IMAGE_URLS = [
   process.env.NEXT_PUBLIC_MEDIA_URL + "/banff/banff-horizontal-1.jpg",
@@ -174,7 +176,7 @@ function TextOverlay({
       {letters.map((letter, index) => (
         <span
           key={index}
-          className={`hover:text-shadow-gray-500 cursor-pointer·text-4xl·text-white·transition-all·duration-300·hover:mix-blend-overlay·hover:text-shadow-sm ${fontClass}`}
+          className={`hover:text-shadow-gray-500 hover:text-shadow-sm cursor-pointer text-4xl text-white transition-all duration-300 hover:mix-blend-overlay ${afacad.className}`}
           onMouseEnter={() => onHover(index)}
           onMouseLeave={onLeave}
         >

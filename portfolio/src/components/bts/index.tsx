@@ -10,7 +10,7 @@ interface ExplorationButtonProps {
 
 const EXPLORATIONS: ExplorationButtonProps[] = [
   {
-    url: "/bts/03-shader-animations-01",
+    url: "/bts/05-shader-animations-01",
     heading: "05-shader-animations",
     description:
       `step by step recount on how I thought about animations, my approach, learnings, and iterations`
