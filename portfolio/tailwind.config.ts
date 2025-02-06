@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import plugin from "tailwindcss/plugin";
 
 const config: Config = {
   darkMode: ["class"],
@@ -35,9 +36,24 @@ const config: Config = {
         "spacing-and-colors":
           "margin, padding, color, background-color, border-color, text-decoration-color, fill, stroke;",
       },
+      textShadow: {
+        sm: "0 0 2px var(--tw-shadow-color)",
+      },
     },
   },
   // eslint-disable-next-line @typescript-eslint/no-require-imports
-  plugins: [require("tailwindcss-animate")],
+  plugins: [
+    require("tailwindcss-animate"),
+    plugin(function ({ matchUtilities, theme }) {
+      matchUtilities(
+        {
+          "text-shadow": (value) => ({
+            textShadow: value,
+          }),
+        },
+        { values: theme("textShadow") },
+      );
+    }),
+  ],
 };
 export default config;

@@ -3,6 +3,7 @@
 import DisplayComparisons from "./DisplayComparisons";
 import { DescriptionText, ExplorationIntro, SectionHeading } from "../ui";
 import HoverToExpand from "./HoverToExpand";
+import AddingText from "./AddingText";
 
 export default function ShaderAnimations() {
   const introDescription = `vertex and color changes as a result of shader value tracking. 
@@ -44,6 +45,8 @@ export default function ShaderAnimations() {
           lot of possibilities of what shaders, the thoughtfulness behind the
           motion, and the transitions that learning this can unlock
         </DescriptionText>
+        <SectionHeading>Adding Text</SectionHeading>
+        <AddingText />
       </div>
     </div>
   );
