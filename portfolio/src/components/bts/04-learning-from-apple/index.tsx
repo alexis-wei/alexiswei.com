@@ -19,7 +19,7 @@ const Main = () => {
         </p>
       </div>
       <div className="flex flex-col gap-6">
-        <a href="/explorations/04-learning-from-apple/clone">
+        <a href="/bts/04-learning-from-apple/clone">
           &gt; visit apple iPhone 16 page clone &lt;
         </a>
         <p className="max-w-[800px] text-sm tracking-tighter">
