@@ -1,7 +1,8 @@
 "use client";
 
-import PhotoCanvasOne from "./PhotoCanvasOne";
+import DisplayComparisons from "./DisplayComparisons";
 import { DescriptionText, ExplorationIntro } from "../ui";
+import CanvasOne from "./CanvasOne";
 
 export default function ShaderAnimations() {
   const introDescription = `vertex and color changes as a result of shader value tracking. 
@@ -14,14 +15,25 @@ export default function ShaderAnimations() {
         date="02/05/25"
       />
       <div className="flex flex-col gap-6">
-        <PhotoCanvasOne />
+        <DisplayComparisons />
         <DescriptionText>
-          there are 2 ways in threejs to load photos onto your mesh to be
-          displayed, either through texture mapping or through shaders. to my
-          surprise, the color output from the two methods are actually
-          different, and as a basicMeshMaterial, a different color output than
-          as an img
+          there are 2 ways in <code>three.js</code> to load images onto your
+          mesh to be displayed, and a surprise finding while experimenting was
+          learning that the color output from the two methods are actually
+          different, and are also different from using your basic
+          <code>{`<img>`}</code>. As you can see above, with the same photo,
+          with <code>{`<img>`}</code> as reference (assuming it has the most
+          accurate color processing),
+          <code>meshBasicMaterial</code> results in a lighter, more washed out
+          tone while a basic custom shader brings out more shadows. both
+          canvases have no additional lighting added
         </DescriptionText>
+        <DescriptionText>
+          so much of creative coding and art is really about understanding your
+          medium and tools, just like how different brands of paint and paint
+          brushes create art differently
+        </DescriptionText>
+        <CanvasOne />
       </div>
     </div>
   );

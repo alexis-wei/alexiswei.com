@@ -8,7 +8,7 @@ import { SpotLight, SpotLightHelper } from "three";
 import { MutableRefObject, useRef, useState } from "react";
 import { Slider } from "@/components/ui/slider";
 import { useAnimationFrame } from "motion/react";
-import { DescriptionText } from "../ui";
+import { DescriptionText, SectionHeading } from "../ui";
 
 function GlassPyramid() {
   const [rotationY, setRotationY] = useState(0);
@@ -136,7 +136,7 @@ export default function LightStudy() {
 
   return (
     <div className="flex flex-col gap-2">
-      <h6>spotlight study</h6>
+      <SectionHeading>spotlight study</SectionHeading>
       <div className="flex flex-wrap gap-4">
         <div className="relative">
           <Canvas style={canvasSize}>

@@ -31,3 +31,7 @@ export const DescriptionText = ({
 export const Caption = ({ children }: { children: React.ReactNode }) => {
   return <p className="w-full max-w-72 text-center text-sm">{children}</p>;
 };
+
+export const SectionHeading = ({ children }: { children: React.ReactNode }) => {
+  return <h6>{children}</h6>;
+};

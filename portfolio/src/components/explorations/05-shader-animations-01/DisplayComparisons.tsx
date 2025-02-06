@@ -95,7 +95,7 @@ export default function PhotoCanvas() {
     <div className="grid h-full w-full max-w-[1000px] grid-cols-1 gap-4 md:grid-cols-3">
       <div className="flex flex-col items-center justify-start gap-2">
         <img src={IMAGE_URL} className="aspect-[3/2] w-full" />
-        <Caption>displaying as an img</Caption>
+        <Caption>{`using regular <img> tag`}</Caption>
       </div>
       <div className="flex flex-col items-center justify-start gap-2">
         <div className="aspect-[3/2] w-full">
@@ -111,7 +111,9 @@ export default function PhotoCanvas() {
             </Suspense>
           </Canvas>
         </div>
-        <Caption>using basic mesh material</Caption>
+        <Caption>
+          threejs plane w/ <code>meshBasicMaterial</code>
+        </Caption>
       </div>
       <div className="flex flex-col items-center justify-start gap-2">
         <div className="aspect-[3/2] w-full">
@@ -127,9 +129,7 @@ export default function PhotoCanvas() {
             </Suspense>
           </Canvas>
         </div>
-        <Caption>
-          using custom shader material that simply displays the image
-        </Caption>
+        <Caption>threejs plane w/ basic custom shader material</Caption>
       </div>
     </div>
   );

@@ -5,7 +5,7 @@ import {
 } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { DoubleSide } from "three";
-import { DescriptionText } from "../ui";
+import { DescriptionText, SectionHeading } from "../ui";
 
 const GlassSphere = () => {
   return (
@@ -71,7 +71,7 @@ const GlassStudy = () => {
   };
   return (
     <div className="flex flex-col gap-2">
-      <h6>draggable glass study</h6>
+      <SectionHeading>draggable glass study</SectionHeading>
       <div className="flex flex-wrap gap-4">
         <div className="relative">
           <Canvas style={canvasSize}>
