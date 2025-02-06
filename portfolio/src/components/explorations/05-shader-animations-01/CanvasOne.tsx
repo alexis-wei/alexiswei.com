@@ -19,72 +19,17 @@ const IMAGE_URLS = [
   process.env.NEXT_PUBLIC_MEDIA_URL + "/banff/banff-horizontal-5.jpg",
 ];
 
-interface ShaderPlaneProps {
-  url: string;
-  position: number;
-}
-
-function ShaderPlane({ url, position }: ShaderPlaneProps) {
-  const texture = useLoader(TextureLoader, url);
-  const { viewport } = useThree();
-
-  const imageAspect = texture.image.width / texture.image.height;
-  const scale = getMeshScale(imageAspect);
-  const adjustedPosition = position * (viewport.width / 5);
-
-  const shaderMaterial = new THREE.ShaderMaterial({
-    uniforms: {
-      uTexture: { value: texture },
-    },
-    vertexShader: `
-      varying vec2 vUv;
-      
-      void main() {
-        vUv = uv;
-        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-      }
-    `,
-    fragmentShader: `
-      uniform sampler2D uTexture;
-      varying vec2 vUv;
-
-      void main() {
-        vec4 texture = texture2D(uTexture, vUv);
-        gl_FragColor = texture;
-      }
-    `,
-  });
-
-  return (
-    <mesh scale={scale} position={[adjustedPosition, 0, 0]}>
-      <planeGeometry />
-      <primitive object={shaderMaterial} attach="material" />
-    </mesh>
-  );
-}
-
-const getMeshScale = (imageAspect: number): THREE.Vector3 => {
-  const { viewport } = useThree();
-
-  const scale = new THREE.Vector3(
-    viewport.height * imageAspect,
-    viewport.height,
-    1,
-  );
-
-  console.log("scale", scale);
-  return scale;
-};
-
-function ShaderPlanes() {
+/**
+ * ShaderPlane displays a mesh that combines 5 images as textures into one image
+ * @returns
+ */
+function ShaderPlane() {
   const textures = useLoader(TextureLoader, IMAGE_URLS);
   const { viewport } = useThree();
-  const [hoveredSlice, setHoveredSlice] = useState(-1);
 
   const shaderMaterial = new THREE.ShaderMaterial({
     uniforms: {
       uTextures: { value: textures as THREE.Texture[] },
-      uHoveredSlice: { value: hoveredSlice },
       uTotalSlices: { value: 5.0 },
     },
     vertexShader: `
@@ -97,7 +42,6 @@ function ShaderPlanes() {
     `,
     fragmentShader: `
       uniform sampler2D uTextures[5];
-      uniform float uHoveredSlice;
       uniform float uTotalSlices;
       varying vec2 vUv;
 
@@ -118,29 +62,15 @@ function ShaderPlanes() {
     `,
   });
 
-  const handlePointerMove = (event: ThreeEvent<PointerEvent>) => {
-    const x = (event.point.x + viewport.width / 2) / viewport.width;
-    const sliceIndex = Math.floor(x * 5);
-    setHoveredSlice(sliceIndex);
-  };
-
-  const handlePointerLeave = (event: ThreeEvent<PointerEvent>) => {
-    setHoveredSlice(-1);
-  };
-
   return (
-    <mesh
-      scale={[viewport.width, viewport.height, 1]}
-      onPointerMove={handlePointerMove}
-      onPointerLeave={handlePointerLeave}
-    >
+    <mesh scale={[viewport.width, viewport.height, 1]}>
       <planeGeometry />
       <primitive object={shaderMaterial} attach="material" />
     </mesh>
   );
 }
 
-function ShaderPlanesWithHover() {
+function ShaderPlaneWithHover() {
   const textures = useLoader(TextureLoader, IMAGE_URLS);
   const { viewport } = useThree();
   const [hoveredSlice, setHoveredSlice] = useState<number>(-1);
@@ -278,7 +208,7 @@ export default function CanvasOne() {
           }}
         >
           <Suspense fallback={null}>
-            <ShaderPlanes />
+            <ShaderPlane />
           </Suspense>
         </Canvas>
       </div>
@@ -292,7 +222,7 @@ export default function CanvasOne() {
           }}
         >
           <Suspense fallback={null}>
-            <ShaderPlanesWithHover />
+            <ShaderPlaneWithHover />
           </Suspense>
         </Canvas>
       </div>
