@@ -2,16 +2,14 @@
 import { notFound } from "next/navigation";
 import dynamic from "next/dynamic";
 
-export default function ExplorationDeeperPage({
-  params,
+export default function ExplorationPage({
+  params: { title },
 }: {
-  params: { title: string; slug: string };
+  params: { title: string };
 }) {
+  // Dynamically import the component based on slug
   const ExplorationComponent = dynamic(
-    () =>
-      import(`@/components/explorations/${params.title}/${params.slug}`).catch(
-        () => notFound(),
-      ),
+    () => import(`@/components/bts/${title}`).catch(() => notFound()),
     {
       ssr: false,
       loading: () => <div>Loading...</div>,

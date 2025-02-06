@@ -1,23 +1,17 @@
 "use client";
 
-import {
-  useState,
-  useEffect,
-  Suspense,
-  useMemo,
-  useCallback,
-  useRef,
-} from "react";
+import { useState, useEffect, Suspense, useMemo } from "react";
 import { Canvas, useLoader, useThree, useFrame } from "@react-three/fiber";
 import { TextureLoader } from "three/src/loaders/TextureLoader";
 import * as THREE from "three";
 import { Caption } from "../ui";
 import { Afacad } from "next/font/google";
 
-const afacad = Afacad({
+// Apply the font to a className we'll use
+const fontClass = Afacad({
   subsets: ["latin"],
   weight: ["700"],
-});
+}).className;
 
 const IMAGE_URLS = [
   process.env.NEXT_PUBLIC_MEDIA_URL + "/banff/banff-horizontal-1.jpg",
@@ -26,35 +20,6 @@ const IMAGE_URLS = [
   process.env.NEXT_PUBLIC_MEDIA_URL + "/banff/banff-horizontal-4.jpg",
   process.env.NEXT_PUBLIC_MEDIA_URL + "/banff/banff-horizontal-5.jpg",
 ];
-
-// Custom debounce hook
-function useDebounce<T extends (...args: any[]) => any>(
-  callback: T,
-  delay: number,
-) {
-  const timeoutRef = useRef<NodeJS.Timeout>();
-
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-  }, []);
-
-  return useCallback(
-    (...args: Parameters<T>) => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-
-      timeoutRef.current = setTimeout(() => {
-        callback(...args);
-      }, delay);
-    },
-    [callback, delay],
-  );
-}
 
 function HoverWithText({ hoveredSlice }: { hoveredSlice: number }) {
   const textures = useLoader(TextureLoader, IMAGE_URLS);
@@ -67,11 +32,9 @@ function HoverWithText({ hoveredSlice }: { hoveredSlice: number }) {
     if (hoveredSlice >= 0) {
       setLastHoveredSlice(hoveredSlice);
     }
-    // Don't update lastHoveredSlice when hoveredSlice becomes -1
-    // This allows us to keep the last hovered slice during the transition out
   }, [hoveredSlice]);
 
-  // Memoize the shader material
+  // Memoize the shader material with all required dependencies
   const shaderMaterial = useMemo(
     () =>
       new THREE.ShaderMaterial({
@@ -146,8 +109,8 @@ function HoverWithText({ hoveredSlice }: { hoveredSlice: number }) {
       }
     `,
       }),
-    [textures],
-  ); // Only recreate if textures change
+    [textures, hoveredSlice, lastHoveredSlice, transition],
+  );
 
   // Update uniforms directly instead of recreating material
   useEffect(() => {
@@ -211,7 +174,7 @@ function TextOverlay({
       {letters.map((letter, index) => (
         <span
           key={index}
-          className={`${afacad.className} hover:text-shadow-sm hover:text-shadow-gray-500 cursor-pointer text-4xl text-white transition-all duration-300 hover:mix-blend-overlay`}
+          className={`hover:text-shadow-gray-500 cursor-pointer·text-4xl·text-white·transition-all·duration-300·hover:mix-blend-overlay·hover:text-shadow-sm ${fontClass}`}
           onMouseEnter={() => onHover(index)}
           onMouseLeave={onLeave}
         >

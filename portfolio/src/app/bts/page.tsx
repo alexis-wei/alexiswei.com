@@ -1,4 +1,4 @@
-import ExplorationsHome from "@/components/explorations";
+import ExplorationsHome from "@/components/bts";
 
 const Explorations = () => {
   return <ExplorationsHome />;

@@ -10,7 +10,15 @@ interface ExplorationButtonProps {
 
 const EXPLORATIONS: ExplorationButtonProps[] = [
   {
-    url: "/explorations/03-fireworks",
+    url: "/bts/03-shader-animations-01",
+    heading: "05-shader-animations",
+    description:
+      `step by step recount on how I thought about animations, my approach, learnings, and iterations`
+        .replace(/\s+/g, " ")
+        .trim(),
+  },
+  {
+    url: "/bts/03-fireworks",
     heading: "03-fireworks",
     description:
       `trying out shader coding for the first time, creating a fireworks scene with GSAP`
@@ -18,7 +26,7 @@ const EXPLORATIONS: ExplorationButtonProps[] = [
         .trim(),
   },
   {
-    url: "/explorations/02-playing-in-3d",
+    url: "/bts/02-playing-in-3d",
     heading: "02-playing in 3d",
     description: `setting up a scene in 3js, playing with different materials, 
     lighting and the way 3d shape can impact and effect the outcome of the visuals
@@ -27,7 +35,7 @@ const EXPLORATIONS: ExplorationButtonProps[] = [
       .trim(),
   },
   {
-    url: "/explorations/01-animating-svgs",
+    url: "/bts/01-animating-svgs",
     heading: "01-animating svgs",
     description:
       `an exploration of editing raw svgs, comparing techniques between js 
@@ -62,9 +70,14 @@ const ExplorationsHome = () => {
     <main className="flex w-screen items-center justify-center">
       <div className="flex max-w-[1200px] flex-col items-center gap-8 p-6">
         <div className="flex w-full flex-col items-start gap-2">
-          <h1 className="text-start tracking-tighter">explorations</h1>
+          <h1 className="text-start tracking-tighter">
+            bts (behind the scenes)
+          </h1>
           <p className="max-w-[480px]">est. nov 2024</p>
-          <p className="max-w-[480px]">welcome to my learning drafts center</p>
+          <p className="max-w-[480px]">
+            welcome to my learning drafts center, the behind the scenes of my
+            explorations
+          </p>
           <p className="max-w-[480px]">
             the idea of this page is to document my raw, authentic thoughts and
             learning process. these are not meant to be perfect or necessarily
