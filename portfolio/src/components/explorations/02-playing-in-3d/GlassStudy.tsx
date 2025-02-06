@@ -5,6 +5,7 @@ import {
 } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { DoubleSide } from "three";
+import { DescriptionText, SectionHeading } from "../ui";
 
 const GlassSphere = () => {
   return (
@@ -70,7 +71,7 @@ const GlassStudy = () => {
   };
   return (
     <div className="flex flex-col gap-2">
-      <h6>draggable glass study</h6>
+      <SectionHeading>draggable glass study</SectionHeading>
       <div className="flex flex-wrap gap-4">
         <div className="relative">
           <Canvas style={canvasSize}>
@@ -119,13 +120,13 @@ const GlassStudy = () => {
           </p>
         </div>
       </div>
-      <p className="max-w-[500px] text-sm tracking-tighter">
+      <DescriptionText>
         in the 3d world, you <i>actually</i> have to switch your brain to think
         about the third dimension. the physical shape of an object largely
         changes what you see on screen and the effect lighting has on it. with
         the same exact materials applied to a sphere vs a cylinder, the shape
         changes if there is glass distortion vs not
-      </p>
+      </DescriptionText>
     </div>
   );
 };
