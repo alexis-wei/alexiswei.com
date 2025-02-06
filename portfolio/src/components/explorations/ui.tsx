@@ -24,7 +24,7 @@ export const DescriptionText = ({
   children: React.ReactNode;
 }) => {
   return (
-    <p className="w-full max-w-[500px] text-sm tracking-tighter">{children}</p>
+    <p className="w-full max-w-[700px] text-sm tracking-tighter">{children}</p>
   );
 };
 

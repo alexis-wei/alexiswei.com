@@ -203,22 +203,28 @@ export default function CanvasOne() {
   }
 
   return (
-    <div className="flex h-full w-full max-w-[1000px] flex-col gap-4">
-      <div className="aspect-[3/2] w-full">
-        <Canvas
-          camera={{ position: [0, 0, 1], fov: 50 }}
-          style={{
-            width: "100%",
-            height: "100%",
-          }}
-        >
-          <Suspense fallback={null}>
-            <ShaderPlane />
-          </Suspense>
-        </Canvas>
+    <div className="flex h-full w-full max-w-[1000px] flex-col gap-6">
+      <div className="flex flex-col items-center gap-2">
+        <div className="aspect-[3/2] w-full">
+          <Canvas
+            camera={{ position: [0, 0, 1], fov: 50 }}
+            style={{
+              width: "100%",
+              height: "100%",
+            }}
+          >
+            <Suspense fallback={null}>
+              <ShaderPlane />
+            </Suspense>
+          </Canvas>
+        </div>
+        <Caption>
+          small progressions, first just using shaders to display the images in
+          its desired slices
+        </Caption>
       </div>
 
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col items-center gap-2">
         <div className="aspect-[3/2] w-full cursor-pointer">
           <Canvas
             camera={{ position: [0, 0, 1], fov: 50 }}
@@ -232,7 +238,9 @@ export default function CanvasOne() {
             </Suspense>
           </Canvas>
         </div>
-        <Caption>hover on each image slice to expand</Caption>
+        <Caption>
+          hoverable version: hover on each image slice and watch
+        </Caption>
       </div>
     </div>
   );

@@ -1,8 +1,8 @@
 "use client";
 
 import DisplayComparisons from "./DisplayComparisons";
-import { DescriptionText, ExplorationIntro } from "../ui";
-import CanvasOne from "./CanvasOne";
+import { DescriptionText, ExplorationIntro, SectionHeading } from "../ui";
+import HoverToExpand from "./HoverToExpand";
 
 export default function ShaderAnimations() {
   const introDescription = `vertex and color changes as a result of shader value tracking. 
@@ -15,6 +15,9 @@ export default function ShaderAnimations() {
         date="02/05/25"
       />
       <div className="flex flex-col gap-6">
+        <SectionHeading>
+          part 01: how do i get these images to show up?
+        </SectionHeading>
         <DisplayComparisons />
         <DescriptionText>
           there are 2 ways in <code>three.js</code> to load images onto your
@@ -33,7 +36,14 @@ export default function ShaderAnimations() {
           medium and tools, just like how different brands of paint and paint
           brushes create art differently
         </DescriptionText>
-        <CanvasOne />
+        <SectionHeading>part 02: hover to expand</SectionHeading>
+        <HoverToExpand />
+        <DescriptionText>
+          from this moment, things are starting to click. this hover transition
+          animation is incredibly smooth and it's from here where i see a lot of
+          possibilities of what shaders, the thoughtfulness behind the motion,
+          and the transitions that learning this can unlock
+        </DescriptionText>
       </div>
     </div>
   );
