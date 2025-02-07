@@ -1,32 +1,23 @@
 "use client";
-import { useEffect, useState } from "react";
-import Home from "./Home";
-import Welcome from "./Welcome";
 
-const Main = () => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [hasVisited, setHasVisited] = useState(false);
+import SocialMedia from "@/lib/SocialMedia";
 
-  useEffect(() => {
-    const visited = sessionStorage.getItem("hasVisitedBefore");
-    if (!visited) {
-      sessionStorage.setItem("hasVisitedBefore", "true");
-    } else {
-      setHasVisited(true);
-    }
-
-    setIsLoading(false);
-  }, []);
-
+export default function Main() {
   return (
-    <div className="flex h-dvh w-dvw items-center justify-center">
-      {!isLoading && (
-        <>
-          <Home />
-          {!hasVisited && <Welcome />}
-        </>
-      )}
+    <div className="flex h-dvh w-dvw items-center justify-center bg-white">
+      <div className="flex flex-col items-center gap-2">
+        <p className="font-mono text-xs">alexiswei.com is</p>
+        <img
+          src="/animations/under-construction.gif"
+          alt="Under Construction"
+          width={240}
+          height={240}
+        />
+        <div className="flex flex-col items-center">
+          <p className="font-mono text-xs">meanwhile you can find me @</p>
+          <SocialMedia />
+        </div>
+      </div>
     </div>
   );
-};
-export default Main;
+}
