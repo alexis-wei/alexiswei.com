@@ -4,7 +4,7 @@ export default function SocialMedia() {
   return (
     <div className="flex h-fit items-start">
       <Button
-        className="w-6 text-stone-400"
+        className="w-6 text-blue-200"
         variant="ghost"
         size="icon"
         aria-label="calendar link to schedule initial consultation"
@@ -15,7 +15,7 @@ export default function SocialMedia() {
         <IconHeroiconsCalendar />
       </Button>
       <Button
-        className="w-6 text-stone-400"
+        className="w-6 text-blue-200"
         variant="ghost"
         size="icon"
         aria-label="link to twitter/x profile"
@@ -24,7 +24,7 @@ export default function SocialMedia() {
         <IconBasilTwitterOutline />
       </Button>
       <Button
-        className="w-6 text-stone-400"
+        className="w-6 text-blue-200"
         variant="ghost"
         size="icon"
         aria-label="email alexis"
@@ -35,7 +35,7 @@ export default function SocialMedia() {
         <IconHeroiconsEnvelope />
       </Button>
       <Button
-        className="w-6 text-stone-400"
+        className="w-6 text-blue-200"
         variant="ghost"
         size="icon"
         aria-label="link to visit alexis' substack"
@@ -46,7 +46,7 @@ export default function SocialMedia() {
         <IconBiSubstack className="scale-[80%]" />
       </Button>
       <Button
-        className="w-6 text-stone-400"
+        className="w-6 text-blue-200"
         variant="ghost"
         size="icon"
         aria-label="check out alexis' github page"
