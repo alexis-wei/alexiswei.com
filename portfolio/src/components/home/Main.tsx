@@ -13,18 +13,48 @@ const Experience = ({
   title,
   date,
   description,
+  link,
 }: {
   companyName: string;
   title: string;
   date: string;
   description: string;
+  link?: string;
 }) => {
   return (
     <AccordionItem value={companyName}>
       <AccordionTrigger className="pr-2">
         <div className="grid w-full grid-cols-7 items-baseline px-2 font-sans">
           <p className="col-span-3 text-xs font-semibold">{title}</p>
-          <p className="col-span-3 text-xs font-semibold">{companyName}</p>
+          <p className="col-span-3 text-xs font-semibold">
+            {companyName}
+            {link && (
+              <a
+                href={link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="ml-1 inline-block"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  className="inline-block h-3 w-3"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M4.25 5.5a.75.75 0 00-.75.75v8.5c0 .414.336.75.75.75h8.5a.75.75 0 00.75-.75v-4a.75.75 0 011.5 0v4A2.25 2.25 0 0112.75 17h-8.5A2.25 2.25 0 012 14.75v-8.5A2.25 2.25 0 014.25 4h5a.75.75 0 010 1.5h-5z"
+                    clipRule="evenodd"
+                  />
+                  <path
+                    fillRule="evenodd"
+                    d="M6.194 12.753a.75.75 0 001.06.053L16.5 4.44v2.81a.75.75 0 001.5 0v-4.5a.75.75 0 00-.75-.75h-4.5a.75.75 0 000 1.5h2.553l-9.056 8.194a.75.75 0 00-.053 1.06z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </a>
+            )}
+          </p>
           <p className="text-right text-xs font-semibold">{date}</p>
         </div>
       </AccordionTrigger>
@@ -37,7 +67,7 @@ const Experience = ({
 
 export default function Main() {
   return (
-    <div className="text-royal flex h-dvh w-dvw justify-start bg-white">
+    <div className="flex h-dvh w-dvw justify-start bg-white text-royal">
       <div className="flex flex-col items-start p-12">
         <h1 className="mb-4 font-serif text-3xl font-bold">alexis wei</h1>
 
@@ -53,7 +83,7 @@ export default function Main() {
               type="single"
               collapsible
               defaultValue=""
-              className="border-royal max-w-full border-b border-t sm:w-[520px]"
+              className="max-w-full border-b border-t border-royal sm:w-[520px]"
             >
               <Experience
                 companyName="--"
@@ -66,18 +96,21 @@ export default function Main() {
                 title="Co-founder & CTO"
                 date="2024"
                 description="Built a video first link-in-bio shop for sellers on social media"
+                link="https://thedrop.fun"
               />
               <Experience
                 companyName="Viam Robotics"
                 title="Full Stack Software Engineer"
                 date="2022-2023"
                 description="Machine learning platform from camera and sensor data [Javascript, Go, GCS, MongoDB]"
+                link="https://www.viam.com"
               />
               <Experience
                 companyName="Corner"
                 title="Founding Engineer"
                 date="2019-2022"
                 description="Connecting you with the places around you"
+                link="https://www.corner.inc"
               />
               <Experience
                 companyName="Microsoft"
