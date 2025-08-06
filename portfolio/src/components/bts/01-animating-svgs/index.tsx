@@ -18,7 +18,7 @@ const Main: React.FC = () => {
       />
 
       <div className="flex w-full max-w-[800px] flex-col items-start gap-12">
-        <div className="flex h-full w-full flex-col gap-8">
+        <div className="flex size-full flex-col gap-8">
           <h6>vanilla js vs using a library</h6>
           <p className="text-sm">hover to animate</p>
           <div className="flex w-full flex-wrap items-start justify-center gap-8 sm:gap-12">

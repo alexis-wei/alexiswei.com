@@ -67,7 +67,7 @@ const TheDrop: FC = () => {
   return (
     <div
       ref={containerRef}
-      className="relative flex h-full w-full max-w-[dvw] grow flex-col items-center gap-4 p-5 pb-40 font-sans md:gap-8"
+      className="relative flex size-full max-w-[dvw] grow flex-col items-center gap-4 p-5 pb-40 font-sans md:gap-8"
     >
       <Header {...theDropHeaderProps} />
 
@@ -99,7 +99,7 @@ const TheDrop: FC = () => {
         </motion.div>
 
         <div className="no-scrollbar w-full overflow-y-hidden overflow-x-scroll py-4">
-          <div className="flex h-full w-fit items-center gap-4 pl-[1px] pr-2">
+          <div className="flex h-full w-fit items-center gap-4 pl-px pr-2">
             <Highlight
               type="image"
               src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/landing-collage.png"
@@ -160,7 +160,7 @@ const TheDrop: FC = () => {
             </p>
           </div>
           <div className="flex h-full min-w-full grow snap-center flex-col items-center justify-center border-4 border-[#FFD218] lg:h-[520px] lg:flex-row">
-            <div className="relative flex h-full w-full items-center justify-center bg-[#FFD218] px-8 py-[88px] lg:w-[680px]">
+            <div className="relative flex size-full items-center justify-center bg-[#FFD218] px-8 py-[88px] lg:w-[680px]">
               <span className="absolute top-8 font-bold uppercase tracking-widest text-black">
                 ELEMENT
               </span>
@@ -238,7 +238,7 @@ const TheDrop: FC = () => {
                 </motion.div>
               </div>
 
-              <div className="absolute bottom-8 flex h-[28px] w-fit gap-2 rounded-full bg-black bg-opacity-70 px-4 py-3">
+              <div className="absolute bottom-8 flex h-[28px] w-fit gap-2 rounded-full bg-white/70 px-4 py-3">
                 <div
                   className={`h-1 rounded-full bg-white transition-all duration-700 ease-out ${dashboardCarouselCard === 0 ? "w-8" : "w-1"}`}
                 ></div>
@@ -247,14 +247,14 @@ const TheDrop: FC = () => {
                 ></div>
               </div>
             </div>
-            <div className="relative flex h-full w-full flex-col items-center justify-center px-8 pb-16 pt-[88px]">
+            <div className="relative flex size-full flex-col items-center justify-center px-8 pb-16 pt-[88px]">
               <span className="absolute top-8 font-bold uppercase tracking-widest text-black">
                 IMPROVEMENTS
               </span>
               {dashboardCarouselCard === 0 ? (
                 <div className="flex flex-col gap-4">
                   <div className="flex gap-4">
-                    <div className="flex h-6 w-6 shrink-0 items-center justify-center bg-black">
+                    <div className="flex size-6 shrink-0 items-center justify-center bg-black">
                       <span className="text-center font-serif text-xs font-bold italic text-white">
                         1.
                       </span>
@@ -267,7 +267,7 @@ const TheDrop: FC = () => {
                     </div>
                   </div>
                   <div className="flex gap-4">
-                    <div className="flex h-6 w-6 shrink-0 items-center justify-center bg-black">
+                    <div className="flex size-6 shrink-0 items-center justify-center bg-black">
                       <span className="text-center font-serif text-xs font-bold italic text-white">
                         2.
                       </span>
@@ -280,7 +280,7 @@ const TheDrop: FC = () => {
                     </div>
                   </div>
                   <div className="flex gap-4">
-                    <div className="flex h-6 w-6 shrink-0 items-center justify-center bg-black">
+                    <div className="flex size-6 shrink-0 items-center justify-center bg-black">
                       <span className="text-center font-serif text-xs font-bold italic text-white">
                         3.
                       </span>
@@ -296,7 +296,7 @@ const TheDrop: FC = () => {
               ) : (
                 <div className="flex flex-col gap-4">
                   <div className="flex gap-4">
-                    <div className="flex h-6 w-6 shrink-0 items-center justify-center bg-black">
+                    <div className="flex size-6 shrink-0 items-center justify-center bg-black">
                       <span className="text-center font-serif text-xs font-bold italic text-white">
                         1.
                       </span>
@@ -309,7 +309,7 @@ const TheDrop: FC = () => {
                     </div>
                   </div>
                   <div className="flex gap-4">
-                    <div className="flex h-6 w-6 shrink-0 items-center justify-center bg-black">
+                    <div className="flex size-6 shrink-0 items-center justify-center bg-black">
                       <span className="text-center font-serif text-xs font-bold italic text-white">
                         2.
                       </span>
@@ -322,7 +322,7 @@ const TheDrop: FC = () => {
                     </div>
                   </div>
                   <div className="flex gap-4">
-                    <div className="flex h-6 w-6 shrink-0 items-center justify-center bg-black">
+                    <div className="flex size-6 shrink-0 items-center justify-center bg-black">
                       <span className="text-center font-serif text-xs font-bold italic text-white">
                         3.
                       </span>
@@ -372,7 +372,7 @@ const TheDrop: FC = () => {
           </div>
 
           <div className="no-scrollbar w-full overflow-y-hidden overflow-x-scroll py-4">
-            <div className="flex h-full w-fit items-center gap-4 pl-[1px] pr-2">
+            <div className="flex h-full w-fit items-center gap-4 pl-px pr-2">
               <Highlight
                 type="image"
                 src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/the-drop/email%20catcher.png"

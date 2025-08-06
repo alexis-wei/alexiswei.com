@@ -36,7 +36,7 @@ const Main: FC<PortfolioProps> = (props: PortfolioProps): JSX.Element => {
   return (
     <div className="flex min-h-screen flex-col items-center">
       <div
-        className={`relative flex h-full min-h-screen w-full flex-col items-center justify-between transition-opacity duration-300 fade-in fade-out`}
+        className={`relative flex size-full min-h-screen flex-col items-center justify-between transition-opacity duration-300 fade-in fade-out`}
       >
         <Button
           className="absolute left-6 top-8 z-10 flex items-center text-stone-800 hover:font-bold hover:text-stone-950"

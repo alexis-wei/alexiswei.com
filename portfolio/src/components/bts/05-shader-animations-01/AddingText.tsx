@@ -227,7 +227,7 @@ export default function AddingText() {
   if (!mounted) return null;
 
   return (
-    <div className="flex h-full w-full max-w-[1000px] flex-col gap-6">
+    <div className="flex size-full max-w-[1000px] flex-col gap-6">
       <div className="flex flex-col items-center gap-2">
         <div className="relative aspect-[3/2] w-full">
           {isLoading ? (

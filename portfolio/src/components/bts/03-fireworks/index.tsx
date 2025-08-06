@@ -63,7 +63,7 @@ export default function Fireworks() {
           />
           <motion.div
             style={{ zIndex: 0, opacity: fireworksOpacity }}
-            className="h-full w-full"
+            className="size-full"
           >
             <FireworksScene />
           </motion.div>

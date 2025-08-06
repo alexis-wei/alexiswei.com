@@ -57,6 +57,17 @@ code {
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
   }
+
+  /* Blur utilities for smooth transitions */
+  .blur-initial {
+    filter: blur(8px);
+    opacity: 0;
+  }
+
+  .blur-none {
+    filter: blur(0px);
+    opacity: 1;
+  }
 }
 
 @layer base {

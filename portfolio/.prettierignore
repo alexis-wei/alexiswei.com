@@ -1,0 +1,22 @@
+# Dependencies
+node_modules
+.next
+
+# Auto-generated files
+auto-imports.d.ts
+.eslintcache
+
+# Logs
+*.log
+
+# Package managers
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Build outputs
+dist
+build
+
+# Third-party assets
+public/saturn/scene.gltf 

@@ -1,0 +1,9 @@
+{
+  "settings": {
+    "tailwindcss": {
+      "config": "./tailwind.config.ts",
+      "callees": ["clsx", "cn", "cva"],
+      "classRegex": "^class(Name)?$"
+    }
+  }
+}

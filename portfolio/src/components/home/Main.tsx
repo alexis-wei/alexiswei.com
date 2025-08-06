@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import SocialMedia from "@/lib/SocialMedia";
 import {
   Accordion,
@@ -39,7 +40,7 @@ const Experience = ({
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 20 20"
                   fill="currentColor"
-                  className="inline-block h-3 w-3"
+                  className="inline-block size-3"
                 >
                   <path
                     fillRule="evenodd"
@@ -68,8 +69,19 @@ const Experience = ({
 };
 
 export default function Main() {
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    // Trigger the fade-in animation after component mounts
+    setIsLoaded(true);
+  }, []);
+
   return (
-    <div className="flex h-dvh w-dvw justify-start bg-white text-royal">
+    <div
+      className={`flex h-dvh w-dvw justify-start bg-white text-royal ${
+        isLoaded ? "animate-blur-fade-in" : "opacity-0 blur-lg"
+      }`}
+    >
       <div className="flex flex-col items-start px-[clamp(1rem,4vw,4rem)] py-[clamp(1rem,3vw,3rem)]">
         <h1 className="mb-4 font-serif text-3xl font-bold">alexis wei</h1>
         <div className="flex flex-col items-start gap-6">
@@ -84,7 +96,7 @@ export default function Main() {
               type="single"
               collapsible
               defaultValue=""
-              className="max-w-full border-b border-t border-royal sm:w-[520px]"
+              className="max-w-full border-y border-royal sm:w-[520px]"
             >
               <Experience
                 companyName="Reframe"
