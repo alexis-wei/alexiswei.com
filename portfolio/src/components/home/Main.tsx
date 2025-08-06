@@ -40,7 +40,7 @@ const Experience = ({
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 20 20"
                   fill="currentColor"
-                  className="inline-block h-3 w-3"
+                  className="inline-block size-3"
                 >
                   <path
                     fillRule="evenodd"
@@ -96,7 +96,7 @@ export default function Main() {
               type="single"
               collapsible
               defaultValue=""
-              className="max-w-full border-b border-t border-royal sm:w-[520px]"
+              className="max-w-full border-y border-royal sm:w-[520px]"
             >
               <Experience
                 companyName="Reframe"

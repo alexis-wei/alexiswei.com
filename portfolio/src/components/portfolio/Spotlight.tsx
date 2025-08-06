@@ -30,7 +30,7 @@ const Spotlight: FC = () => {
   };
 
   return (
-    <div className="md: relative flex h-full w-full max-w-[dvw] grow flex-col items-center gap-4 p-5 pb-40 font-sans lg:gap-8">
+    <div className="md: relative flex size-full max-w-[dvw] grow flex-col items-center gap-4 p-5 pb-40 font-sans lg:gap-8">
       <Header {...spotlightHeaderProps} />
       <div className="flex w-full max-w-[1200px] flex-col items-center gap-10 md:gap-16 md:p-5">
         <div className="flex w-full flex-col items-start gap-10 lg:flex-row">
@@ -61,7 +61,7 @@ const Spotlight: FC = () => {
             <h4>typography</h4>
             <div className="flex gap-4">
               <div className="flex flex-col">
-                <div className="relative h-[100px] w-[100px]">
+                <div className="relative size-[100px]">
                   <Image
                     src="https://pub-8e556b3da43842e584bb713fa8c84f5f.r2.dev/portfolio/spotlight/press_start_2p.jpg"
                     sizes="100"

@@ -92,7 +92,7 @@ export default function PhotoCanvas() {
   }
 
   return (
-    <div className="grid h-full w-full max-w-[1000px] grid-cols-1 gap-4 md:grid-cols-3">
+    <div className="grid size-full max-w-[1000px] grid-cols-1 gap-4 md:grid-cols-3">
       <div className="flex flex-col items-center justify-start gap-2">
         <img src={IMAGE_URL} className="aspect-[3/2] w-full" />
         <Caption>{`using regular <img> tag`}</Caption>

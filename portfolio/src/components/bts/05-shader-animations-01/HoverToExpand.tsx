@@ -203,7 +203,7 @@ export default function CanvasOne() {
   }
 
   return (
-    <div className="flex h-full w-full max-w-[1000px] flex-col gap-6">
+    <div className="flex size-full max-w-[1000px] flex-col gap-6">
       <div className="flex flex-col items-center gap-2">
         <div className="aspect-[3/2] w-full">
           <Canvas
