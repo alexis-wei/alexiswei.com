@@ -25,8 +25,8 @@ const Experience = ({
     <AccordionItem value={companyName}>
       <AccordionTrigger className="pr-2">
         <div className="grid w-full grid-cols-7 items-baseline px-2 font-sans">
-          <p className="col-span-3 text-xs font-semibold">{title}</p>
-          <p className="col-span-3 text-xs font-semibold">
+          <p className="col-span-3 mr-2 text-xs font-semibold">{title}</p>
+          <p className="col-span-2 mr-2 flex text-xs font-semibold sm:col-span-3">
             {companyName}
             {link && (
               <a
@@ -55,7 +55,9 @@ const Experience = ({
               </a>
             )}
           </p>
-          <p className="text-right text-xs font-semibold">{date}</p>
+          <p className="col-span-2 text-right text-xs font-semibold leading-none sm:col-span-1">
+            {date}
+          </p>
         </div>
       </AccordionTrigger>
       <AccordionContent className="flex flex-col gap-4 text-wrap p-2">
@@ -68,10 +70,9 @@ const Experience = ({
 export default function Main() {
   return (
     <div className="flex h-dvh w-dvw justify-start bg-white text-royal">
-      <div className="flex flex-col items-start p-12">
+      <div className="flex flex-col items-start px-[clamp(1rem,4vw,4rem)] py-[clamp(1rem,3vw,3rem)]">
         <h1 className="mb-4 font-serif text-3xl font-bold">alexis wei</h1>
-
-        <div className="flex flex-col items-start gap-8">
+        <div className="flex flex-col items-start gap-6">
           <div className="flex flex-col font-mono text-xs">
             <p>design engineer</p>
             <p>photographer</p>
@@ -86,30 +87,37 @@ export default function Main() {
               className="max-w-full border-b border-t border-royal sm:w-[520px]"
             >
               <Experience
-                companyName="--"
-                title="Exploring"
-                date="Currently"
+                companyName="Reframe"
+                title="Co-founder"
+                date="currently"
+                description="Building grammarly for your negative thoughts"
+                link="https://tryrefra.me"
+              />
+              <Experience
+                companyName="Exploring"
+                title="Sabbatical"
+                date="2024-25"
                 description="Design engineering, 3D animation, art, content, yoga"
               />
               <Experience
                 companyName="The Drop"
-                title="Co-founder & CTO"
+                title="CTO"
                 date="2024"
-                description="Built a video first link-in-bio shop for sellers on social media"
+                description="Video first link-in-bio shop for sellers on social media. $30k sales first 2 months"
                 link="https://thedrop.fun"
               />
               <Experience
                 companyName="Viam Robotics"
                 title="Full Stack Software Engineer"
-                date="2022-2023"
+                date="2022-23"
                 description="Machine learning platform from camera and sensor data [Javascript, Go, GCS, MongoDB]"
                 link="https://www.viam.com"
               />
               <Experience
                 companyName="Corner"
-                title="Founding Engineer"
-                date="2019-2022"
-                description="Connecting you with the places around you"
+                title="Founding Member"
+                date="2019-22"
+                description="Making the world a smaller place — connecting you with real places people you know go to"
                 link="https://www.corner.inc"
               />
               <Experience
