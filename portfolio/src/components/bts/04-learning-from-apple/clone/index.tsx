@@ -127,7 +127,7 @@ export default function AppleClone() {
 
   return (
     <div
-      className={`${styles.container} h-full min-h-dvh w-full bg-[#000] font-sans text-white`}
+      className={`${styles.container} size-full min-h-dvh bg-[#000] font-sans text-white`}
     >
       <section
         ref={sectionRef}
@@ -169,12 +169,12 @@ export default function AppleClone() {
           ref={scrollContainer}
           className="margin no-scrollbar w-full snap-x snap-mandatory scroll-pl-[var(--media-padding)] overflow-x-scroll"
         >
-          <ul className="media-left-padding relative grid h-[700px] w-max grid-flow-col gap-6 after:block after:w-[100vw]">
+          <ul className="media-left-padding relative grid h-[700px] w-max grid-flow-col gap-6 after:block after:w-screen">
             <li className="relative flex h-full w-[1400px] snap-start overflow-hidden rounded-xl">
               <figure className="absolute inset-0">
                 <video
                   src="/explorations/04-learning-from-apple/section2_xlarge_2x.mp4"
-                  className="h-full w-full object-cover"
+                  className="size-full object-cover"
                 ></video>
               </figure>
               <div className="absolute left-8 top-6">
@@ -188,7 +188,7 @@ export default function AppleClone() {
               <figure className="absolute inset-0">
                 <video
                   src="/explorations/04-learning-from-apple/section2_xlarge_2x.mp4"
-                  className="h-full w-full object-cover"
+                  className="size-full object-cover"
                 ></video>
               </figure>
               <div className="absolute left-8 top-6">
@@ -202,7 +202,7 @@ export default function AppleClone() {
               <figure className="absolute inset-0">
                 <video
                   src="/explorations/04-learning-from-apple/section2_xlarge_2x.mp4"
-                  className="h-full w-full object-cover"
+                  className="size-full object-cover"
                 ></video>
               </figure>
               <div className="absolute left-8 top-6">
@@ -216,7 +216,7 @@ export default function AppleClone() {
               <figure className="absolute inset-0">
                 <video
                   src="/explorations/04-learning-from-apple/section2_xlarge_2x.mp4"
-                  className="h-full w-full object-cover"
+                  className="size-full object-cover"
                 ></video>
               </figure>
               <div className="absolute left-8 top-6">
@@ -237,16 +237,16 @@ export default function AppleClone() {
             ref={slideShowNavRef}
           >
             <ul className="m-0 flex gap-4">
-              <li className="h-2 w-2 rounded-full bg-neutral-300">
+              <li className="size-2 rounded-full bg-neutral-300">
                 <a></a>
               </li>
-              <li className="h-2 w-2 rounded-full bg-neutral-300">
+              <li className="size-2 rounded-full bg-neutral-300">
                 <a></a>
               </li>
-              <li className="h-2 w-2 rounded-full bg-neutral-300">
+              <li className="size-2 rounded-full bg-neutral-300">
                 <a></a>
               </li>
-              <li className="h-2 w-2 rounded-full bg-neutral-300">
+              <li className="size-2 rounded-full bg-neutral-300">
                 <a></a>
               </li>
             </ul>

@@ -88,7 +88,7 @@ const Home = () => {
     >
       <div className="flex h-dvh w-dvw shrink-0 flex-col items-start justify-between p-9 transition-all duration-700 fade-out sm:flex-row">
         <MovingGradient color={color} />
-        <div className="flex h-full w-full flex-col gap-2.5 text-stone-900">
+        <div className="flex size-full flex-col gap-2.5 text-stone-900">
           <div className="flex flex-col gap-0.5">
             <div className="flex items-baseline gap-1">
               <p className="text-lg font-medium leading-none tracking-tighter">
@@ -176,7 +176,7 @@ const Home = () => {
           className="absolute right-4 top-4 gap-0 rounded-none text-white [&_svg]:pointer-events-auto [&_svg]:size-6"
           onClick={() => hideAbout()}
         >
-          <IconHeroiconsXMark className="h-full w-full text-white" />
+          <IconHeroiconsXMark className="size-full text-white" />
         </Button>
       </div>
     </div>
