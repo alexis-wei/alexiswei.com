@@ -1,6 +1,61 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  /* Colors */
+  --color-black: #1f1f1f;
+  --color-royal: #0042f6;
+  --color-royal-medium: #4e79ee;
+  --color-royal-light: #abc0f7;
+
+  /* Font families */
+  --font-family-sans: var(--font-plus-jakarta-sans), Inter, Helvetica;
+  --font-family-serif: var(--font-libre-baskerville);
+  --font-family-mono: var(--font-ibm-plex-mono);
+
+  /* Font sizes */
+  --font-size-xxs: 10px;
+
+  /* Border radius */
+  --radius: 0.5rem;
+  --border-radius-lg: var(--radius);
+  --border-radius-md: calc(var(--radius) - 2px);
+  --border-radius-sm: calc(var(--radius) - 4px);
+
+  /* Animations */
+  --animate-accordion-down: accordion-down 0.2s
+    cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --animate-accordion-up: accordion-up 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --animate-blur-fade-in: blur-fade-in 1.2s ease forwards;
+}
+
+@keyframes accordion-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
+}
+
+@keyframes blur-fade-in {
+  0% {
+    filter: blur(8px);
+    opacity: 0;
+  }
+  100% {
+    filter: blur(0px);
+    opacity: 1;
+  }
+}
 
 body {
   font-family: var(--font-plus-jakarta-sans), Helvetica, sans-serif;
