@@ -1,17 +1,18 @@
 "use client";
 import { notFound } from "next/navigation";
 import dynamic from "next/dynamic";
+import { use } from "react";
 
-export default function ExplorationDeeperPage({
+export default function ExplorationPage({
   params,
 }: {
-  params: { title: string; slug: string };
+  params: Promise<{ title: string }>;
 }) {
+  const { title } = use(params);
+
+  // Dynamically import the component based on slug
   const ExplorationComponent = dynamic(
-    () =>
-      import(`@/components/bts/${params.title}/${params.slug}`).catch(() =>
-        notFound(),
-      ),
+    () => import(`@/components/bts/${title}`).catch(() => notFound()),
     {
       ssr: false,
       loading: () => <div>Loading...</div>,

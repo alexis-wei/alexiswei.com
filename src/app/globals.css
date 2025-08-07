@@ -1,0 +1,126 @@
+@import "tailwindcss";
+
+@theme {
+  --color-black: #1f1f1f;
+  --color-royal: #0042f6;
+  --color-royal-medium: #4e79ee;
+  --color-royal-light: #abc0f7;
+  
+  --font-family-sans: var(--font-plus-jakarta-sans), Inter, Helvetica;
+  --font-family-serif: var(--font-libre-baskerville);
+  --font-family-mono: var(--font-ibm-plex-mono);
+  
+  --font-size-xxs: 10px;
+  
+  --radius: 0.5rem;
+  --border-radius-lg: var(--radius);
+  --border-radius-md: calc(var(--radius) - 2px);
+  --border-radius-sm: calc(var(--radius) - 4px);
+  
+  --animate-accordion-down: accordion-down 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --animate-accordion-up: accordion-up 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --animate-blur-fade-in: blur-fade-in 1.2s ease forwards;
+}
+
+@keyframes accordion-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
+}
+
+@keyframes blur-fade-in {
+  0% {
+    filter: blur(8px);
+    opacity: 0;
+  }
+  100% {
+    filter: blur(0px);
+    opacity: 1;
+  }
+}
+
+body {
+  font-family: var(--font-plus-jakarta-sans), Helvetica, sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-libre-baskerville), serif;
+  font-weight: 700;
+}
+
+h1 {
+  font-size: 2.5rem; /* 40px */
+}
+
+h2 {
+  font-size: 2rem; /* 32px */
+}
+
+h3 {
+  font-size: 1.75rem; /* 28px */
+}
+
+h4 {
+  font-size: 1.5rem; /* 24px */
+}
+
+h5 {
+  font-size: 1.25rem; /* 20px */
+}
+
+h6 {
+  font-size: 1rem; /* 16px */
+}
+
+code {
+  font-weight: 500;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  /* Blur utilities for smooth transitions */
+  .blur-initial {
+    filter: blur(8px);
+    opacity: 0;
+  }
+
+  .blur-none {
+    filter: blur(0px);
+    opacity: 1;
+  }
+}
+
+@layer base {
+  :root {
+    --radius: 0.5rem;
+  }
+}
