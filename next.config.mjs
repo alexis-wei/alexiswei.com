@@ -2,7 +2,6 @@
 import Icons from "unplugin-icons/webpack";
 import IconsResolver from "unplugin-icons/resolver";
 import AutoImport from "unplugin-auto-import/webpack";
-import tailwindcss from "@tailwindcss/vite";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
