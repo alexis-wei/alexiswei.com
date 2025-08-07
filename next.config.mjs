@@ -22,6 +22,32 @@ const nextConfig = {
       ...config.resolve.fallback,
       fs: false,
     };
+    
+    // Suppress false positive warnings from webpack cache and dynamic imports
+    config.infrastructureLogging = {
+      level: 'error',
+    };
+    
+    config.ignoreWarnings = [
+      // Standard webpack warnings
+      /Parsing.*failed at 'import\(/,
+      /Build dependencies behind this expression are ignored/,
+      // Module-specific warnings
+      { module: /node_modules.*@tailwindcss/ },
+      { module: /node_modules.*unplugin/ },
+      { module: /node_modules.*local-pkg/ },
+      { module: /node_modules.*unimport/ },
+      { module: /node_modules.*jiti/ },
+      { module: /node_modules.*mlly/ },
+      // Function to catch cache strategy warnings
+      (warning) => {
+        return warning.message && (
+          warning.message.includes('webpack.cache.PackFileCacheStrategy') ||
+          warning.message.includes('Build dependencies behind this expression are ignored')
+        );
+      },
+    ];
+    
     config.plugins.push(
       AutoImport({
         resolvers: [
