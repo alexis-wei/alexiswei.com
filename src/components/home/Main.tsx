@@ -88,48 +88,48 @@ export default function Main() {
           <div className="flex flex-col font-mono text-xs">
             <p>design engineer</p>
             <p>photographer</p>
-            <p>creative</p>
+            <p>yoga instructor</p>
           </div>
 
           <div className="flex flex-col gap-4">
             <Accordion
               type="single"
               collapsible
-              defaultValue=""
+              defaultValue="Reframe"
               className="max-w-full border-y border-royal sm:w-[520px]"
             >
               <Experience
                 companyName="Reframe"
-                title="Co-founder"
+                title="Building"
                 date="currently"
-                description="Building grammarly for your negative thoughts"
+                description="A new paradigm of mental healthcare, starting with journaling"
                 link="https://tryrefra.me"
               />
               <Experience
-                companyName="Exploring"
-                title="Sabbatical"
-                date="2024-25"
-                description="Design engineering, 3D animation, art, content, yoga"
+                companyName="--"
+                title="Exploring"
+                date="2025"
+                description="WebGL graphics, 3D animation, concept art, content creation, yoga"
               />
               <Experience
                 companyName="The Drop"
-                title="CTO"
+                title="Founder & CTO"
                 date="2024"
-                description="Video first link-in-bio shop for sellers on social media. $30k sales first 2 months"
+                description="A mobile & video first, link-in-bio shop for ecomm sellers on social media. $30k transaction volume first month"
                 link="https://thedrop.fun"
               />
               <Experience
                 companyName="Viam Robotics"
                 title="Full Stack Software Engineer"
                 date="2022-23"
-                description="Machine learning platform from camera and sensor data [Javascript, Go, GCS, MongoDB]"
+                description="Personal robotics systems and smart machines. Data/ML team"
                 link="https://www.viam.com"
               />
               <Experience
                 companyName="Corner"
                 title="Founding Member"
                 date="2019-22"
-                description="Making the world a smaller place — connecting you with real places people you know go to"
+                description="Making the world a smaller place — explored human interactions with places and custom recommendations"
                 link="https://www.corner.inc"
               />
               <Experience
