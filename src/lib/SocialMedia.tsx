@@ -40,7 +40,7 @@ export default function SocialMedia() {
         size="icon"
         aria-label="link to visit alexis' substack"
         onClick={() =>
-          window.open("https://alexiswei0108.substack.com/", "_blank")
+          window.open("https://lexploress.substack.com/", "_blank")
         }
       >
         <IconBiSubstack className="scale-[80%]" />
