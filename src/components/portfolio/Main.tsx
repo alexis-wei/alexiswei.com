@@ -1,6 +1,6 @@
 "use client";
 
-import { FC } from "react";
+import { FC, JSX } from "react";
 import TheDrop from "./TheDrop";
 import Spotlight from "./Spotlight";
 import { Button } from "../ui/button";
