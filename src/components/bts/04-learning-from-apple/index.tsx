@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 
 const Main = () => {
   return (
@@ -19,9 +20,9 @@ const Main = () => {
         </p>
       </div>
       <div className="flex flex-col gap-6">
-        <a href="/bts/04-learning-from-apple/clone">
+        <Link href="/bts/04-learning-from-apple/clone">
           &gt; visit apple iPhone 16 page clone &lt;
-        </a>
+        </Link>
         <p className="max-w-[800px] text-sm tracking-tighter">
           Learning how to do all the scroll detection animations with GSAP
           ScrollTrigger. It&apos;s kind of weird actually trying to use this

@@ -57,7 +57,7 @@ const nextConfig = {
         ],
         dts: true,
         eslintrc: {
-          enabled: true,
+          enabled: false,
         },
       }),
       Icons({

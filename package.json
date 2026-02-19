@@ -10,8 +10,7 @@
     "lint:fix": "next lint --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "lint:tailwind": "eslint . --ext .ts,.tsx --fix",
-    "check:all": "npm run format:check && npm run lint"
+    "check:all": "pnpm format:check && pnpm lint"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.12",
@@ -37,6 +36,7 @@
     "three": "^0.182.0"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3.3.3",
     "@iconify/json": "^2.2.440",
     "@svgr/core": "^8.1.0",
     "@svgr/plugin-jsx": "^8.1.0",
@@ -45,11 +45,11 @@
     "@types/node": "^22.19.11",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "eslint": "^8",
-    "eslint-config-next": "14.2.16",
-    "eslint-config-prettier": "^9.1.0",
+    "eslint": "^9.39.2",
+    "eslint-config-next": "16.1.6",
+    "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.5",
-    "eslint-plugin-react-hooks": "^5.0.0",
+    "eslint-plugin-react-hooks": "^7.0.1",
     "leva": "^0.9.36",
     "prettier": "^3.8.1",
     "tailwindcss": "^4.2.0",

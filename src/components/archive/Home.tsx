@@ -25,6 +25,14 @@ const Home = () => {
   //   router.push(`/portfolio?page=${page}`);
   // };
 
+  const hideAbout = () => {
+    setYValue(window.innerHeight + 10);
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setIsTransitioning(false);
+    }, 700);
+  };
+
   const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
     const scrollDirection = e.deltaY > 0 ? "down" : "up";
     updateAboutY(scrollDirection);
@@ -70,14 +78,6 @@ const Home = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, [yValue]);
-
-  const hideAbout = () => {
-    setYValue(window.innerHeight + 10);
-    setIsTransitioning(true);
-    setTimeout(() => {
-      setIsTransitioning(false);
-    }, 700);
-  };
 
   return (
     <div
