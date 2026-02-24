@@ -2,8 +2,14 @@
 import { useRouter } from "next/navigation";
 import { Button } from "../ui/button";
 import MovingGradient from "./MovingGradient";
-import { useEffect, useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import SocialMedia from "@/lib/SocialMedia";
+
+// Stable reference — defined outside the component so it never changes identity
+function subscribeToResize(callback: () => void) {
+  window.addEventListener("resize", callback);
+  return () => window.removeEventListener("resize", callback);
+}
 
 const Home = () => {
   const white = "#ffffff";
@@ -14,16 +20,30 @@ const Home = () => {
   const [color, setColor] = useState(white);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [isTransitioning, setIsTransitioning] = useState<boolean>(false);
-  const [yValue, setYValue] = useState<number>(4000);
+  const [isAboutVisible, setIsAboutVisible] = useState(false);
   const router = useRouter();
 
-  const changeColor = (color: string) => {
-    setColor(color);
+  // useSyncExternalStore subscribes to resize events so yValue stays accurate
+  // without setState-in-effect. The server snapshot (9999) keeps the panel
+  // safely off-screen during SSR; the client snapshot uses the real height.
+  const windowHeight = useSyncExternalStore(
+    subscribeToResize,
+    () => window.innerHeight,
+    () => 9999,
+  );
+  const yValue = isAboutVisible ? 0 : windowHeight + 10;
+
+  const changeColor = (c: string) => {
+    setColor(c);
   };
 
-  // const handleEnterPortfolio = (page: number) => {
-  //   router.push(`/portfolio?page=${page}`);
-  // };
+  const hideAbout = () => {
+    setIsAboutVisible(false);
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setIsTransitioning(false);
+    }, 700);
+  };
 
   const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
     const scrollDirection = e.deltaY > 0 ? "down" : "up";
@@ -44,39 +64,19 @@ const Home = () => {
       return;
     }
 
-    if (scrollDir === "down" && yValue !== 0) {
-      setYValue(0);
+    if (scrollDir === "down" && !isAboutVisible) {
+      setIsAboutVisible(true);
       setIsTransitioning(true);
       setTimeout(() => {
         setIsTransitioning(false);
       }, 700);
-    } else if (scrollDir === "up" && yValue === 0) {
+    } else if (scrollDir === "up" && isAboutVisible) {
       hideAbout();
     }
   };
 
   const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
     setTouchStart(e.touches[0].clientY);
-  };
-
-  useEffect(() => {
-    hideAbout();
-
-    const handleResize = () => {
-      if (yValue !== 0) setYValue(window.innerHeight + 10);
-    };
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, [yValue]);
-
-  const hideAbout = () => {
-    setYValue(window.innerHeight + 10);
-    setIsTransitioning(true);
-    setTimeout(() => {
-      setIsTransitioning(false);
-    }, 700);
   };
 
   return (
@@ -144,16 +144,17 @@ const Home = () => {
           </div>
           <div className="flex max-w-96 flex-col gap-4">
             <p className="text-lg font-medium leading-[1.3] tracking-tighter">
-              for the last 5 years, i’ve been in the world of startups—building
-              in robotics, consumer social and e-commerce. i’m an engineer by
-              trade but my heart lives in design. design engineer is the closest
-              “title” to describe my past roles, but the goal at the end of the
-              day is to do whatever it takes to create delightful products, with
-              some really cool people.
+              for the last 5 years, i&rsquo;ve been in the world of
+              startups&mdash;building in robotics, consumer social and
+              e-commerce. i&rsquo;m an engineer by trade but my heart lives in
+              design. design engineer is the closest &ldquo;title&rdquo; to
+              describe my past roles, but the goal at the end of the day is to
+              do whatever it takes to create delightful products, with some
+              really cool people.
             </p>
             <p className="text-lg font-medium leading-[1.3] tracking-tighter">
-              if you’re working on something that you think can make people feel
-              something, i’d love to{" "}
+              if you&rsquo;re working on something that you think can make
+              people feel something, i&rsquo;d love to{" "}
               <a href="https://www.cal.com/itsalexiswei">
                 <u>meet</u>
               </a>{" "}

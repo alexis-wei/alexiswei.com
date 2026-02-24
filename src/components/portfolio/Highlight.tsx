@@ -2,7 +2,8 @@
 
 import { motion } from "motion/react";
 
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, useRef } from "react";
+import { useHasMounted } from "@/lib/useHasMounted";
 import Image from "next/image";
 
 interface HighlightProps {
@@ -16,11 +17,7 @@ interface HighlightProps {
 const Highlight: FC<HighlightProps> = (props: HighlightProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const divRef = useRef<HTMLDivElement>(null);
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+  const isClient = useHasMounted();
 
   if (!isClient && props.type === "video") {
     return (

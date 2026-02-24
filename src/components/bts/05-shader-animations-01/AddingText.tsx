@@ -1,8 +1,9 @@
 "use client";
 
 import React from "react";
-import { useState, useEffect, Suspense, useMemo } from "react";
+import { useState, useEffect, Suspense, useRef } from "react";
 import { Canvas, useLoader, useThree, useFrame } from "@react-three/fiber";
+import { useHasMounted } from "@/lib/useHasMounted";
 import { TextureLoader } from "three/src/loaders/TextureLoader";
 import * as THREE from "three";
 import { Caption } from "../ui";
@@ -31,29 +32,30 @@ function HoverWithText({ hoveredSlice }: { hoveredSlice: number }) {
   const textures = useLoader(TextureLoader, IMAGE_URLS);
   const { viewport } = useThree();
   const [lastHoveredSlice, setLastHoveredSlice] = useState<number>(-1);
-  const [transition, setTransition] = useState(0);
+  const transitionRef = useRef(0);
 
-  // Update lastHoveredSlice when hoveredSlice changes
+  // Update lastHoveredSlice when hoveredSlice changes (callback form — no setState in body)
   useEffect(() => {
     if (hoveredSlice >= 0) {
       setLastHoveredSlice(hoveredSlice);
     }
   }, [hoveredSlice]);
 
-  // Memoize the shader material with all required dependencies
-  const shaderMaterial = useMemo(
+  // useState lazy initializer creates the material exactly once on the client.
+  // Using useState (not useRef) so `shaderMaterial` is safe to read in JSX.
+  const [shaderMaterial] = useState<THREE.ShaderMaterial>(
     () =>
       new THREE.ShaderMaterial({
         uniforms: {
           uTextures: { value: textures as THREE.Texture[] },
-          uHoveredSlice: { value: hoveredSlice },
-          uLastHoveredSlice: { value: lastHoveredSlice },
+          uHoveredSlice: { value: -1 },
+          uLastHoveredSlice: { value: -1 },
           uTotalSlices: { value: 5.0 },
-          uTransition: { value: transition },
+          uTransition: { value: 0 },
         },
         vertexShader: `
       varying vec2 vUv;
-      
+
       void main() {
         vUv = uv;
         gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
@@ -72,8 +74,8 @@ function HoverWithText({ hoveredSlice }: { hoveredSlice: number }) {
       }
 
       float easeInOutCubic(float x) {
-        return x < 0.5 
-          ? 4.0 * x * x * x 
+        return x < 0.5
+          ? 4.0 * x * x * x
           : 1.0 - pow(-2.0 * x + 2.0, 3.0) / 2.0;
       }
 
@@ -83,7 +85,7 @@ function HoverWithText({ hoveredSlice }: { hoveredSlice: number }) {
         float currentSlice;
 
         float activeSlice = uHoveredSlice >= 0.0 ? uHoveredSlice : uLastHoveredSlice;
-        
+
         if (activeSlice >= 0.0) {
           float t = uHoveredSlice >= 0.0 ? easeInOutCubic(uTransition) : easeOutCubic(uTransition);
 
@@ -115,42 +117,30 @@ function HoverWithText({ hoveredSlice }: { hoveredSlice: number }) {
       }
     `,
       }),
-    [textures, hoveredSlice, lastHoveredSlice, transition],
   );
 
-  // Update uniforms directly instead of recreating material
+  // Update hover uniforms when hover state changes
   useEffect(() => {
     shaderMaterial.uniforms.uHoveredSlice.value = hoveredSlice;
     shaderMaterial.uniforms.uLastHoveredSlice.value = lastHoveredSlice;
-  }, [hoveredSlice, lastHoveredSlice, shaderMaterial.uniforms]);
+  }, [hoveredSlice, lastHoveredSlice, shaderMaterial]);
 
   useFrame((_, delta) => {
     const targetTransition = hoveredSlice >= 0 ? 1 : 0;
-    let speed: number;
+    const speed = hoveredSlice === -1 ? delta * 6 : delta * 2;
 
-    if (hoveredSlice === -1) {
-      speed = delta * 6; // 2x faster exit (was 2.5)
-    } else {
-      speed = delta * 2; // Keep the same smooth entry speed
-    }
-
-    // Use smoother lerp for transitions
     const newTransition = THREE.MathUtils.lerp(
-      transition,
+      transitionRef.current,
       targetTransition,
       speed,
     );
-
-    // Only clamp the final value to prevent sudden stops
     const clampedTransition = THREE.MathUtils.clamp(newTransition, 0, 1);
 
-    // Add a small threshold to prevent floating point jitter
-    if (Math.abs(clampedTransition - transition) > 0.0001) {
-      setTransition(clampedTransition);
+    if (Math.abs(clampedTransition - transitionRef.current) > 0.0001) {
+      transitionRef.current = clampedTransition;
       shaderMaterial.uniforms.uTransition.value = clampedTransition;
     }
 
-    // Only reset lastHoveredSlice after the transition is fully complete
     if (hoveredSlice === -1 && clampedTransition < 0.001) {
       setLastHoveredSlice(-1);
     }
@@ -192,7 +182,7 @@ function TextOverlay({
 }
 
 export default function AddingText() {
-  const [mounted, setMounted] = useState(false);
+  const mounted = useHasMounted();
   const [hoveredSlice, setHoveredSlice] = useState<number>(-1);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -218,10 +208,6 @@ export default function AddingText() {
     };
 
     preloadImages();
-  }, []);
-
-  useEffect(() => {
-    setMounted(true);
   }, []);
 
   if (!mounted) return null;

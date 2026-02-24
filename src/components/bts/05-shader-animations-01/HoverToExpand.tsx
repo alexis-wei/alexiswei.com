@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useRef, Suspense } from "react";
 import {
   Canvas,
   useLoader,
@@ -8,6 +8,7 @@ import {
   ThreeEvent,
   useFrame,
 } from "@react-three/fiber";
+import { useHasMounted } from "@/lib/useHasMounted";
 import { TextureLoader } from "three/src/loaders/TextureLoader";
 import * as THREE from "three";
 import { Caption } from "../ui";
@@ -76,25 +77,29 @@ function ShaderPlaneWithHover() {
   const { viewport } = useThree();
   const [hoveredSlice, setHoveredSlice] = useState<number>(-1);
   const [lastHoveredSlice, setLastHoveredSlice] = useState<number>(-1);
-  const [transition, setTransition] = useState(0);
+  const transitionRef = useRef(0);
 
-  const shaderMaterial = new THREE.ShaderMaterial({
-    uniforms: {
-      uTextures: { value: textures as THREE.Texture[] },
-      uHoveredSlice: { value: hoveredSlice },
-      uLastHoveredSlice: { value: lastHoveredSlice },
-      uTotalSlices: { value: 5.0 },
-      uTransition: { value: transition },
-    },
-    vertexShader: `
+  // useState lazy initializer creates the material exactly once on the client.
+  // Using useState (not useRef) so `material` is safe to read in JSX.
+  const [material] = useState<THREE.ShaderMaterial>(
+    () =>
+      new THREE.ShaderMaterial({
+        uniforms: {
+          uTextures: { value: textures as THREE.Texture[] },
+          uHoveredSlice: { value: -1 },
+          uLastHoveredSlice: { value: -1 },
+          uTotalSlices: { value: 5.0 },
+          uTransition: { value: 0 },
+        },
+        vertexShader: `
       varying vec2 vUv;
-      
+
       void main() {
         vUv = uv;
         gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
       }
     `,
-    fragmentShader: `
+        fragmentShader: `
       uniform sampler2D uTextures[5];
       uniform float uHoveredSlice;
       uniform float uLastHoveredSlice;
@@ -112,7 +117,7 @@ function ShaderPlaneWithHover() {
         float currentSlice;
 
         float activeSlice = uHoveredSlice >= 0.0 ? uHoveredSlice : uLastHoveredSlice;
-        
+
         if (activeSlice >= 0.0) {
           // on hover, the current slice changes
           float t = easeOutCubic(uTransition);
@@ -144,24 +149,20 @@ function ShaderPlaneWithHover() {
         gl_FragColor = color;
       }
     `,
-  });
+      }),
+  );
 
   useFrame((_, delta) => {
     const targetTransition = hoveredSlice >= 0 ? 1 : 0;
-    let speed: number;
-    if (hoveredSlice == -1) {
-      speed = delta * 6;
-    } else {
-      speed = delta * 2;
-    }
+    const speed = hoveredSlice == -1 ? delta * 6 : delta * 2;
 
     const newTransition = THREE.MathUtils.clamp(
-      THREE.MathUtils.lerp(transition, targetTransition, speed),
+      THREE.MathUtils.lerp(transitionRef.current, targetTransition, speed),
       0,
       1,
     );
-    setTransition(newTransition);
-    shaderMaterial.uniforms.uTransition.value = newTransition;
+    transitionRef.current = newTransition;
+    material.uniforms.uTransition.value = newTransition;
   });
 
   const handlePointerMove = (event: ThreeEvent<PointerEvent>) => {
@@ -169,12 +170,16 @@ function ShaderPlaneWithHover() {
     if (hoveredSlice == -1) {
       const x = (event.point.x + viewport.width / 2) / viewport.width;
       const sliceIndex = Math.floor(x * 5);
+      material.uniforms.uHoveredSlice.value = sliceIndex;
+      material.uniforms.uLastHoveredSlice.value = sliceIndex;
       setLastHoveredSlice(sliceIndex);
       setHoveredSlice(sliceIndex);
     }
   };
 
   const handlePointerLeave = () => {
+    material.uniforms.uLastHoveredSlice.value = hoveredSlice;
+    material.uniforms.uHoveredSlice.value = -1;
     setLastHoveredSlice(hoveredSlice);
     setHoveredSlice(-1);
   };
@@ -186,17 +191,13 @@ function ShaderPlaneWithHover() {
       onPointerLeave={handlePointerLeave}
     >
       <planeGeometry />
-      <primitive object={shaderMaterial} attach="material" />
+      <primitive object={material} attach="material" />
     </mesh>
   );
 }
 
 export default function CanvasOne() {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useHasMounted();
 
   if (!mounted) {
     return null;

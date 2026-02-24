@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useHasMounted } from "@/lib/useHasMounted";
 import SocialMedia from "@/lib/SocialMedia";
 import {
   Accordion,
@@ -69,12 +69,7 @@ const Experience = ({
 };
 
 export default function Main() {
-  const [isLoaded, setIsLoaded] = useState(false);
-
-  useEffect(() => {
-    // Trigger the fade-in animation after component mounts
-    setIsLoaded(true);
-  }, []);
+  const isLoaded = useHasMounted();
 
   return (
     <div
