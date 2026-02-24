@@ -68,13 +68,6 @@ const nextConfig = {
 
     return config;
   },
-  turbopack: {
-    rules: {
-      "*.css": {
-        loaders: ["css-loader"],
-      },
-    },
-  },
 };
 
 export default nextConfig;
