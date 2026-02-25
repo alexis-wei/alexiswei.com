@@ -77,38 +77,41 @@ export default function Main() {
         isLoaded ? "animate-blur-fade-in" : "opacity-0 blur-lg"
       }`}
     >
-      <div className="flex flex-col items-start px-[clamp(1rem,4vw,4rem)] py-[clamp(1rem,3vw,3rem)]">
-        <h1 className="mb-4 font-serif text-3xl font-bold">alexis wei</h1>
+      <div className="flex flex-col items-start px-[clamp(1rem,4vw,4rem)] py-[clamp(1rem,3vw,3rem)] ">
+        <h1 className="mb-3 font-serif text-3xl font-bold">alexis wei</h1>
         <div className="flex flex-col items-start gap-6">
           <div className="flex flex-col font-mono text-xs">
-            <p>design engineer</p>
-            <p>photographer</p>
-            <p>yoga instructor</p>
+            <div className="flex flex-col mb-3">
+              <p>designer & engineer</p>
+              <p>toronto based</p>
+            </div>
+            <p>open to projects</p>
           </div>
 
           <div className="flex flex-col gap-4">
             <Accordion
               type="single"
               collapsible
-              defaultValue="Reframe"
-              className="max-w-full border-y border-royal sm:w-[520px]"
+              defaultValue="AWei Studio"
+              className="max-w-full border-y border-royal sm:w-130"
             >
               <Experience
+                companyName="AWei Studio"
+                title="Freelance Designer"
+                date="current"
+                description="web animations and product. click link to chat"
+                link="https://cal.com/itsalexiswei"
+              />
+              <Experience
                 companyName="Reframe"
-                title="Building"
-                date="currently"
-                description="A new paradigm of mental healthcare, starting with journaling"
+                title="Co-founder"
+                date="2025"
+                description="Improving mental health with AI supported journaling"
                 link="https://tryrefra.me"
               />
               <Experience
-                companyName="--"
-                title="Exploring"
-                date="2025"
-                description="WebGL graphics, 3D animation, concept art, content creation, yoga"
-              />
-              <Experience
                 companyName="The Drop"
-                title="Founder & CTO"
+                title="Co-founder"
                 date="2024"
                 description="A mobile & video first, link-in-bio shop for ecomm sellers on social media. $30k transaction volume first month"
                 link="https://thedrop.fun"
