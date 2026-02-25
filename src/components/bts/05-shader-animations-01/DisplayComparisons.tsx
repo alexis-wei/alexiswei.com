@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { Suspense } from "react";
+import { useHasMounted } from "@/lib/useHasMounted";
 import { Canvas, useLoader, useThree } from "@react-three/fiber";
 import { TextureLoader } from "three/src/loaders/TextureLoader";
 import * as THREE from "three";
@@ -81,11 +82,7 @@ const useGetMeshScale = (imageAspect: number): THREE.Vector3 => {
 };
 
 export default function PhotoCanvas() {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useHasMounted();
 
   if (!mounted) {
     return null;

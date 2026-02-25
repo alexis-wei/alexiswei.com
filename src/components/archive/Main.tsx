@@ -1,31 +1,29 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Home from "./Home";
 import Welcome from "./Welcome";
+import { useHasMounted } from "@/lib/useHasMounted";
 
 const Main = () => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [hasVisited, setHasVisited] = useState(false);
+  const mounted = useHasMounted();
+  // Derive hasVisited synchronously from sessionStorage once we're on the client.
+  // useSyncExternalStore (inside useHasMounted) ensures this reads the correct
+  // value without an extra setState-triggered re-render.
+  const hasVisited = mounted
+    ? sessionStorage.getItem("hasVisitedBefore") === "true"
+    : false;
 
+  // Write side-effect only — no setState needed
   useEffect(() => {
-    const visited = sessionStorage.getItem("hasVisitedBefore");
-    if (!visited) {
+    if (!sessionStorage.getItem("hasVisitedBefore")) {
       sessionStorage.setItem("hasVisitedBefore", "true");
-    } else {
-      setHasVisited(true);
     }
-
-    setIsLoading(false);
   }, []);
 
   return (
     <div className="flex h-dvh w-dvw items-center justify-center">
-      {!isLoading && (
-        <>
-          <Home />
-          {!hasVisited && <Welcome />}
-        </>
-      )}
+      <Home />
+      {mounted && !hasVisited && <Welcome />}
     </div>
   );
 };
