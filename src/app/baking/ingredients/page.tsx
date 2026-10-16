@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { createBlankIngredient } from "@/app/baking/actions";
-import { BakingFooter, BakingHeader } from "@/components/baking/BakingHeader";
+import {
+  BakingFooter,
+  BakingHeader,
+  CountLine,
+} from "@/components/baking/BakingHeader";
 import { NewButton } from "@/components/baking/forms";
 import { IngredientLibrary } from "@/components/baking/IngredientGrid";
 import { isEditor } from "@/lib/baking/auth";
@@ -25,10 +29,11 @@ export default async function IngredientsPage() {
           )
         }
       />
-      <p className="pt-8 pb-6 font-mono text-[10px] tracking-[0.14em] text-black/45 uppercase">
-        {ingredients.length}{" "}
-        {ingredients.length === 1 ? "ingredient" : "ingredients"}
-      </p>
+      <CountLine
+        count={ingredients.length}
+        noun={["ingredient", "ingredients"]}
+        editor={editor}
+      />
       <IngredientLibrary ingredients={ingredients} />
       <BakingFooter editor={editor} />
     </>

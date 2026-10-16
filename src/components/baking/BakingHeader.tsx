@@ -2,6 +2,7 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { LockButton } from "./forms";
+import { MoreMenu } from "./MoreMenu";
 
 const TABS = [
   { key: "logs", href: "/baking", label: "logs" },
@@ -70,17 +71,36 @@ export function BakingFooter({ editor }: { editor: boolean }) {
   return (
     <footer className="mt-12 flex justify-center gap-6">
       {editor ? (
-        <>
-          <Link href="/baking/deleted" className={footerLink}>
-            recently deleted
-          </Link>
-          <LockButton />
-        </>
+        <LockButton />
       ) : (
         <Link href="/baking/edit" className={footerLink}>
           edit
         </Link>
       )}
     </footer>
+  );
+}
+
+/** "12 experiments" line under the header, with the editor's ⋮ menu beside it. */
+export function CountLine({
+  count,
+  noun,
+  editor,
+}: {
+  count: number;
+  noun: [singular: string, plural: string];
+  editor: boolean;
+}) {
+  return (
+    <div className="flex items-center gap-3 pt-8 pb-6">
+      <p className="font-mono text-[10px] tracking-[0.14em] text-black/45 uppercase">
+        {count} {count === 1 ? noun[0] : noun[1]}
+      </p>
+      {editor && (
+        <MoreMenu
+          items={[{ href: "/baking/deleted", label: "recently deleted" }]}
+        />
+      )}
+    </div>
   );
 }
