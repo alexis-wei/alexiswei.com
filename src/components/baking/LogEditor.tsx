@@ -1,16 +1,22 @@
 "use client";
 
-import { ArrowLeft } from "lucide-react";
-import Link from "next/link";
 import { useState } from "react";
 import { deleteLog, updateLog } from "@/app/baking/actions";
 import { formatDate } from "@/lib/baking/format";
 import type { BakingLog, Ingredient, LogPatch } from "@/lib/baking/types";
 import { track, useAutosave, useUnsavedChangesWarning } from "./autosave";
-import { IngredientPicker } from "./IngredientPicker";
+import { BackLink } from "./BakingHeader";
+import { LogIngredients } from "./LogIngredients";
 import { MediaGallery } from "./MediaGallery";
 import { Timeline } from "./Timeline";
-import { AutosaveText, Label, SaveIndicator, Section, TextButton } from "./ui";
+import {
+  AutosaveText,
+  Label,
+  SaveIndicator,
+  Section,
+  TextButton,
+  TextSection,
+} from "./ui";
 
 export function LogEditor({
   log,
@@ -32,12 +38,7 @@ export function LogEditor({
     <article>
       <header className="sticky top-0 z-20 -mx-4 border-b border-black/10 bg-white/90 px-4 pt-[env(safe-area-inset-top)] backdrop-blur">
         <div className="flex h-14 items-center justify-between">
-          <Link
-            href="/baking"
-            className="-ml-1 inline-flex items-center gap-1.5 p-1 text-sm text-black/60 hover:text-black"
-          >
-            <ArrowLeft size={16} strokeWidth={1.25} /> logs
-          </Link>
+          <BackLink href="/baking">logs</BackLink>
           {editable && <SaveIndicator />}
         </div>
       </header>
@@ -57,6 +58,20 @@ export function LogEditor({
               aria-label="Title"
               className="mt-2 font-serif text-[28px] leading-tight"
             />
+            <div className="mt-4 flex gap-6">
+              <RoomField
+                label="room"
+                initial={log.roomTemp}
+                placeholder="22°C"
+                onSave={(roomTemp) => save({ roomTemp })}
+              />
+              <RoomField
+                label="humidity"
+                initial={log.humidity}
+                placeholder="45%"
+                onSave={(humidity) => save({ humidity })}
+              />
+            </div>
           </>
         ) : (
           <>
@@ -64,6 +79,16 @@ export function LogEditor({
             <p className="mt-2 font-serif text-[28px] leading-tight">
               {log.title || "untitled"}
             </p>
+            {(log.roomTemp || log.humidity) && (
+              <Label className="mt-3">
+                {[
+                  log.roomTemp && `room ${log.roomTemp}`,
+                  log.humidity && `humidity ${log.humidity}`,
+                ]
+                  .filter(Boolean)
+                  .join(" · ")}
+              </Label>
+            )}
           </>
         )}
       </div>
@@ -80,7 +105,7 @@ export function LogEditor({
 
       {show(hasIngredients) && (
         <Section label="ingredients">
-          <IngredientPicker
+          <LogIngredients
             logId={log.id}
             library={library}
             initial={log.ingredients}
@@ -134,37 +159,6 @@ export function LogEditor({
   );
 }
 
-function TextSection({
-  label,
-  initial,
-  editable,
-  placeholder,
-  onSave,
-}: {
-  label: string;
-  initial: string;
-  editable: boolean;
-  placeholder: string;
-  onSave: (value: string) => Promise<unknown>;
-}) {
-  if (!editable && !initial.trim()) return null;
-  return (
-    <Section label={label}>
-      {editable ? (
-        <AutosaveText
-          initial={initial}
-          onSave={onSave}
-          placeholder={placeholder}
-          aria-label={label}
-          className="min-h-[4.5rem]"
-        />
-      ) : (
-        <p className="leading-relaxed whitespace-pre-wrap">{initial}</p>
-      )}
-    </Section>
-  );
-}
-
 function DateField({
   initial,
   onSave,
@@ -188,5 +182,36 @@ function DateField({
       onBlur={flush}
       className="appearance-none bg-transparent font-mono text-base tracking-[0.04em] text-black/50 uppercase outline-none"
     />
+  );
+}
+
+/** Room conditions at the start of the bake; changes mid-bake go in the timeline. */
+function RoomField({
+  label,
+  initial,
+  placeholder,
+  onSave,
+}: {
+  label: string;
+  initial: string;
+  placeholder: string;
+  onSave: (value: string) => Promise<unknown>;
+}) {
+  const [value, setValue] = useState(initial);
+  const { schedule, flush } = useAutosave(onSave);
+  return (
+    <label className="flex items-baseline gap-2 border-b border-black/15 pb-1 focus-within:border-black">
+      <Label>{label}</Label>
+      <input
+        value={value}
+        onChange={(e) => {
+          setValue(e.target.value);
+          schedule(e.target.value);
+        }}
+        onBlur={flush}
+        placeholder={placeholder}
+        className="w-16 bg-transparent font-mono text-base outline-none placeholder:text-black/25"
+      />
+    </label>
   );
 }

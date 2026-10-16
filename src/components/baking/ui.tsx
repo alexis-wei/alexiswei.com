@@ -152,3 +152,38 @@ export function TextButton({ className, ...props }: ComponentProps<"button">) {
     />
   );
 }
+
+/** A labelled autosaving text section; hidden for visitors when empty. */
+export function TextSection({
+  label,
+  initial,
+  editable,
+  singleLine,
+  placeholder,
+  onSave,
+}: {
+  label: string;
+  initial: string;
+  editable: boolean;
+  singleLine?: boolean;
+  placeholder: string;
+  onSave: (value: string) => Promise<unknown>;
+}) {
+  if (!editable && !initial.trim()) return null;
+  return (
+    <Section label={label}>
+      {editable ? (
+        <AutosaveText
+          initial={initial}
+          onSave={onSave}
+          singleLine={singleLine}
+          placeholder={placeholder}
+          aria-label={label}
+          className={singleLine ? undefined : "min-h-[4.5rem]"}
+        />
+      ) : (
+        <p className="leading-relaxed whitespace-pre-wrap">{initial}</p>
+      )}
+    </Section>
+  );
+}

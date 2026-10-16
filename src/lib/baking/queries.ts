@@ -4,6 +4,7 @@ import { publicUrl } from "./storage";
 import type {
   BakingLog,
   Ingredient,
+  IngredientUsage,
   LogSummary,
   Media,
   TimelineStep,
@@ -16,6 +17,8 @@ function toIngredient(row: Row): Ingredient {
   return {
     id: str(row.id),
     name: str(row.name),
+    origin: str(row.origin),
+    details: str(row.details),
     imageUrl: row.image_key ? publicUrl(str(row.image_key)) : null,
   };
 }
@@ -107,6 +110,8 @@ export async function getLog(id: string): Promise<BakingLog | null> {
     id: str(row.id),
     title: str(row.title),
     bakedOn: str(row.baked_on),
+    roomTemp: str(row.room_temp),
+    humidity: str(row.humidity),
     process: str(row.process),
     notes: str(row.notes),
     timeline: parseTimeline(row.timeline),
@@ -115,5 +120,35 @@ export async function getLog(id: string): Promise<BakingLog | null> {
       amount: str(r.amount),
     })),
     media: media.rows.map(toMedia),
+  };
+}
+
+export async function getIngredient(
+  id: string,
+): Promise<{ ingredient: Ingredient; usage: IngredientUsage[] } | null> {
+  const [found, usage] = await (
+    await db()
+  ).batch(
+    [
+      { sql: "SELECT * FROM ingredients WHERE id = ?", args: [id] },
+      {
+        sql: `SELECT l.id, l.title, l.baked_on, li.amount FROM log_ingredients li
+              JOIN logs l ON l.id = li.log_id
+              WHERE li.ingredient_id = ? ORDER BY l.baked_on DESC, l.created_at DESC`,
+        args: [id],
+      },
+    ],
+    "read",
+  );
+  const row = found.rows[0];
+  if (!row) return null;
+  return {
+    ingredient: toIngredient(row),
+    usage: usage.rows.map((r) => ({
+      logId: str(r.id),
+      title: str(r.title),
+      bakedOn: str(r.baked_on),
+      amount: str(r.amount),
+    })),
   };
 }

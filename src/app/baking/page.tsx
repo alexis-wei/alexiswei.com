@@ -1,7 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
-import { LockButton, NewLogButton } from "@/components/baking/forms";
-import { IngredientIcon } from "@/components/baking/IngredientPicker";
+import { createLog } from "@/app/baking/actions";
+import { BakingHeader } from "@/components/baking/BakingHeader";
+import { LockButton, NewButton } from "@/components/baking/forms";
+import { IngredientIcon } from "@/components/baking/IngredientIcon";
 import { isEditor } from "@/lib/baking/auth";
 import { formatDate } from "@/lib/baking/format";
 import { listLogs } from "@/lib/baking/queries";
@@ -14,14 +16,10 @@ export default async function BakingPage() {
 
   return (
     <>
-      <header className="sticky top-0 z-20 -mx-4 border-b border-black/10 bg-white/90 px-4 pt-[env(safe-area-inset-top)] backdrop-blur">
-        <div className="flex h-14 items-center justify-between">
-          <Link href="/baking" className="font-serif text-xl">
-            baking
-          </Link>
-          {editor && <NewLogButton />}
-        </div>
-      </header>
+      <BakingHeader
+        active="logs"
+        action={editor && <NewButton action={createLog} label="log" />}
+      />
 
       <p className="pt-8 pb-6 font-mono text-[10px] tracking-[0.14em] text-black/45 uppercase">
         {logs.length} {logs.length === 1 ? "experiment" : "experiments"}

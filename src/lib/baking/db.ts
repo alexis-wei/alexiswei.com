@@ -44,6 +44,29 @@ const SCHEMA = [
   `CREATE INDEX IF NOT EXISTS log_ingredients_log ON log_ingredients (log_id, position)`,
 ];
 
+// Columns added after the first release. CREATE TABLE IF NOT EXISTS won't add
+// them to existing databases, so they're added here when missing.
+const ADDED_COLUMNS = [
+  ["ingredients", "origin", "TEXT NOT NULL DEFAULT ''"],
+  ["ingredients", "details", "TEXT NOT NULL DEFAULT ''"],
+  ["logs", "room_temp", "TEXT NOT NULL DEFAULT ''"],
+  ["logs", "humidity", "TEXT NOT NULL DEFAULT ''"],
+] as const;
+
+async function migrate(c: Client) {
+  await c.batch(SCHEMA, "write");
+  for (const [table, column, type] of ADDED_COLUMNS) {
+    const { rows } = await c.execute(`PRAGMA table_info(${table})`);
+    if (rows.some((row) => row.name === column)) continue;
+    try {
+      await c.execute(`ALTER TABLE ${table} ADD COLUMN ${column} ${type}`);
+    } catch (error) {
+      // Another server instance added it at the same moment.
+      if (!String(error).includes("duplicate column")) throw error;
+    }
+  }
+}
+
 let client: Client | undefined;
 let ready: Promise<void> | undefined;
 
@@ -64,13 +87,10 @@ function getClient() {
 /** Returns the database client, creating tables on first use per instance. */
 export async function db() {
   const c = getClient();
-  ready ??= c
-    .batch(SCHEMA, "write")
-    .then(() => undefined)
-    .catch((error) => {
-      ready = undefined;
-      throw error;
-    });
+  ready ??= migrate(c).catch((error) => {
+    ready = undefined;
+    throw error;
+  });
   await ready;
   return c;
 }

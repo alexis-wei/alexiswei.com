@@ -3,23 +3,31 @@
 import { Plus } from "lucide-react";
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
-import { createLog, lock, unlock } from "@/app/baking/actions";
+import { lock, unlock } from "@/app/baking/actions";
 import { LineButton, TextButton } from "./ui";
 
-function NewLogSubmit() {
+function NewSubmit({ label }: { label: string }) {
   const { pending } = useFormStatus();
   return (
-    <LineButton type="submit" disabled={pending}>
+    <LineButton type="submit" disabled={pending} className="shrink-0">
       <Plus size={14} strokeWidth={1.25} />
-      {pending ? "creating…" : "new log"}
+      {pending ? "…" : "new"}
+      <span className="sr-only sm:not-sr-only">{label}</span>
     </LineButton>
   );
 }
 
-export function NewLogButton() {
+/** "+ new" header button; spells out what it creates on wider screens. */
+export function NewButton({
+  action,
+  label,
+}: {
+  action: () => Promise<void>;
+  label: string;
+}) {
   return (
-    <form action={createLog}>
-      <NewLogSubmit />
+    <form action={action}>
+      <NewSubmit label={label} />
     </form>
   );
 }

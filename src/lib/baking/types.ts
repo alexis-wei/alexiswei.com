@@ -7,7 +7,20 @@ export type TimelineStep = {
 export type Ingredient = {
   id: string;
   name: string;
+  origin: string; // where it's from
+  details: string; // how it's made
   imageUrl: string | null;
+};
+
+export type IngredientPatch = Partial<
+  Pick<Ingredient, "name" | "origin" | "details">
+>;
+
+export type IngredientUsage = {
+  logId: string;
+  title: string;
+  bakedOn: string;
+  amount: string;
 };
 
 export type LogIngredient = {
@@ -27,6 +40,8 @@ export type BakingLog = {
   id: string;
   title: string;
   bakedOn: string; // "YYYY-MM-DD"
+  roomTemp: string; // free text, e.g. "22°C"
+  humidity: string; // free text, e.g. "45%"
   process: string;
   notes: string;
   timeline: TimelineStep[];
@@ -43,7 +58,16 @@ export type LogSummary = {
 };
 
 export type LogPatch = Partial<
-  Pick<BakingLog, "title" | "bakedOn" | "process" | "notes" | "timeline">
+  Pick<
+    BakingLog,
+    | "title"
+    | "bakedOn"
+    | "roomTemp"
+    | "humidity"
+    | "process"
+    | "notes"
+    | "timeline"
+  >
 >;
 
 export type UploadPurpose = "media" | "ingredient";
