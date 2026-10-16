@@ -6,6 +6,8 @@ import AutoImport from "unplugin-auto-import/webpack";
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  // libSQL ships native bindings (used for the local dev database file).
+  serverExternalPackages: ["@libsql/client", "libsql"],
   images: {
     remotePatterns: [
       {
