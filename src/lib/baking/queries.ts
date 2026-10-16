@@ -7,11 +7,21 @@ import type {
   IngredientUsage,
   LogSummary,
   Media,
+  SavedCrop,
   TimelineStep,
 } from "./types";
 
 const str = (value: unknown) => (value == null ? "" : String(value));
 const num = (value: unknown) => (value == null ? null : Number(value));
+
+function parseCrop(value: unknown): SavedCrop | null {
+  try {
+    const crop = JSON.parse(str(value));
+    return typeof crop?.width === "number" ? crop : null;
+  } catch {
+    return null;
+  }
+}
 
 function toIngredient(row: Row): Ingredient {
   return {
@@ -20,6 +30,8 @@ function toIngredient(row: Row): Ingredient {
     origin: str(row.origin),
     details: str(row.details),
     imageUrl: row.image_key ? publicUrl(str(row.image_key)) : null,
+    sourceUrl: row.source_key ? publicUrl(str(row.source_key)) : null,
+    crop: parseCrop(row.crop),
   };
 }
 

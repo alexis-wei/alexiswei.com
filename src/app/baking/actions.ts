@@ -12,6 +12,7 @@ import { db } from "@/lib/baking/db";
 import { deleteObjects, publicUrl } from "@/lib/baking/storage";
 import type {
   Ingredient,
+  IngredientImage,
   IngredientPatch,
   LogPatch,
   Media,
@@ -142,35 +143,44 @@ export async function setIngredientAmount(
 
 const INGREDIENT_IMAGES = "baking/ingredients/";
 
+function checkImage(image: IngredientImage) {
+  const keys = [image.imageKey, image.sourceKey].filter(Boolean) as string[];
+  if (keys.some((key) => !validKey(key, INGREDIENT_IMAGES))) {
+    throw new Error("Invalid image");
+  }
+}
+
 export async function createIngredient(input: {
   name: string;
   origin: string;
   details: string;
-  imageKey: string | null;
+  image: IngredientImage | null;
 }): Promise<Ingredient> {
   await requireEditor();
-  const { imageKey } = input;
-  if (imageKey && !validKey(imageKey, INGREDIENT_IMAGES)) {
-    throw new Error("Invalid image");
-  }
-  const ingredient = {
+  const { image } = input;
+  if (image) checkImage(image);
+  const ingredient: Ingredient = {
     id: randomUUID(),
     name: input.name.trim(),
     origin: input.origin.trim(),
     details: input.details.trim(),
-    imageUrl: imageKey ? publicUrl(imageKey) : null,
+    imageUrl: image ? publicUrl(image.imageKey) : null,
+    sourceUrl: image?.sourceKey ? publicUrl(image.sourceKey) : null,
+    crop: image?.crop ?? null,
   };
   await (
     await db()
   ).execute({
-    sql: `INSERT INTO ingredients (id, name, origin, details, image_key, created_at)
-          VALUES (?, ?, ?, ?, ?, ?)`,
+    sql: `INSERT INTO ingredients (id, name, origin, details, image_key, source_key, crop, created_at)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
     args: [
       ingredient.id,
       ingredient.name,
       ingredient.origin,
       ingredient.details,
-      imageKey,
+      image?.imageKey ?? null,
+      image?.sourceKey ?? null,
+      image ? JSON.stringify(image.crop) : "",
       Date.now(),
     ],
   });
@@ -183,7 +193,7 @@ export async function createBlankIngredient() {
     name: "",
     origin: "",
     details: "",
-    imageKey: null,
+    image: null,
   });
   redirect(`/baking/ingredients/${id}`);
 }
@@ -211,27 +221,42 @@ export async function updateIngredient(id: string, patch: IngredientPatch) {
   });
 }
 
-export async function setIngredientImage(id: string, imageKey: string) {
+/**
+ * Saves a new icon. With a sourceKey it's a new picture (the old icon and
+ * original are deleted); without one it's a re-crop of the same original.
+ */
+export async function setIngredientImage(
+  id: string,
+  image: IngredientImage,
+): Promise<Pick<Ingredient, "imageUrl" | "sourceUrl" | "crop">> {
   await requireEditor();
-  if (!validKey(imageKey, INGREDIENT_IMAGES)) throw new Error("Invalid image");
+  checkImage(image);
   const client = await db();
   const { rows } = await client.execute({
-    sql: "SELECT image_key FROM ingredients WHERE id = ?",
+    sql: "SELECT image_key, source_key FROM ingredients WHERE id = ?",
     args: [id],
   });
+  const old = rows[0];
+  if (!old) throw new Error("Ingredient not found");
+  const sourceKey = image.sourceKey ?? (old.source_key as string | null);
   await client.execute({
-    sql: "UPDATE ingredients SET image_key = ? WHERE id = ?",
-    args: [imageKey, id],
+    sql: "UPDATE ingredients SET image_key = ?, source_key = ?, crop = ? WHERE id = ?",
+    args: [image.imageKey, sourceKey, JSON.stringify(image.crop), id],
   });
-  const old = rows[0]?.image_key;
-  if (old) await deleteObjects([String(old)]);
+  const stale = [old.image_key, image.sourceKey ? old.source_key : null];
+  await deleteObjects(stale.filter(Boolean).map(String));
+  return {
+    imageUrl: publicUrl(image.imageKey),
+    sourceUrl: sourceKey ? publicUrl(sourceKey) : null,
+    crop: image.crop,
+  };
 }
 
 export async function deleteIngredient(id: string) {
   await requireEditor();
   const client = await db();
   const { rows } = await client.execute({
-    sql: "SELECT image_key FROM ingredients WHERE id = ?",
+    sql: "SELECT image_key, source_key FROM ingredients WHERE id = ?",
     args: [id],
   });
   await client.batch(
@@ -244,8 +269,8 @@ export async function deleteIngredient(id: string) {
     ],
     "write",
   );
-  const key = rows[0]?.image_key;
-  if (key) await deleteObjects([String(key)]);
+  const keys = [rows[0]?.image_key, rows[0]?.source_key];
+  await deleteObjects(keys.filter(Boolean).map(String));
   redirect("/baking/ingredients");
 }
 

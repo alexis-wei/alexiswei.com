@@ -2,52 +2,94 @@
 
 import { ClipboardPaste, ImagePlus } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { openForCrop, type CropSource } from "@/lib/baking/image";
+import {
+  openForCrop,
+  openStoredForCrop,
+  shrinkOriginal,
+  toSavedCrop,
+  type Crop,
+  type CropSource,
+  type PreparedImage,
+} from "@/lib/baking/image";
+import type { IngredientImage, SavedCrop } from "@/lib/baking/types";
 import { cn } from "@/lib/utils";
+import { track } from "./autosave";
 import { IconCropper } from "./IconCropper";
 import { TextButton } from "./ui";
+import { uploadFile } from "./upload";
 
-export type PickedIcon = { blob: Blob; url: string };
+export type PickedIcon = {
+  blob: Blob; // the 720×720 icon
+  url: string; // object URL of the icon, for previewing before it's uploaded
+  crop: SavedCrop;
+  source?: Blob; // the ≤720px original; absent when re-cropping the same one
+};
+
+/** Uploads a picked icon (and its original, if new) for saving. */
+export async function uploadIcon(icon: PickedIcon): Promise<IngredientImage> {
+  const [imageKey, sourceKey] = await Promise.all([
+    track(uploadFile(icon.blob, { purpose: "ingredient" })),
+    icon.source
+      ? track(uploadFile(icon.source, { purpose: "ingredient" }))
+      : undefined,
+  ]);
+  return { imageKey, sourceKey, crop: icon.crop };
+}
 
 /**
  * Square image slot for an ingredient. Accepts a file, a drag-and-drop, ⌘V,
  * or the iPhone clipboard ("Copy Subject" on a photo, then "paste"), then
- * opens a square crop step before handing back the 720×720 icon.
+ * opens a square crop step before handing back the 720×720 icon. When the
+ * original is stored, "adjust" re-opens the crop step on it.
  */
 export function IconPicker({
   src,
+  sourceUrl,
+  crop,
   onIcon,
   className,
 }: {
   src: string | null;
+  sourceUrl?: string | null;
+  crop?: SavedCrop | null;
   onIcon: (icon: PickedIcon) => void;
   className?: string;
 }) {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-  const [cropping, setCropping] = useState<CropSource | null>(null);
+  const [cropping, setCropping] = useState<{
+    source: CropSource;
+    isNew: boolean;
+  } | null>(null);
   const fileInput = useRef<HTMLInputElement>(null);
-  const onIconRef = useRef(onIcon);
-  useEffect(() => {
-    onIconRef.current = onIcon;
-  });
 
-  async function take(blob: Blob | null | undefined) {
-    if (!blob) return;
+  async function open(load: () => Promise<CropSource>, isNew: boolean) {
     setError(null);
     setBusy(true);
     try {
-      const source = await openForCrop(blob);
+      const source = await load();
       setCropping((old) => {
-        old?.release();
-        return source;
+        old?.source.release();
+        return { source, isNew };
       });
     } catch {
-      setError("Couldn't read that image. Try a PNG.");
+      setError(
+        isNew
+          ? "Couldn't read that image. Try a PNG."
+          : "Couldn't load the original image.",
+      );
     } finally {
       setBusy(false);
     }
   }
+
+  const take = (blob: Blob | null | undefined) => {
+    if (blob) open(() => openForCrop(blob), true);
+  };
+  const adjust = () => {
+    if (sourceUrl)
+      open(() => openStoredForCrop(sourceUrl, crop ?? null), false);
+  };
 
   // Desktop: ⌘V an image anywhere on the page. Text pastes are left alone.
   useEffect(() => {
@@ -57,7 +99,8 @@ export function IconPicker({
       );
       if (!item) return;
       event.preventDefault();
-      take(item.getAsFile());
+      const blob = item.getAsFile();
+      if (blob) open(() => openForCrop(blob), true);
     };
     document.addEventListener("paste", onPaste);
     return () => document.removeEventListener("paste", onPaste);
@@ -75,17 +118,33 @@ export function IconPicker({
     }
   }
 
+  async function finish(icon: PreparedImage, cropped: Crop) {
+    if (!cropping) return;
+    const { source, isNew } = cropping;
+    const picked: PickedIcon = {
+      blob: icon.blob,
+      url: URL.createObjectURL(icon.blob),
+      crop: toSavedCrop(cropped, source.img),
+      source: isNew ? await shrinkOriginal(source.img) : undefined,
+    };
+    source.release();
+    setCropping(null);
+    onIcon(picked);
+  }
+
   return (
     <div className={className}>
       <button
         type="button"
-        onClick={() => fileInput.current?.click()}
+        onClick={() => (sourceUrl ? adjust() : fileInput.current?.click())}
         onDragOver={(e) => e.preventDefault()}
         onDrop={(e) => {
           e.preventDefault();
           take(e.dataTransfer.files[0]);
         }}
-        aria-label={src ? "Change image" : "Choose image"}
+        aria-label={
+          sourceUrl ? "Adjust image" : src ? "Replace image" : "Choose image"
+        }
         className={cn(
           "relative flex aspect-square w-full items-center justify-center text-black/35 transition-colors hover:text-black",
           src
@@ -102,6 +161,7 @@ export function IconPicker({
         )}
       </button>
       <div className="mt-2.5 flex flex-wrap gap-x-4 gap-y-1">
+        {sourceUrl && <TextButton onClick={adjust}>adjust</TextButton>}
         <TextButton onClick={() => fileInput.current?.click()}>
           {src ? "replace" : "choose"}
         </TextButton>
@@ -112,16 +172,12 @@ export function IconPicker({
       {error && <p className="mt-2 text-xs text-red-600">{error}</p>}
       {cropping && (
         <IconCropper
-          source={cropping}
+          source={cropping.source}
           onCancel={() => {
-            cropping.release();
+            cropping.source.release();
             setCropping(null);
           }}
-          onDone={(icon) => {
-            cropping.release();
-            setCropping(null);
-            onIcon({ blob: icon.blob, url: URL.createObjectURL(icon.blob) });
-          }}
+          onDone={finish}
         />
       )}
       <input

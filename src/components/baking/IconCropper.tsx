@@ -32,7 +32,8 @@ function zoomAround(crop: Crop, factor: number, at: Point, fit: number): Crop {
 
 /**
  * Full-screen square crop step for ingredient images. Drag to move, pinch /
- * scroll / slider to zoom. Starts from the automatic trim-and-centre framing.
+ * scroll / slider to zoom. Starts from the last saved framing, or the
+ * automatic trim-and-centre one for a new image.
  */
 export function IconCropper({
   source,
@@ -41,11 +42,11 @@ export function IconCropper({
 }: {
   source: CropSource;
   onCancel: () => void;
-  onDone: (icon: PreparedImage) => void;
+  onDone: (icon: PreparedImage, crop: Crop) => void;
 }) {
-  const { img, url, auto } = source;
+  const { img, url, auto, initial } = source;
   const fit = containScale(img);
-  const [crop, setCrop] = useState(auto);
+  const [crop, setCrop] = useState(initial);
   const [busy, setBusy] = useState(false);
   const frame = useRef<HTMLDivElement>(null);
   const pointers = useRef(new Map<number, Point>());
@@ -147,7 +148,7 @@ export function IconCropper({
   async function done() {
     setBusy(true);
     try {
-      onDone(await renderCrop(img, crop));
+      onDone(await renderCrop(img, crop), crop);
     } catch {
       setBusy(false);
     }

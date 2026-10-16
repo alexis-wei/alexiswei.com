@@ -1,5 +1,7 @@
 // Browser-side image prep, run before uploading.
 
+import type { SavedCrop } from "./types";
+
 export type PreparedImage = {
   blob: Blob;
   width: number | null;
@@ -93,7 +95,8 @@ export type Crop = { x: number; y: number; scale: number };
 export type CropSource = {
   img: HTMLImageElement;
   url: string; // object URL for display; call release() when done
-  auto: Crop;
+  auto: Crop; // automatic trim-and-centre framing
+  initial: Crop; // where the cropper starts: the last saved crop, else auto
   release: () => void;
 };
 
@@ -106,7 +109,10 @@ export const containScale = (img: HTMLImageElement) =>
  * transparent edges (cut-outs, iPhone "Copy Subject") and centres the subject
  * with 8% padding, so most PNGs need no adjusting.
  */
-export async function openForCrop(file: Blob): Promise<CropSource> {
+export async function openForCrop(
+  file: Blob,
+  saved?: SavedCrop | null,
+): Promise<CropSource> {
   const url = URL.createObjectURL(file);
   const img = new Image();
   img.src = url;
@@ -118,16 +124,58 @@ export async function openForCrop(file: Blob): Promise<CropSource> {
   }
   const box = opaqueBounds(img);
   const scale = (1 - 2 * 0.08) / Math.max(box.w, box.h);
+  const auto = {
+    scale,
+    x: (1 - box.w * scale) / 2 - box.x * scale,
+    y: (1 - box.h * scale) / 2 - box.y * scale,
+  };
   return {
     img,
     url,
-    auto: {
-      scale,
-      x: (1 - box.w * scale) / 2 - box.x * scale,
-      y: (1 - box.h * scale) / 2 - box.y * scale,
-    },
+    auto,
+    initial: saved ? fromSavedCrop(saved, img) : auto,
     release: () => URL.revokeObjectURL(url),
   };
+}
+
+/**
+ * Re-opens a stored original for re-cropping. Fetched fresh with CORS so the
+ * canvas can read its pixels (R2's CORS rule must allow GET from the site).
+ */
+export async function openStoredForCrop(url: string, saved: SavedCrop | null) {
+  const response = await fetch(url, { mode: "cors", cache: "no-store" });
+  if (!response.ok) throw new Error("Couldn't load the original image");
+  return openForCrop(await response.blob(), saved);
+}
+
+/** Crops in a resolution-independent form, for saving alongside the icon. */
+export const toSavedCrop = (crop: Crop, img: HTMLImageElement): SavedCrop => ({
+  x: crop.x,
+  y: crop.y,
+  width: crop.scale * img.naturalWidth,
+});
+
+const fromSavedCrop = (saved: SavedCrop, img: HTMLImageElement): Crop => ({
+  x: saved.x,
+  y: saved.y,
+  scale: saved.width / img.naturalWidth,
+});
+
+/** The original, shrunk to 720px on its longest side (transparency kept). */
+export async function shrinkOriginal(
+  img: HTMLImageElement,
+  maxSide = 720,
+): Promise<Blob> {
+  const scale = Math.min(
+    1,
+    maxSide / Math.max(img.naturalWidth, img.naturalHeight),
+  );
+  const w = Math.max(1, Math.round(img.naturalWidth * scale));
+  const h = Math.max(1, Math.round(img.naturalHeight * scale));
+  const [el, ctx] = canvas(w, h);
+  ctx.imageSmoothingQuality = "high";
+  ctx.drawImage(img, 0, 0, w, h);
+  return encode(el, true);
 }
 
 /** Draws the cropped square icon (720×720 by default), keeping transparency. */

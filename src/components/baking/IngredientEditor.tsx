@@ -15,7 +15,7 @@ import type {
 } from "@/lib/baking/types";
 import { track, useUnsavedChangesWarning } from "./autosave";
 import { BackLink } from "./BakingHeader";
-import { IconPicker, type PickedIcon } from "./IconPicker";
+import { IconPicker, uploadIcon, type PickedIcon } from "./IconPicker";
 import { IngredientIcon } from "./IngredientIcon";
 import {
   AutosaveText,
@@ -25,7 +25,6 @@ import {
   TextButton,
   TextSection,
 } from "./ui";
-import { uploadFile } from "./upload";
 
 export function IngredientEditor({
   ingredient,
@@ -39,15 +38,22 @@ export function IngredientEditor({
   useUnsavedChangesWarning();
   const save = (patch: IngredientPatch) =>
     updateIngredient(ingredient.id, patch);
-  const [image, setImage] = useState(ingredient.imageUrl);
+  const [image, setImage] = useState({
+    imageUrl: ingredient.imageUrl,
+    sourceUrl: ingredient.sourceUrl,
+    crop: ingredient.crop,
+  });
   const [deleting, setDeleting] = useState(false);
 
   async function changeImage(icon: PickedIcon) {
     const previous = image;
-    setImage(icon.url);
+    setImage({ ...image, imageUrl: icon.url, crop: icon.crop });
     try {
-      const key = await track(uploadFile(icon.blob, { purpose: "ingredient" }));
-      await track(setIngredientImage(ingredient.id, key));
+      const saved = await track(
+        setIngredientImage(ingredient.id, await uploadIcon(icon)),
+      );
+      // Keep showing the local preview; it's identical to what was uploaded.
+      setImage({ ...saved, imageUrl: icon.url });
     } catch {
       setImage(previous);
     }
@@ -65,10 +71,15 @@ export function IngredientEditor({
       <div className="flex flex-col gap-6 pt-8 pb-6 sm:flex-row sm:items-start">
         <div className="w-44 shrink-0">
           {editable ? (
-            <IconPicker src={image} onIcon={changeImage} />
+            <IconPicker
+              src={image.imageUrl}
+              sourceUrl={image.sourceUrl}
+              crop={image.crop}
+              onIcon={changeImage}
+            />
           ) : (
             <IngredientIcon
-              ingredient={{ name: ingredient.name, imageUrl: image }}
+              ingredient={{ name: ingredient.name, imageUrl: image.imageUrl }}
               className="border border-black/10"
               sizes="176px"
             />

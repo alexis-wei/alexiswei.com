@@ -49,6 +49,8 @@ const SCHEMA = [
 const ADDED_COLUMNS = [
   ["ingredients", "origin", "TEXT NOT NULL DEFAULT ''"],
   ["ingredients", "details", "TEXT NOT NULL DEFAULT ''"],
+  ["ingredients", "source_key", "TEXT"],
+  ["ingredients", "crop", "TEXT NOT NULL DEFAULT ''"],
   ["logs", "room_temp", "TEXT NOT NULL DEFAULT ''"],
   ["logs", "humidity", "TEXT NOT NULL DEFAULT ''"],
   ["logs", "start_time", "TEXT NOT NULL DEFAULT ''"],

@@ -5,10 +5,9 @@ import { useEffect, useState } from "react";
 import { createIngredient } from "@/app/baking/actions";
 import type { Ingredient } from "@/lib/baking/types";
 import { track } from "./autosave";
-import { IconPicker, type PickedIcon } from "./IconPicker";
+import { IconPicker, uploadIcon, type PickedIcon } from "./IconPicker";
 import { IngredientTile, matchesQuery, SearchInput } from "./IngredientGrid";
 import { AutoTextarea, Label, LineButton } from "./ui";
-import { uploadFile } from "./upload";
 
 /**
  * Popup for picking a log's ingredients from the library. Browsing comes
@@ -168,6 +167,8 @@ function NewIngredientForm({
   onCreated: (ingredient: Ingredient) => Promise<void>;
 }) {
   const [icon, setIcon] = useState<PickedIcon | null>(null);
+  // Local URL of the not-yet-uploaded original, so "adjust" works before saving.
+  const [sourceUrl, setSourceUrl] = useState<string | null>(null);
   const [name, setName] = useState(initialName);
   const [origin, setOrigin] = useState("");
   const [details, setDetails] = useState("");
@@ -178,11 +179,9 @@ function NewIngredientForm({
     setBusy(true);
     setError(null);
     try {
-      const imageKey = icon
-        ? await track(uploadFile(icon.blob, { purpose: "ingredient" }))
-        : null;
+      const image = icon ? await uploadIcon(icon) : null;
       const ingredient = await track(
-        createIngredient({ name, origin, details, imageKey }),
+        createIngredient({ name, origin, details, image }),
       );
       await onCreated(ingredient);
     } catch (e) {
@@ -197,9 +196,16 @@ function NewIngredientForm({
         <div className="flex gap-4">
           <IconPicker
             src={icon?.url ?? null}
+            sourceUrl={sourceUrl}
+            crop={icon?.crop}
             onIcon={(next) => {
               if (icon) URL.revokeObjectURL(icon.url);
-              setIcon(next);
+              if (next.source) {
+                if (sourceUrl) URL.revokeObjectURL(sourceUrl);
+                setSourceUrl(URL.createObjectURL(next.source));
+              }
+              // A re-crop keeps the original from the first pick.
+              setIcon({ ...next, source: next.source ?? icon?.source });
             }}
             className="w-28 shrink-0"
           />
