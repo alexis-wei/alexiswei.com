@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { createBlankIngredient } from "@/app/baking/actions";
-import { BakingHeader } from "@/components/baking/BakingHeader";
+import { BakingFooter, BakingHeader } from "@/components/baking/BakingHeader";
 import { NewButton } from "@/components/baking/forms";
 import { IngredientLibrary } from "@/components/baking/IngredientGrid";
 import { isEditor } from "@/lib/baking/auth";
@@ -30,6 +30,7 @@ export default async function IngredientsPage() {
         {ingredients.length === 1 ? "ingredient" : "ingredients"}
       </p>
       <IngredientLibrary ingredients={ingredients} />
+      <BakingFooter editor={editor} />
     </>
   );
 }

@@ -1,7 +1,9 @@
 "use server";
 
 import { randomUUID } from "node:crypto";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { after } from "next/server";
 import {
   endEditorSession,
   passcodeMatches,
@@ -10,6 +12,7 @@ import {
 } from "@/lib/baking/auth";
 import { db } from "@/lib/baking/db";
 import { deleteObjects, publicUrl } from "@/lib/baking/storage";
+import { purgeExpired } from "@/lib/baking/trash";
 import type {
   Ingredient,
   IngredientImage,
@@ -86,23 +89,14 @@ export async function updateLog(id: string, patch: LogPatch) {
   });
 }
 
+/** Moves a log (with its photos and ingredients) to recently deleted. */
 export async function deleteLog(id: string) {
-  await requireEditor();
-  const client = await db();
-  const { rows } = await client.execute({
-    sql: "SELECT key FROM media WHERE log_id = ?",
-    args: [id],
-  });
-  await client.batch(
-    [
-      { sql: "DELETE FROM media WHERE log_id = ?", args: [id] },
-      { sql: "DELETE FROM log_ingredients WHERE log_id = ?", args: [id] },
-      { sql: "DELETE FROM logs WHERE id = ?", args: [id] },
-    ],
-    "write",
-  );
-  await deleteObjects(rows.map((r) => String(r.key)));
+  await softDelete("logs", id);
   redirect("/baking");
+}
+
+export async function restoreLog(id: string) {
+  await restore("logs", id);
 }
 
 export async function setIngredientSelected(
@@ -252,26 +246,14 @@ export async function setIngredientImage(
   };
 }
 
+/** Moves an ingredient to recently deleted; logs stop showing it until restored. */
 export async function deleteIngredient(id: string) {
-  await requireEditor();
-  const client = await db();
-  const { rows } = await client.execute({
-    sql: "SELECT image_key, source_key FROM ingredients WHERE id = ?",
-    args: [id],
-  });
-  await client.batch(
-    [
-      {
-        sql: "DELETE FROM log_ingredients WHERE ingredient_id = ?",
-        args: [id],
-      },
-      { sql: "DELETE FROM ingredients WHERE id = ?", args: [id] },
-    ],
-    "write",
-  );
-  const keys = [rows[0]?.image_key, rows[0]?.source_key];
-  await deleteObjects(keys.filter(Boolean).map(String));
+  await softDelete("ingredients", id);
   redirect("/baking/ingredients");
+}
+
+export async function restoreIngredient(id: string) {
+  await restore("ingredients", id);
 }
 
 export async function addMedia(
@@ -314,11 +296,33 @@ export async function addMedia(
 }
 
 export async function deleteMedia(id: string) {
+  await softDelete("media", id);
+}
+
+export async function restoreMedia(id: string) {
+  await restore("media", id);
+}
+
+// Deletes are reversible for 30 days (see lib/baking/trash.ts). Expired items
+// are purged after the response is sent, whenever something is deleted.
+async function softDelete(table: "logs" | "ingredients" | "media", id: string) {
   await requireEditor();
-  const client = await db();
-  const { rows } = await client.execute({
-    sql: "DELETE FROM media WHERE id = ? RETURNING key",
+  await (
+    await db()
+  ).execute({
+    sql: `UPDATE ${table} SET deleted_at = ? WHERE id = ?`,
+    args: [Date.now(), id],
+  });
+  after(purgeExpired);
+}
+
+async function restore(table: "logs" | "ingredients" | "media", id: string) {
+  await requireEditor();
+  await (
+    await db()
+  ).execute({
+    sql: `UPDATE ${table} SET deleted_at = NULL WHERE id = ?`,
     args: [id],
   });
-  await deleteObjects(rows.map((r) => String(r.key)));
+  revalidatePath("/baking", "layout");
 }

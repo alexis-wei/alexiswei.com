@@ -1,6 +1,12 @@
 "use client";
 
-import { useLayoutEffect, useRef, useState, type ComponentProps } from "react";
+import {
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type ComponentProps,
+} from "react";
 import { cn } from "@/lib/utils";
 import { useAutosave, useSaveStatus } from "./autosave";
 
@@ -185,5 +191,64 @@ export function TextSection({
         <p className="leading-relaxed whitespace-pre-wrap">{initial}</p>
       )}
     </Section>
+  );
+}
+
+/**
+ * Two-tap destructive button: "delete …" → "yes, delete · cancel". Used
+ * instead of window.confirm(), which some in-app browsers silently block.
+ * Resets on its own after a few seconds.
+ */
+export function ConfirmButton({
+  label,
+  busyLabel,
+  note,
+  onConfirm,
+}: {
+  label: string;
+  busyLabel: string;
+  note?: string;
+  onConfirm: () => Promise<unknown>;
+}) {
+  const [state, setState] = useState<"idle" | "confirming" | "busy">("idle");
+  useEffect(() => {
+    if (state !== "confirming") return;
+    const timer = setTimeout(() => setState("idle"), 6000);
+    return () => clearTimeout(timer);
+  }, [state]);
+
+  if (state === "idle") {
+    return (
+      <TextButton
+        className="hover:text-red-600"
+        onClick={() => setState("confirming")}
+      >
+        {label}
+      </TextButton>
+    );
+  }
+  return (
+    <div>
+      <div className="flex items-center gap-4">
+        <TextButton
+          disabled={state === "busy"}
+          className="text-red-600 hover:text-red-700"
+          onClick={async () => {
+            setState("busy");
+            try {
+              await onConfirm();
+            } catch {
+              setState("idle");
+            }
+          }}
+        >
+          {state === "busy" ? busyLabel : "yes, delete"}
+        </TextButton>
+        {state === "confirming" && (
+          <TextButton onClick={() => setState("idle")}>cancel</TextButton>
+        )}
+      </div>
+      {note && <p className="mt-2 text-xs text-black/40">{note}</p>}
+    </div>
   );
 }

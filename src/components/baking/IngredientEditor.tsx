@@ -22,7 +22,7 @@ import {
   Label,
   SaveIndicator,
   Section,
-  TextButton,
+  ConfirmButton,
   TextSection,
 } from "./ui";
 
@@ -43,7 +43,6 @@ export function IngredientEditor({
     sourceUrl: ingredient.sourceUrl,
     crop: ingredient.crop,
   });
-  const [deleting, setDeleting] = useState(false);
 
   async function changeImage(icon: PickedIcon) {
     const previous = image;
@@ -151,22 +150,16 @@ export function IngredientEditor({
 
       {editable && (
         <div className="border-t border-black/10 pt-6">
-          <TextButton
-            disabled={deleting}
-            className="hover:text-red-600"
-            onClick={async () => {
-              const where = usage.length
-                ? ` It will be removed from ${usage.length} ${usage.length === 1 ? "log" : "logs"}.`
-                : "";
-              if (!confirm(`Delete this ingredient?${where}`)) return;
-              setDeleting(true);
-              await track(deleteIngredient(ingredient.id)).catch(() =>
-                setDeleting(false),
-              );
-            }}
-          >
-            {deleting ? "deleting…" : "delete ingredient"}
-          </TextButton>
+          <ConfirmButton
+            label="delete ingredient"
+            busyLabel="deleting…"
+            note={`${
+              usage.length
+                ? `It will disappear from ${usage.length} ${usage.length === 1 ? "log" : "logs"} too. `
+                : ""
+            }You can restore it from recently deleted for 30 days.`}
+            onConfirm={() => deleteIngredient(ingredient.id)}
+          />
         </div>
       )}
     </article>

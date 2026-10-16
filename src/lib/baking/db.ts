@@ -55,6 +55,9 @@ const ADDED_COLUMNS = [
   ["logs", "humidity", "TEXT NOT NULL DEFAULT ''"],
   ["logs", "start_time", "TEXT NOT NULL DEFAULT ''"],
   ["logs", "end_time", "TEXT NOT NULL DEFAULT ''"],
+  ["logs", "deleted_at", "INTEGER"],
+  ["ingredients", "deleted_at", "INTEGER"],
+  ["media", "deleted_at", "INTEGER"],
 ] as const;
 
 async function migrate(c: Client) {

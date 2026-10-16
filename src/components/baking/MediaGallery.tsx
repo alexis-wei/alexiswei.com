@@ -35,6 +35,7 @@ export function MediaGallery({
   const [items, setItems] = useState(initial);
   const [pending, setPending] = useState<Pending[]>([]);
   const [open, setOpen] = useState<number | null>(null);
+  const [confirming, setConfirming] = useState<string | null>(null);
   const input = useRef<HTMLInputElement>(null);
   // Videos compress one at a time; encoding several at once would bog down a phone.
   const videoQueue = useRef<Promise<unknown>>(Promise.resolve());
@@ -100,8 +101,7 @@ export function MediaGallery({
   }
 
   async function remove(media: Media) {
-    if (!confirm(`Delete this ${media.kind === "video" ? "video" : "photo"}?`))
-      return;
+    setConfirming(null);
     setItems((list) => list.filter((m) => m.id !== media.id));
     try {
       await track(deleteMedia(media.id));
@@ -125,15 +125,38 @@ export function MediaGallery({
             >
               <Thumb media={media} />
             </button>
-            {editable && (
+            {editable && confirming !== media.id && (
               <button
                 type="button"
                 aria-label="Delete"
-                onClick={() => remove(media)}
+                onClick={() => setConfirming(media.id)}
                 className="absolute top-1.5 right-1.5 flex size-7 items-center justify-center border border-black/10 bg-white/90 text-black/60 backdrop-blur hover:text-black"
               >
                 <X size={14} strokeWidth={1.25} />
               </button>
+            )}
+            {confirming === media.id && (
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-white/90 backdrop-blur-sm">
+                <span className="font-mono text-[10px] tracking-[0.14em] text-black/60 uppercase">
+                  delete {media.kind === "video" ? "video" : "photo"}?
+                </span>
+                <div className="flex gap-4">
+                  <button
+                    type="button"
+                    onClick={() => remove(media)}
+                    className="font-mono text-[11px] tracking-[0.1em] text-red-600 uppercase"
+                  >
+                    yes
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setConfirming(null)}
+                    className="font-mono text-[11px] tracking-[0.1em] text-black/55 uppercase"
+                  >
+                    cancel
+                  </button>
+                </div>
+              </div>
             )}
           </div>
         ))}

@@ -1,8 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { createLog } from "@/app/baking/actions";
-import { BakingHeader } from "@/components/baking/BakingHeader";
-import { LockButton, NewButton } from "@/components/baking/forms";
+import { BakingFooter, BakingHeader } from "@/components/baking/BakingHeader";
+import { NewButton } from "@/components/baking/forms";
 import { IngredientIcon } from "@/components/baking/IngredientIcon";
 import { isEditor } from "@/lib/baking/auth";
 import { formatDate, formatDuration } from "@/lib/baking/format";
@@ -37,18 +37,7 @@ export default async function BakingPage() {
         </ul>
       )}
 
-      <footer className="mt-12 flex justify-center">
-        {editor ? (
-          <LockButton />
-        ) : (
-          <Link
-            href="/baking/edit"
-            className="font-mono text-[11px] tracking-[0.1em] text-black/30 uppercase hover:text-black"
-          >
-            edit
-          </Link>
-        )}
-      </footer>
+      <BakingFooter editor={editor} />
     </>
   );
 }

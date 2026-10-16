@@ -19,6 +19,7 @@ import {
   Label,
   SaveIndicator,
   Section,
+  ConfirmButton,
   TextButton,
   TextSection,
 } from "./ui";
@@ -34,7 +35,6 @@ export function LogEditor({
 }) {
   useUnsavedChangesWarning();
   const save = (patch: LogPatch) => updateLog(log.id, patch);
-  const [deleting, setDeleting] = useState(false);
 
   const hasIngredients = log.ingredients.length > 0;
   const show = (filled: boolean) => editable || filled;
@@ -159,18 +159,12 @@ export function LogEditor({
 
       {editable && (
         <div className="border-t border-black/10 pt-6">
-          <TextButton
-            disabled={deleting}
-            className="hover:text-red-600"
-            onClick={async () => {
-              if (!confirm("Delete this log and all of its photos and videos?"))
-                return;
-              setDeleting(true);
-              await track(deleteLog(log.id)).catch(() => setDeleting(false));
-            }}
-          >
-            {deleting ? "deleting…" : "delete log"}
-          </TextButton>
+          <ConfirmButton
+            label="delete log"
+            busyLabel="deleting…"
+            note="It moves to recently deleted, where you can restore it for 30 days."
+            onConfirm={() => deleteLog(log.id)}
+          />
         </div>
       )}
     </article>

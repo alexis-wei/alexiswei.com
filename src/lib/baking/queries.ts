@@ -57,7 +57,9 @@ function parseTimeline(value: unknown): TimelineStep[] {
 export async function listIngredients(): Promise<Ingredient[]> {
   const { rows } = await (
     await db()
-  ).execute("SELECT * FROM ingredients ORDER BY name COLLATE NOCASE");
+  ).execute(
+    "SELECT * FROM ingredients WHERE deleted_at IS NULL ORDER BY name COLLATE NOCASE",
+  );
   return rows.map(toIngredient);
 }
 
@@ -66,13 +68,14 @@ export async function listLogs(): Promise<LogSummary[]> {
     await db()
   ).batch(
     [
-      "SELECT id, title, baked_on, start_time, end_time FROM logs ORDER BY baked_on DESC, created_at DESC",
+      "SELECT id, title, baked_on, start_time, end_time FROM logs WHERE deleted_at IS NULL ORDER BY baked_on DESC, created_at DESC",
       // First photo of each log (falls back to a video when there's no photo).
       `SELECT * FROM media m WHERE m.id = (
-         SELECT id FROM media WHERE log_id = m.log_id
+         SELECT id FROM media WHERE log_id = m.log_id AND deleted_at IS NULL
          ORDER BY kind = 'video', position LIMIT 1)`,
       `SELECT li.log_id, i.* FROM log_ingredients li
          JOIN ingredients i ON i.id = li.ingredient_id
+         WHERE i.deleted_at IS NULL
          ORDER BY li.position`,
     ],
     "read",
@@ -105,13 +108,16 @@ export async function getLog(id: string): Promise<BakingLog | null> {
     await db()
   ).batch(
     [
-      { sql: "SELECT * FROM logs WHERE id = ?", args: [id] },
+      {
+        sql: "SELECT * FROM logs WHERE id = ? AND deleted_at IS NULL",
+        args: [id],
+      },
       {
         sql: "SELECT ingredient_id, amount FROM log_ingredients WHERE log_id = ? ORDER BY position",
         args: [id],
       },
       {
-        sql: "SELECT * FROM media WHERE log_id = ? ORDER BY position",
+        sql: "SELECT * FROM media WHERE log_id = ? AND deleted_at IS NULL ORDER BY position",
         args: [id],
       },
     ],
@@ -146,11 +152,14 @@ export async function getIngredient(
     await db()
   ).batch(
     [
-      { sql: "SELECT * FROM ingredients WHERE id = ?", args: [id] },
+      {
+        sql: "SELECT * FROM ingredients WHERE id = ? AND deleted_at IS NULL",
+        args: [id],
+      },
       {
         sql: `SELECT l.id, l.title, l.baked_on, li.amount FROM log_ingredients li
               JOIN logs l ON l.id = li.log_id
-              WHERE li.ingredient_id = ? ORDER BY l.baked_on DESC, l.created_at DESC`,
+              WHERE li.ingredient_id = ? AND l.deleted_at IS NULL ORDER BY l.baked_on DESC, l.created_at DESC`,
         args: [id],
       },
     ],

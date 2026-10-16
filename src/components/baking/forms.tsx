@@ -64,3 +64,20 @@ export function UnlockForm() {
     </form>
   );
 }
+
+function RestoreSubmit() {
+  const { pending } = useFormStatus();
+  return (
+    <TextButton type="submit" disabled={pending}>
+      {pending ? "restoring…" : "restore"}
+    </TextButton>
+  );
+}
+
+export function RestoreButton({ action }: { action: () => Promise<void> }) {
+  return (
+    <form action={action}>
+      <RestoreSubmit />
+    </form>
+  );
+}
