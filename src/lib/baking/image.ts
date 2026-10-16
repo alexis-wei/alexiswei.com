@@ -83,52 +83,100 @@ function opaqueBounds(img: HTMLImageElement) {
 }
 
 /**
- * Turns a cut-out (PNG, or an iPhone "Copy Subject"/background-removed image)
- * into a square icon: trims the empty transparent edges, then centres the
- * subject with even padding so every ingredient tile lines up.
+ * Where an image sits inside the square icon, in units of the square's side
+ * (so the same crop works at any on-screen size and at the 720px output):
+ * the image's top-left corner is at (x, y), and each image pixel spans
+ * `scale` square-widths.
  */
-export function toSquareIcon(file: Blob, size = 512): Promise<PreparedImage> {
-  return withImage(file, async (img) => {
-    const box = opaqueBounds(img);
-    const padding = size * 0.08;
-    const scale = (size - padding * 2) / Math.max(box.w, box.h);
-    const w = box.w * scale;
-    const h = box.h * scale;
-    const [el, ctx] = canvas(size, size);
-    ctx.imageSmoothingQuality = "high";
-    ctx.drawImage(
-      img,
-      box.x,
-      box.y,
-      box.w,
-      box.h,
-      (size - w) / 2,
-      (size - h) / 2,
-      w,
-      h,
-    );
-    return { blob: await encode(el, true), width: size, height: size };
-  });
+export type Crop = { x: number; y: number; scale: number };
+
+export type CropSource = {
+  img: HTMLImageElement;
+  url: string; // object URL for display; call release() when done
+  auto: Crop;
+  release: () => void;
+};
+
+/** Scale at which the whole image fits inside the square. */
+export const containScale = (img: HTMLImageElement) =>
+  1 / Math.max(img.naturalWidth, img.naturalHeight);
+
+/**
+ * Loads an image for cropping. The suggested starting crop trims empty
+ * transparent edges (cut-outs, iPhone "Copy Subject") and centres the subject
+ * with 8% padding, so most PNGs need no adjusting.
+ */
+export async function openForCrop(file: Blob): Promise<CropSource> {
+  const url = URL.createObjectURL(file);
+  const img = new Image();
+  img.src = url;
+  try {
+    await img.decode();
+  } catch (error) {
+    URL.revokeObjectURL(url);
+    throw error;
+  }
+  const box = opaqueBounds(img);
+  const scale = (1 - 2 * 0.08) / Math.max(box.w, box.h);
+  return {
+    img,
+    url,
+    auto: {
+      scale,
+      x: (1 - box.w * scale) / 2 - box.x * scale,
+      y: (1 - box.h * scale) / 2 - box.y * scale,
+    },
+    release: () => URL.revokeObjectURL(url),
+  };
+}
+
+/** Draws the cropped square icon (720×720 by default), keeping transparency. */
+export async function renderCrop(
+  img: HTMLImageElement,
+  crop: Crop,
+  size = 720,
+): Promise<PreparedImage> {
+  const [el, ctx] = canvas(size, size);
+  ctx.imageSmoothingQuality = "high";
+  ctx.drawImage(
+    img,
+    crop.x * size,
+    crop.y * size,
+    img.naturalWidth * crop.scale * size,
+    img.naturalHeight * crop.scale * size,
+  );
+  return { blob: await encode(el, true), width: size, height: size };
 }
 
 /**
- * Shrinks large photos (iPhone photos are often 4000px+) before upload. If the
+ * Size that fits 1080p: short side at most 1080, long side at most 1920,
+ * never upscaled. Rounded down to even numbers, which video encoders require.
+ */
+export function fit1080(width: number, height: number) {
+  const scale = Math.min(
+    1,
+    1080 / Math.min(width, height),
+    1920 / Math.max(width, height),
+  );
+  const even = (n: number) => Math.max(2, Math.floor((n * scale) / 2) * 2);
+  return scale === 1
+    ? { width, height, scale }
+    : { width: even(width), height: even(height), scale };
+}
+
+/**
+ * Shrinks photos to 1080p before upload (iPhone photos are 4032×3024). If the
  * browser can't decode the file, the original is uploaded untouched.
  */
-export async function preparePhoto(
-  file: File,
-  maxSide = 2400,
-): Promise<PreparedImage> {
+export async function preparePhoto(file: File): Promise<PreparedImage> {
   try {
     return await withImage(file, async (img) => {
       const { naturalWidth: nw, naturalHeight: nh } = img;
-      const scale = Math.min(1, maxSide / Math.max(nw, nh));
-      const small = scale === 1 && file.size < 1.5 * 1024 * 1024;
+      const { width: w, height: h, scale } = fit1080(nw, nh);
+      const small = scale === 1 && file.size < 600 * 1024;
       if (small && /^image\/(jpeg|webp)$/.test(file.type)) {
         return { blob: file, width: nw, height: nh };
       }
-      const w = Math.round(nw * scale);
-      const h = Math.round(nh * scale);
       const [el, ctx] = canvas(w, h);
       ctx.imageSmoothingQuality = "high";
       ctx.drawImage(img, 0, 0, w, h);

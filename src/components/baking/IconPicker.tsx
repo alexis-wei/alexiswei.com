@@ -2,16 +2,17 @@
 
 import { ClipboardPaste, ImagePlus } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { toSquareIcon } from "@/lib/baking/image";
+import { openForCrop, type CropSource } from "@/lib/baking/image";
 import { cn } from "@/lib/utils";
+import { IconCropper } from "./IconCropper";
 import { TextButton } from "./ui";
 
 export type PickedIcon = { blob: Blob; url: string };
 
 /**
  * Square image slot for an ingredient. Accepts a file, a drag-and-drop, ⌘V,
- * or the iPhone clipboard ("Copy Subject" on a photo, then "paste"), and
- * trims/centres the cut-out before handing it back.
+ * or the iPhone clipboard ("Copy Subject" on a photo, then "paste"), then
+ * opens a square crop step before handing back the 720×720 icon.
  */
 export function IconPicker({
   src,
@@ -24,6 +25,7 @@ export function IconPicker({
 }) {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [cropping, setCropping] = useState<CropSource | null>(null);
   const fileInput = useRef<HTMLInputElement>(null);
   const onIconRef = useRef(onIcon);
   useEffect(() => {
@@ -35,10 +37,10 @@ export function IconPicker({
     setError(null);
     setBusy(true);
     try {
-      const icon = await toSquareIcon(blob);
-      onIconRef.current({
-        blob: icon.blob,
-        url: URL.createObjectURL(icon.blob),
+      const source = await openForCrop(blob);
+      setCropping((old) => {
+        old?.release();
+        return source;
       });
     } catch {
       setError("Couldn't read that image. Try a PNG.");
@@ -108,6 +110,20 @@ export function IconPicker({
         </TextButton>
       </div>
       {error && <p className="mt-2 text-xs text-red-600">{error}</p>}
+      {cropping && (
+        <IconCropper
+          source={cropping}
+          onCancel={() => {
+            cropping.release();
+            setCropping(null);
+          }}
+          onDone={(icon) => {
+            cropping.release();
+            setCropping(null);
+            onIcon({ blob: icon.blob, url: URL.createObjectURL(icon.blob) });
+          }}
+        />
+      )}
       <input
         ref={fileInput}
         type="file"

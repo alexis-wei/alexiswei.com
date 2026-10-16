@@ -57,6 +57,8 @@ export async function createLog() {
 const COLUMNS = {
   title: "title",
   bakedOn: "baked_on",
+  startTime: "start_time",
+  endTime: "end_time",
   roomTemp: "room_temp",
   humidity: "humidity",
   process: "process",

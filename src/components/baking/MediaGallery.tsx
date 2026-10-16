@@ -5,7 +5,8 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { addMedia, deleteMedia } from "@/app/baking/actions";
 import { uid } from "@/lib/baking/format";
-import { preparePhoto, videoSize } from "@/lib/baking/image";
+import { preparePhoto } from "@/lib/baking/image";
+import { compressVideo } from "@/lib/baking/video";
 import type { Media } from "@/lib/baking/types";
 import { track } from "./autosave";
 import { uploadFile } from "./upload";
@@ -14,6 +15,7 @@ type Pending = {
   id: string;
   kind: Media["kind"];
   previewUrl: string;
+  stage: "waiting" | "compressing" | "uploading";
   progress: number;
   error?: string;
 };
@@ -34,6 +36,8 @@ export function MediaGallery({
   const [pending, setPending] = useState<Pending[]>([]);
   const [open, setOpen] = useState<number | null>(null);
   const input = useRef<HTMLInputElement>(null);
+  // Videos compress one at a time; encoding several at once would bog down a phone.
+  const videoQueue = useRef<Promise<unknown>>(Promise.resolve());
 
   const setOne = (id: string, change: Partial<Pending>) =>
     setPending((list) =>
@@ -50,14 +54,25 @@ export function MediaGallery({
       id: uid(),
       kind,
       previewUrl: URL.createObjectURL(file),
+      stage: kind === "video" ? "waiting" : "compressing",
       progress: 0,
     };
     setPending((list) => [...list, temp]);
     try {
-      const prepared =
-        kind === "image"
-          ? await preparePhoto(file)
-          : { blob: file, ...(await videoSize(file)) };
+      let prepared;
+      if (kind === "image") {
+        prepared = await preparePhoto(file);
+      } else {
+        const compressed = videoQueue.current.then(() => {
+          setOne(temp.id, { stage: "compressing" });
+          return compressVideo(file, (progress) =>
+            setOne(temp.id, { progress }),
+          );
+        });
+        videoQueue.current = compressed.catch(() => {});
+        prepared = await compressed;
+      }
+      setOne(temp.id, { stage: "uploading", progress: 0 });
       const key = await track(
         uploadFile(
           prepared.blob,
@@ -155,11 +170,17 @@ export function MediaGallery({
                 </span>
               </button>
             ) : (
-              <div className="absolute inset-x-3 bottom-3 h-px bg-black/15">
-                <div
-                  className="h-px bg-black transition-[width]"
-                  style={{ width: `${Math.round(p.progress * 100)}%` }}
-                />
+              <div className="absolute inset-x-3 bottom-3">
+                <p className="mb-1.5 font-mono text-[10px] tracking-[0.1em] text-black/60 uppercase">
+                  {p.stage}
+                  {p.stage !== "waiting" && ` ${Math.round(p.progress * 100)}%`}
+                </p>
+                <div className="h-px bg-black/15">
+                  <div
+                    className="h-px bg-black transition-[width]"
+                    style={{ width: `${Math.round(p.progress * 100)}%` }}
+                  />
+                </div>
               </div>
             )}
           </div>

@@ -54,7 +54,7 @@ export async function listLogs(): Promise<LogSummary[]> {
     await db()
   ).batch(
     [
-      "SELECT id, title, baked_on FROM logs ORDER BY baked_on DESC, created_at DESC",
+      "SELECT id, title, baked_on, start_time, end_time FROM logs ORDER BY baked_on DESC, created_at DESC",
       // First photo of each log (falls back to a video when there's no photo).
       `SELECT * FROM media m WHERE m.id = (
          SELECT id FROM media WHERE log_id = m.log_id
@@ -80,6 +80,8 @@ export async function listLogs(): Promise<LogSummary[]> {
       id: str(row.id),
       title: str(row.title),
       bakedOn: str(row.baked_on),
+      startTime: str(row.start_time),
+      endTime: str(row.end_time),
       cover: cover ? toMedia(cover) : null,
       ingredients: ingredientsByLog.get(str(row.id)) ?? [],
     };
@@ -110,6 +112,8 @@ export async function getLog(id: string): Promise<BakingLog | null> {
     id: str(row.id),
     title: str(row.title),
     bakedOn: str(row.baked_on),
+    startTime: str(row.start_time),
+    endTime: str(row.end_time),
     roomTemp: str(row.room_temp),
     humidity: str(row.humidity),
     process: str(row.process),

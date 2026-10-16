@@ -5,7 +5,7 @@ import { BakingHeader } from "@/components/baking/BakingHeader";
 import { LockButton, NewButton } from "@/components/baking/forms";
 import { IngredientIcon } from "@/components/baking/IngredientIcon";
 import { isEditor } from "@/lib/baking/auth";
-import { formatDate } from "@/lib/baking/format";
+import { formatDate, formatDuration } from "@/lib/baking/format";
 import { listLogs } from "@/lib/baking/queries";
 import type { LogSummary } from "@/lib/baking/types";
 
@@ -84,7 +84,12 @@ function LogRow({ log }: { log: LogSummary }) {
         </div>
         <div className="min-w-0 flex-1">
           <p className="font-mono text-[10px] tracking-[0.14em] text-black/45 uppercase">
-            {formatDate(log.bakedOn, true)}
+            {[
+              formatDate(log.bakedOn, true),
+              formatDuration(log.startTime, log.endTime),
+            ]
+              .filter(Boolean)
+              .join(" · ")}
           </p>
           <p className="mt-1 truncate font-serif text-lg leading-snug">
             {log.title || "untitled"}

@@ -40,6 +40,8 @@ export type BakingLog = {
   id: string;
   title: string;
   bakedOn: string; // "YYYY-MM-DD"
+  startTime: string; // "HH:MM", may be empty
+  endTime: string; // "HH:MM", may be empty
   roomTemp: string; // free text, e.g. "22°C"
   humidity: string; // free text, e.g. "45%"
   process: string;
@@ -53,6 +55,8 @@ export type LogSummary = {
   id: string;
   title: string;
   bakedOn: string;
+  startTime: string;
+  endTime: string;
   cover: Media | null;
   ingredients: Ingredient[];
 };
@@ -62,6 +66,8 @@ export type LogPatch = Partial<
     BakingLog,
     | "title"
     | "bakedOn"
+    | "startTime"
+    | "endTime"
     | "roomTemp"
     | "humidity"
     | "process"

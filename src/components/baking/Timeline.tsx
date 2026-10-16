@@ -2,15 +2,10 @@
 
 import { X } from "lucide-react";
 import { useState } from "react";
-import { uid } from "@/lib/baking/format";
+import { nowTime, uid } from "@/lib/baking/format";
 import type { TimelineStep } from "@/lib/baking/types";
 import { useAutosave } from "./autosave";
 import { AutoTextarea, TextButton } from "./ui";
-
-const nowHHMM = () => {
-  const d = new Date();
-  return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
-};
 
 export function Timeline({
   initial,
@@ -82,7 +77,7 @@ export function Timeline({
       <TextButton
         className="mt-3"
         onClick={() =>
-          update([...steps, { id: uid(), time: nowHHMM(), text: "" }])
+          update([...steps, { id: uid(), time: nowTime(), text: "" }])
         }
       >
         + add step
