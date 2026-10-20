@@ -74,6 +74,7 @@ const EXTENSIONS: Record<string, string> = {
   "video/mp4": "mp4",
   "video/quicktime": "mov",
   "video/webm": "webm",
+  "application/pdf": "pdf",
 };
 
 export function extensionFor(contentType: string, filename?: string) {

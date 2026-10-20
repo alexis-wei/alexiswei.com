@@ -42,6 +42,19 @@ const SCHEMA = [
   )`,
   `CREATE INDEX IF NOT EXISTS media_log ON media (log_id, position)`,
   `CREATE INDEX IF NOT EXISTS log_ingredients_log ON log_ingredients (log_id, position)`,
+  // A log's recipe source files (photos/PDFs), kept as the original upload.
+  `CREATE TABLE IF NOT EXISTS recipe_files (
+    id TEXT PRIMARY KEY,
+    log_id TEXT NOT NULL,
+    key TEXT NOT NULL,
+    name TEXT NOT NULL DEFAULT '',
+    content_type TEXT NOT NULL,
+    size INTEGER,
+    position INTEGER NOT NULL,
+    created_at INTEGER NOT NULL,
+    deleted_at INTEGER
+  ) STRICT`,
+  `CREATE INDEX IF NOT EXISTS recipe_files_log ON recipe_files (log_id, position)`,
 ];
 
 // Columns added after the first release. CREATE TABLE IF NOT EXISTS won't add
@@ -59,6 +72,7 @@ const ADDED_COLUMNS = [
   ["media", "caption", "TEXT NOT NULL DEFAULT ''"],
   ["media", "taken_at", "TEXT"],
   ["logs", "cover_media_id", "TEXT"],
+  ["logs", "recipe_url", "TEXT NOT NULL DEFAULT ''"],
 ] as const;
 
 // Columns that were removed. Their data is deleted for good, so only list a

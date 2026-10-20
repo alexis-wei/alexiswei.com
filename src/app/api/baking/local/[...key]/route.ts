@@ -15,6 +15,7 @@ const TYPES: Record<string, string> = {
   mp4: "video/mp4",
   mov: "video/quicktime",
   webm: "video/webm",
+  pdf: "application/pdf",
 };
 
 type Context = { params: Promise<{ key: string[] }> };

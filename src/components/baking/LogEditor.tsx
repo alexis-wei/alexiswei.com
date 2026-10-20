@@ -14,6 +14,7 @@ import { track, useAutosave, useUnsavedChangesWarning } from "./autosave";
 import { BackLink } from "./BakingHeader";
 import { LogIngredients } from "./LogIngredients";
 import { MediaGallery } from "./MediaGallery";
+import { RecipeSection } from "./RecipeSection";
 import { Timeline } from "./Timeline";
 import {
   AutosaveText,
@@ -89,6 +90,18 @@ export function LogEditor({
           </>
         )}
       </div>
+
+      {show(Boolean(log.recipeUrl.trim()) || log.recipeFiles.length > 0) && (
+        <Section label="recipe">
+          <RecipeSection
+            logId={log.id}
+            initialUrl={log.recipeUrl}
+            initialFiles={log.recipeFiles}
+            editable={editable}
+            onSaveUrl={(recipeUrl) => save({ recipeUrl })}
+          />
+        </Section>
+      )}
 
       {show(log.media.length > 0) && (
         <Section label="photos & videos">

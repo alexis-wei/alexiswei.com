@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowLeft, Plus } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createIngredient } from "@/app/baking/actions";
 import type { Ingredient } from "@/lib/baking/types";
 import { track } from "./autosave";
@@ -13,6 +13,11 @@ import { AutoTextarea, Label, LineButton } from "./ui";
  * Popup for picking a log's ingredients from the library. Browsing comes
  * first; adding a new ingredient is offered only when a search finds no
  * exact match (or the library is empty).
+ *
+ * Like everything else in the log, the add form saves itself: leaving it any
+ * way (back, done, tapping outside, Escape) saves the ingredient if it has a
+ * name. On a phone the keyboard hides the "add to log" button, so "done" is
+ * often the button people reach for.
  */
 export function IngredientBrowser({
   library,
@@ -29,9 +34,22 @@ export function IngredientBrowser({
 }) {
   const [query, setQuery] = useState("");
   const [adding, setAdding] = useState<string | null>(null);
+  // Set by the add form while it's open: saves it, resolving false on failure.
+  const saveDraft = useRef<(() => Promise<boolean>) | null>(null);
+
+  /** Leaves the add form (saving it first), then does `next`. */
+  async function leave(next: () => void) {
+    if (saveDraft.current && !(await saveDraft.current())) return;
+    next();
+  }
+  const leaveRef = useRef(leave);
+  useEffect(() => {
+    leaveRef.current = leave;
+  });
 
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    const onKey = (e: KeyboardEvent) =>
+      e.key === "Escape" && leaveRef.current(onClose);
     const overflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     window.addEventListener("keydown", onKey);
@@ -49,7 +67,7 @@ export function IngredientBrowser({
   return (
     <div
       className="fixed inset-0 z-50 flex items-end justify-center bg-black/20 sm:items-center sm:p-6"
-      onClick={onClose}
+      onClick={() => leave(onClose)}
     >
       <div
         role="dialog"
@@ -62,7 +80,7 @@ export function IngredientBrowser({
           {adding !== null ? (
             <button
               type="button"
-              onClick={() => setAdding(null)}
+              onClick={() => leave(() => setAdding(null))}
               className="-ml-1 inline-flex items-center gap-1.5 p-1 text-sm text-black/60 hover:text-black"
             >
               <ArrowLeft size={16} strokeWidth={1.25} /> browse
@@ -72,7 +90,11 @@ export function IngredientBrowser({
               {count > 0 ? `${count} selected` : "choose ingredients"}
             </Label>
           )}
-          <button type="button" onClick={onClose} className="-mr-1 p-1 text-sm">
+          <button
+            type="button"
+            onClick={() => leave(onClose)}
+            className="-mr-1 p-1 text-sm"
+          >
             done
           </button>
         </div>
@@ -80,6 +102,7 @@ export function IngredientBrowser({
         {adding !== null ? (
           <NewIngredientForm
             initialName={adding}
+            register={(save) => (saveDraft.current = save)}
             onCreated={async (ingredient) => {
               await onCreated(ingredient);
               setAdding(null);
@@ -161,9 +184,11 @@ function Field({
 
 function NewIngredientForm({
   initialName,
+  register,
   onCreated,
 }: {
   initialName: string;
+  register: (save: (() => Promise<boolean>) | null) => void;
   onCreated: (ingredient: Ingredient) => Promise<void>;
 }) {
   const [icon, setIcon] = useState<PickedIcon | null>(null);
@@ -175,20 +200,49 @@ function NewIngredientForm({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  async function save() {
+  const saving = useRef<Promise<boolean> | null>(null);
+
+  /**
+   * Creates the ingredient. Resolves true when it's safe to leave the form:
+   * saved, or nothing was entered. A second call while saving waits for the
+   * first rather than creating a duplicate.
+   */
+  function save(): Promise<boolean> {
+    if (saving.current) return saving.current;
+    if (!name.trim()) {
+      const blank = !icon && !origin.trim() && !details.trim();
+      if (!blank) setError("Add a name to save this ingredient.");
+      return Promise.resolve(blank);
+    }
     setBusy(true);
     setError(null);
-    try {
-      const image = icon ? await uploadIcon(icon) : null;
-      const ingredient = await track(
-        createIngredient({ name, origin, details, image }),
-      );
-      await onCreated(ingredient);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Couldn't save");
-      setBusy(false);
-    }
+    saving.current = (async () => {
+      try {
+        const image = icon ? await uploadIcon(icon) : null;
+        const ingredient = await track(
+          createIngredient({ name, origin, details, image }),
+        );
+        await onCreated(ingredient);
+        return true;
+      } catch (e) {
+        setError(e instanceof Error ? e.message : "Couldn't save");
+        setBusy(false);
+        saving.current = null;
+        return false;
+      }
+    })();
+    return saving.current;
   }
+
+  // Let the popup save this form when it's left by any route.
+  const saveRef = useRef(save);
+  useEffect(() => {
+    saveRef.current = save;
+  });
+  useEffect(() => {
+    register(() => saveRef.current());
+    return () => register(null);
+  }, [register]);
 
   return (
     <>

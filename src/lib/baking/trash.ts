@@ -1,7 +1,7 @@
 import { db } from "./db";
 import { deleteObjects, publicUrl } from "./storage";
 
-// Deleting a log, ingredient, photo or video only marks it (deleted_at) and
+// Deleting a log, ingredient, photo, video or recipe file only marks it (deleted_at) and
 // hides it everywhere. It can be restored from "recently deleted" for 30
 // days; after that, purgeExpired() removes the rows and their files in R2.
 
@@ -10,7 +10,7 @@ const RETENTION_MS = RETENTION_DAYS * 24 * 60 * 60 * 1000;
 
 export type DeletedItem = {
   id: string;
-  kind: "log" | "ingredient" | "media";
+  kind: "log" | "ingredient" | "media" | "recipe";
   label: string;
   detail: string;
   thumbUrl: string | null;
@@ -26,7 +26,7 @@ const daysLeft = (deletedAt: number) =>
   );
 
 export async function listDeleted(): Promise<DeletedItem[]> {
-  const [logs, ingredients, media] = await (
+  const [logs, ingredients, media, recipes] = await (
     await db()
   ).batch(
     [
@@ -39,6 +39,9 @@ export async function listDeleted(): Promise<DeletedItem[]> {
       `SELECT m.id, m.key, m.kind, m.deleted_at, l.title FROM media m
        JOIN logs l ON l.id = m.log_id
        WHERE m.deleted_at IS NOT NULL AND l.deleted_at IS NULL`,
+      `SELECT r.id, r.key, r.name, r.content_type, r.deleted_at, l.title
+       FROM recipe_files r JOIN logs l ON l.id = r.log_id
+       WHERE r.deleted_at IS NOT NULL AND l.deleted_at IS NULL`,
     ],
     "read",
   );
@@ -71,6 +74,17 @@ export async function listDeleted(): Promise<DeletedItem[]> {
       deletedAt: Number(r.deleted_at),
       daysLeft: daysLeft(Number(r.deleted_at)),
     })),
+    ...recipes.rows.map((r) => ({
+      id: String(r.id),
+      kind: "recipe" as const,
+      label: String(r.name || "recipe file"),
+      detail: `recipe for ${r.title || "untitled"}`,
+      thumbUrl: String(r.content_type).startsWith("image/")
+        ? publicUrl(String(r.key))
+        : null,
+      deletedAt: Number(r.deleted_at),
+      daysLeft: daysLeft(Number(r.deleted_at)),
+    })),
   ];
   return items.sort((a, b) => b.deletedAt - a.deletedAt);
 }
@@ -79,7 +93,7 @@ export async function listDeleted(): Promise<DeletedItem[]> {
 export async function purgeExpired(now = Date.now()) {
   const cutoff = now - RETENTION_MS;
   const client = await db();
-  const [logs, ingredients, media] = await client.batch(
+  const [logs, ingredients, media, recipes] = await client.batch(
     [
       { sql: "SELECT id FROM logs WHERE deleted_at < ?", args: [cutoff] },
       {
@@ -91,10 +105,20 @@ export async function purgeExpired(now = Date.now()) {
               OR log_id IN (SELECT id FROM logs WHERE deleted_at < ?)`,
         args: [cutoff, cutoff],
       },
+      {
+        sql: `SELECT key FROM recipe_files WHERE deleted_at < ?
+              OR log_id IN (SELECT id FROM logs WHERE deleted_at < ?)`,
+        args: [cutoff, cutoff],
+      },
     ],
     "read",
   );
-  if (!logs.rows.length && !ingredients.rows.length && !media.rows.length) {
+  if (
+    !logs.rows.length &&
+    !ingredients.rows.length &&
+    !media.rows.length &&
+    !recipes.rows.length
+  ) {
     return;
   }
 
@@ -102,6 +126,11 @@ export async function purgeExpired(now = Date.now()) {
     [
       {
         sql: `DELETE FROM media WHERE deleted_at < ?
+              OR log_id IN (SELECT id FROM logs WHERE deleted_at < ?)`,
+        args: [cutoff, cutoff],
+      },
+      {
+        sql: `DELETE FROM recipe_files WHERE deleted_at < ?
               OR log_id IN (SELECT id FROM logs WHERE deleted_at < ?)`,
         args: [cutoff, cutoff],
       },
@@ -119,6 +148,7 @@ export async function purgeExpired(now = Date.now()) {
 
   const keys = [
     ...media.rows.map((r) => r.key),
+    ...recipes.rows.map((r) => r.key),
     ...ingredients.rows.flatMap((r) => [r.image_key, r.source_key]),
   ];
   await deleteObjects(keys.filter(Boolean).map(String));
