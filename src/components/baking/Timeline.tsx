@@ -64,7 +64,7 @@ export function Timeline({
                 onChange={(e) => patch(step.id, { time: e.target.value })}
                 onBlur={flush}
                 aria-label="Time"
-                className="w-[7.75rem] shrink-0 bg-transparent py-0.5 font-mono text-base text-black/70 outline-none [&::-webkit-calendar-picker-indicator]:opacity-30"
+                className="w-[6.75rem] shrink-0 bg-transparent py-0.5 font-mono text-sm text-black/70 outline-none [&::-webkit-calendar-picker-indicator]:opacity-30"
               />
               <AutoTextarea
                 value={step.text}
@@ -72,7 +72,7 @@ export function Timeline({
                 onBlur={flush}
                 placeholder="what happened"
                 aria-label="Step"
-                className="py-0.5"
+                className="py-0.5 text-sm"
               />
               <button
                 type="button"
