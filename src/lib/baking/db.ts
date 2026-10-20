@@ -60,6 +60,7 @@ const ADDED_COLUMNS = [
   ["media", "deleted_at", "INTEGER"],
   ["media", "caption", "TEXT NOT NULL DEFAULT ''"],
   ["media", "taken_at", "TEXT"],
+  ["logs", "cover_media_id", "TEXT"],
 ] as const;
 
 async function migrate(c: Client) {

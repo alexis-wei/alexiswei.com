@@ -2,6 +2,9 @@ export type TimelineStep = {
   id: string;
   time: string; // "HH:MM", may be empty
   text: string;
+  roomTemp?: string; // room temperature at this step, free text, e.g. "23°C"
+  humidity?: string; // room humidity at this step, free text, e.g. "48%"
+  internalTemp?: string; // probe reading of the dough/bake itself, e.g. "74°C"
 };
 
 export type Ingredient = {
@@ -58,8 +61,11 @@ export type BakingLog = {
   id: string;
   title: string;
   bakedOn: string; // "YYYY-MM-DD"
-  startTime: string; // "HH:MM", may be empty
-  endTime: string; // "HH:MM", may be empty
+  // "YYYY-MM-DDTHH:MM", or empty. Older logs may hold just "HH:MM", which
+  // means that time on bakedOn (see toDateTime in format.ts).
+  startTime: string;
+  endTime: string;
+  coverMediaId: string | null; // chosen cover; null means the first photo
   roomTemp: string; // free text, e.g. "22°C"
   humidity: string; // free text, e.g. "45%"
   process: string;

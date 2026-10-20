@@ -71,10 +71,13 @@ export async function listLogs(): Promise<LogSummary[]> {
   ).batch(
     [
       "SELECT id, title, baked_on, start_time, end_time FROM logs WHERE deleted_at IS NULL ORDER BY baked_on DESC, created_at DESC",
-      // First photo of each log (falls back to a video when there's no photo).
-      `SELECT * FROM media m WHERE m.id = (
-         SELECT id FROM media WHERE log_id = m.log_id AND deleted_at IS NULL
-         ORDER BY kind = 'video', position LIMIT 1)`,
+      // The chosen cover, else the first photo (else the first video).
+      `SELECT m.* FROM logs l JOIN media m ON m.id = COALESCE(
+         (SELECT id FROM media WHERE id = l.cover_media_id
+            AND log_id = l.id AND deleted_at IS NULL),
+         (SELECT id FROM media WHERE log_id = l.id AND deleted_at IS NULL
+            ORDER BY kind = 'video', position LIMIT 1))
+       WHERE l.deleted_at IS NULL`,
       `SELECT li.log_id, i.* FROM log_ingredients li
          JOIN ingredients i ON i.id = li.ingredient_id
          WHERE i.deleted_at IS NULL
@@ -134,6 +137,7 @@ export async function getLog(id: string): Promise<BakingLog | null> {
     bakedOn: str(row.baked_on),
     startTime: str(row.start_time),
     endTime: str(row.end_time),
+    coverMediaId: row.cover_media_id ? str(row.cover_media_id) : null,
     roomTemp: str(row.room_temp),
     humidity: str(row.humidity),
     process: str(row.process),

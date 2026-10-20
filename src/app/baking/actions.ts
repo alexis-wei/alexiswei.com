@@ -303,6 +303,26 @@ export async function addMedia(
   };
 }
 
+/** Picks a log's cover photo; null goes back to "first photo". */
+export async function setLogCover(logId: string, mediaId: string | null) {
+  await requireEditor();
+  await (
+    await db()
+  ).execute(
+    mediaId
+      ? {
+          // Only accepts media that belongs to this log.
+          sql: `UPDATE logs SET cover_media_id = ?, updated_at = ? WHERE id = ?
+                AND EXISTS (SELECT 1 FROM media WHERE id = ? AND log_id = ?)`,
+          args: [mediaId, Date.now(), logId, mediaId, logId],
+        }
+      : {
+          sql: "UPDATE logs SET cover_media_id = NULL, updated_at = ? WHERE id = ?",
+          args: [Date.now(), logId],
+        },
+  );
+}
+
 export async function updateMediaCaption(id: string, caption: string) {
   await requireEditor();
   await (

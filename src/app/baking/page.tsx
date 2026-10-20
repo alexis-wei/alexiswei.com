@@ -81,7 +81,7 @@ function LogRow({ log }: { log: LogSummary }) {
           <p className="font-mono text-[10px] tracking-[0.14em] text-black/45 uppercase">
             {[
               formatDate(log.bakedOn, true),
-              formatDuration(log.startTime, log.endTime),
+              formatDuration(log.startTime, log.endTime, log.bakedOn),
             ]
               .filter(Boolean)
               .join(" · ")}

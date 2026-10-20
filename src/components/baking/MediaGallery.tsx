@@ -1,11 +1,12 @@
 "use client";
 
-import { ChevronLeft, ChevronRight, Play, Plus, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, Play, Plus, Star, X } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import {
   addMedia,
   deleteMedia,
+  setLogCover,
   updateMediaCaption,
 } from "@/app/baking/actions";
 import { takenAt } from "@/lib/baking/capture";
@@ -33,14 +34,17 @@ export function MediaGallery({
   logId,
   logDate,
   initial,
+  initialCover,
   editable,
 }: {
   logId: string;
   logDate: string;
   initial: Media[];
+  initialCover: string | null;
   editable: boolean;
 }) {
   const [items, setItems] = useState(initial);
+  const [coverId, setCoverId] = useState(initialCover);
   const [pending, setPending] = useState<Pending[]>([]);
   const [open, setOpen] = useState<number | null>(null);
   const [confirming, setConfirming] = useState<string | null>(null);
@@ -121,6 +125,23 @@ export function MediaGallery({
     }
   }
 
+  // The chosen cover if it's still here; otherwise the first photo (or video),
+  // matching what the logs list shows.
+  const cover =
+    items.find((m) => m.id === coverId) ??
+    items.find((m) => m.kind === "image") ??
+    items[0];
+
+  async function chooseCover(media: Media) {
+    const previous = coverId;
+    setCoverId(media.id);
+    try {
+      await track(setLogCover(logId, media.id));
+    } catch {
+      setCoverId(previous);
+    }
+  }
+
   const setCaption = (id: string, caption: string) =>
     setItems((list) => list.map((m) => (m.id === id ? { ...m, caption } : m)));
 
@@ -140,6 +161,24 @@ export function MediaGallery({
               >
                 <Thumb media={media} />
               </button>
+              {editable &&
+                confirming !== media.id &&
+                (cover?.id === media.id ? (
+                  <span className="pointer-events-none absolute top-1.5 left-1.5 flex h-7 items-center gap-1 bg-black px-2 font-mono text-[10px] tracking-[0.1em] text-white uppercase">
+                    <Star size={11} strokeWidth={1.5} fill="currentColor" />
+                    cover
+                  </span>
+                ) : (
+                  <button
+                    type="button"
+                    aria-label="Use as cover"
+                    title="Use as cover"
+                    onClick={() => chooseCover(media)}
+                    className="absolute top-1.5 left-1.5 flex size-7 items-center justify-center border border-black/10 bg-white/90 text-black/50 backdrop-blur hover:text-black"
+                  >
+                    <Star size={13} strokeWidth={1.25} />
+                  </button>
+                ))}
               {editable && confirming !== media.id && (
                 <button
                   type="button"
