@@ -5,6 +5,7 @@ import {
   restoreIngredient,
   restoreLog,
   restoreMedia,
+  restoreRecipeFile,
 } from "@/app/baking/actions";
 import { BackLink } from "@/components/baking/BakingHeader";
 import { RestoreButton } from "@/components/baking/forms";
@@ -24,6 +25,7 @@ const RESTORE = {
   log: restoreLog,
   ingredient: restoreIngredient,
   media: restoreMedia,
+  recipe: restoreRecipeFile,
 };
 
 export default async function DeletedPage() {

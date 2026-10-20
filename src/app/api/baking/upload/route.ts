@@ -20,19 +20,27 @@ export async function POST(request: Request) {
     filename?: string;
   };
   const contentType = body.contentType ?? "";
-  if (!/^(image|video)\/[\w.+-]+$/.test(contentType)) {
+  // Recipes may also be PDFs (scanned or saved pages).
+  const allowed =
+    body.purpose === "recipe"
+      ? /^(image\/[\w.+-]+|application\/pdf)$/
+      : /^(image|video)\/[\w.+-]+$/;
+  if (!allowed.test(contentType)) {
     return NextResponse.json(
-      { error: "Only images and videos" },
+      { error: "That file type isn't supported" },
       { status: 400 },
     );
   }
 
   const name = `${randomUUID()}.${extensionFor(contentType, body.filename)}`;
+  const logId = /^[\w-]+$/.test(body.logId ?? "") ? body.logId : null;
   let key: string;
   if (body.purpose === "ingredient") {
     key = `baking/ingredients/${name}`;
-  } else if (body.purpose === "media" && /^[\w-]+$/.test(body.logId ?? "")) {
-    key = `baking/media/${body.logId}/${name}`;
+  } else if (body.purpose === "media" && logId) {
+    key = `baking/media/${logId}/${name}`;
+  } else if (body.purpose === "recipe" && logId) {
+    key = `baking/recipes/${logId}/${name}`;
   } else {
     return NextResponse.json({ error: "Bad request" }, { status: 400 });
   }

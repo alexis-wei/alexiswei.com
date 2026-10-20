@@ -95,6 +95,33 @@ export function formatTakenAt(stamp: string, logDate?: string) {
   return `${shortDay(day)}, ${time}`;
 }
 
+/**
+ * A user-entered link made safe to put in an href: adds https:// when no
+ * scheme is given, and returns null for anything but http(s) (so a pasted
+ * "javascript:" link can never become clickable).
+ */
+export function safeHref(url: string) {
+  const trimmed = url.trim();
+  if (!trimmed) return null;
+  const withScheme = /^[a-z][a-z\d+.-]*:/i.test(trimmed)
+    ? trimmed
+    : `https://${trimmed}`;
+  try {
+    const parsed = new URL(withScheme);
+    return parsed.protocol === "http:" || parsed.protocol === "https:"
+      ? parsed.href
+      : null;
+  } catch {
+    return null;
+  }
+}
+
+/** "https://www.site.com/recipes/x?utm=y" → "site.com/recipes/x". */
+export function displayUrl(href: string) {
+  const { host, pathname } = new URL(href);
+  return host.replace(/^www\./, "") + (pathname === "/" ? "" : pathname);
+}
+
 /** Short random id; works on plain-http LAN addresses where crypto.randomUUID doesn't. */
 export const uid = () =>
   Math.random().toString(36).slice(2, 10) + Date.now().toString(36);

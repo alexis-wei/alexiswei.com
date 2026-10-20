@@ -66,6 +66,8 @@ export type BakingLog = {
   startTime: string;
   endTime: string;
   coverMediaId: string | null; // chosen cover; null means the first photo
+  recipeUrl: string; // link to the recipe, may be empty
+  recipeFiles: RecipeFile[];
   process: string;
   notes: string;
   timeline: TimelineStep[];
@@ -90,10 +92,19 @@ export type LogPatch = Partial<
     | "bakedOn"
     | "startTime"
     | "endTime"
+    | "recipeUrl"
     | "process"
     | "notes"
     | "timeline"
   >
 >;
 
-export type UploadPurpose = "media" | "ingredient";
+/** A recipe photo or PDF, stored exactly as uploaded (full resolution). */
+export type RecipeFile = {
+  id: string;
+  url: string;
+  name: string;
+  contentType: string;
+};
+
+export type UploadPurpose = "media" | "ingredient" | "recipe";

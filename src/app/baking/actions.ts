@@ -19,6 +19,7 @@ import type {
   IngredientPatch,
   LogPatch,
   Media,
+  RecipeFile,
 } from "@/lib/baking/types";
 
 const torontoToday = () =>
@@ -63,6 +64,7 @@ const COLUMNS = {
   bakedOn: "baked_on",
   startTime: "start_time",
   endTime: "end_time",
+  recipeUrl: "recipe_url",
   process: "process",
   notes: "notes",
   timeline: "timeline",
@@ -321,6 +323,44 @@ export async function setLogCover(logId: string, mediaId: string | null) {
   );
 }
 
+/** Records a recipe photo/PDF uploaded to storage as-is (full resolution). */
+export async function addRecipeFile(
+  logId: string,
+  file: { key: string; name: string; contentType: string; size: number },
+): Promise<RecipeFile> {
+  await requireEditor();
+  if (!validKey(file.key, `baking/recipes/${logId}/`)) {
+    throw new Error("Invalid upload");
+  }
+  const id = randomUUID();
+  const name = file.name.slice(0, 200);
+  await (
+    await db()
+  ).execute({
+    sql: `INSERT INTO recipe_files (id, log_id, key, name, content_type, size, position, created_at)
+          VALUES (?, ?, ?, ?, ?, ?, (SELECT COALESCE(MAX(position), -1) + 1 FROM recipe_files WHERE log_id = ?), ?)`,
+    args: [
+      id,
+      logId,
+      file.key,
+      name,
+      file.contentType,
+      Math.round(file.size) || null,
+      logId,
+      Date.now(),
+    ],
+  });
+  return { id, url: publicUrl(file.key), name, contentType: file.contentType };
+}
+
+export async function deleteRecipeFile(id: string) {
+  await softDelete("recipe_files", id);
+}
+
+export async function restoreRecipeFile(id: string) {
+  await restore("recipe_files", id);
+}
+
 export async function updateMediaCaption(id: string, caption: string) {
   await requireEditor();
   await (
@@ -339,9 +379,11 @@ export async function restoreMedia(id: string) {
   await restore("media", id);
 }
 
+type Trashable = "logs" | "ingredients" | "media" | "recipe_files";
+
 // Deletes are reversible for 30 days (see lib/baking/trash.ts). Expired items
 // are purged after the response is sent, whenever something is deleted.
-async function softDelete(table: "logs" | "ingredients" | "media", id: string) {
+async function softDelete(table: Trashable, id: string) {
   await requireEditor();
   await (
     await db()
@@ -352,7 +394,7 @@ async function softDelete(table: "logs" | "ingredients" | "media", id: string) {
   after(purgeExpired);
 }
 
-async function restore(table: "logs" | "ingredients" | "media", id: string) {
+async function restore(table: Trashable, id: string) {
   await requireEditor();
   await (
     await db()

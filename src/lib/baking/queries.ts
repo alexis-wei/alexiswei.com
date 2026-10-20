@@ -7,6 +7,7 @@ import type {
   IngredientUsage,
   LogSummary,
   Media,
+  RecipeFile,
   SavedCrop,
   TimelineStep,
 } from "./types";
@@ -44,6 +45,15 @@ function toMedia(row: Row): Media {
     height: num(row.height),
     caption: str(row.caption),
     takenAt: row.taken_at ? str(row.taken_at) : null,
+  };
+}
+
+function toRecipeFile(row: Row): RecipeFile {
+  return {
+    id: str(row.id),
+    url: publicUrl(str(row.key)),
+    name: str(row.name),
+    contentType: str(row.content_type),
   };
 }
 
@@ -109,7 +119,7 @@ export async function listLogs(): Promise<LogSummary[]> {
 }
 
 export async function getLog(id: string): Promise<BakingLog | null> {
-  const [logs, ingredients, media] = await (
+  const [logs, ingredients, media, recipeFiles] = await (
     await db()
   ).batch(
     [
@@ -125,6 +135,10 @@ export async function getLog(id: string): Promise<BakingLog | null> {
         sql: "SELECT * FROM media WHERE log_id = ? AND deleted_at IS NULL ORDER BY position",
         args: [id],
       },
+      {
+        sql: "SELECT * FROM recipe_files WHERE log_id = ? AND deleted_at IS NULL ORDER BY position",
+        args: [id],
+      },
     ],
     "read",
   );
@@ -138,6 +152,8 @@ export async function getLog(id: string): Promise<BakingLog | null> {
     startTime: str(row.start_time),
     endTime: str(row.end_time),
     coverMediaId: row.cover_media_id ? str(row.cover_media_id) : null,
+    recipeUrl: str(row.recipe_url),
+    recipeFiles: recipeFiles.rows.map(toRecipeFile),
     process: str(row.process),
     notes: str(row.notes),
     timeline: parseTimeline(row.timeline),
