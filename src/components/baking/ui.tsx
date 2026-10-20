@@ -68,7 +68,7 @@ export function AutoTextarea({
   // Only width changes count, since fit() itself changes the height.
   useEffect(() => {
     const el = ref.current;
-    if (!el) return;
+    if (!el || typeof ResizeObserver === "undefined") return;
     let width = el.clientWidth;
     const observer = new ResizeObserver(() => {
       if (el.clientWidth === width) return;
