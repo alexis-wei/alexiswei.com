@@ -69,23 +69,6 @@ export function LogEditor({
               end={toDateTime(log.endTime, log.bakedOn)}
               onSave={save}
             />
-            <div>
-              <Label className="mt-4 mb-2">at the start</Label>
-              <div className="flex gap-6">
-                <RoomField
-                  label="room"
-                  initial={log.roomTemp}
-                  placeholder="22°C"
-                  onSave={(roomTemp) => save({ roomTemp })}
-                />
-                <RoomField
-                  label="humidity"
-                  initial={log.humidity}
-                  placeholder="45%"
-                  onSave={(humidity) => save({ humidity })}
-                />
-              </div>
-            </div>
           </>
         ) : (
           <>
@@ -98,17 +81,6 @@ export function LogEditor({
                 {[
                   formatSpan(log.startTime, log.endTime, log.bakedOn),
                   formatDuration(log.startTime, log.endTime, log.bakedOn),
-                ]
-                  .filter(Boolean)
-                  .join(" · ")}
-              </Label>
-            )}
-            {(log.roomTemp || log.humidity) && (
-              <Label className="mt-3">
-                {"at the start · "}
-                {[
-                  log.roomTemp && `room ${log.roomTemp}`,
-                  log.humidity && `humidity ${log.humidity}`,
                 ]
                   .filter(Boolean)
                   .join(" · ")}
@@ -203,37 +175,6 @@ function DateField({
       onBlur={flush}
       className="appearance-none bg-transparent font-mono text-base tracking-[0.04em] text-black/50 uppercase outline-none"
     />
-  );
-}
-
-/** Room conditions at the start of the bake; changes mid-bake go in the timeline. */
-function RoomField({
-  label,
-  initial,
-  placeholder,
-  onSave,
-}: {
-  label: string;
-  initial: string;
-  placeholder: string;
-  onSave: (value: string) => Promise<unknown>;
-}) {
-  const [value, setValue] = useState(initial);
-  const { schedule, flush } = useAutosave(onSave);
-  return (
-    <label className="flex items-baseline gap-2 border-b border-black/15 pb-1 focus-within:border-black">
-      <Label>{label}</Label>
-      <input
-        value={value}
-        onChange={(e) => {
-          setValue(e.target.value);
-          schedule(e.target.value);
-        }}
-        onBlur={flush}
-        placeholder={placeholder}
-        className="w-16 bg-transparent font-mono text-base outline-none placeholder:text-black/25"
-      />
-    </label>
   );
 }
 

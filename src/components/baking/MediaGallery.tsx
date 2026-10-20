@@ -48,6 +48,7 @@ export function MediaGallery({
   const [pending, setPending] = useState<Pending[]>([]);
   const [open, setOpen] = useState<number | null>(null);
   const [confirming, setConfirming] = useState<string | null>(null);
+  const [captioning, setCaptioning] = useState<string | null>(null);
   const input = useRef<HTMLInputElement>(null);
   // Videos compress one at a time; encoding several at once would bog down a phone.
   const videoQueue = useRef<Promise<unknown>>(Promise.resolve());
@@ -182,6 +183,15 @@ export function MediaGallery({
               {editable && confirming !== media.id && (
                 <button
                   type="button"
+                  onClick={() => setCaptioning(media.id)}
+                  className="absolute right-1.5 bottom-1.5 flex h-6 items-center border border-black/10 bg-white/90 px-2 font-mono text-[9px] tracking-[0.1em] text-black/60 uppercase backdrop-blur hover:text-black"
+                >
+                  {media.caption ? "edit caption" : "caption"}
+                </button>
+              )}
+              {editable && confirming !== media.id && (
+                <button
+                  type="button"
                   aria-label="Delete"
                   onClick={() => setConfirming(media.id)}
                   className="absolute top-1.5 right-1.5 flex size-7 items-center justify-center border border-black/10 bg-white/90 text-black/60 backdrop-blur hover:text-black"
@@ -216,7 +226,8 @@ export function MediaGallery({
             <MediaCaption
               media={media}
               logDate={logDate}
-              editable={editable}
+              editing={captioning === media.id}
+              onDone={() => setCaptioning(null)}
               onCaption={(caption) => setCaption(media.id, caption)}
             />
           </div>
@@ -315,22 +326,28 @@ export function MediaGallery({
 }
 
 /** Capture time and caption under a tile; the caption autosaves. */
+/**
+ * Capture time and caption under a tile. Editing opens from the tile's
+ * "caption" button and closes when the field loses focus; it autosaves.
+ */
 function MediaCaption({
   media,
   logDate,
-  editable,
+  editing,
+  onDone,
   onCaption,
 }: {
   media: Media;
   logDate: string;
-  editable: boolean;
+  editing: boolean;
+  onDone: () => void;
   onCaption: (caption: string) => void;
 }) {
   const { schedule, flush } = useAutosave((caption: string) =>
     updateMediaCaption(media.id, caption),
   );
   const time = media.takenAt ? formatTakenAt(media.takenAt, logDate) : null;
-  if (!editable && !time && !media.caption) return null;
+  if (!editing && !time && !media.caption) return null;
   return (
     <div className="mt-1.5">
       {time && (
@@ -338,21 +355,25 @@ function MediaCaption({
           {time}
         </p>
       )}
-      {editable ? (
+      {editing ? (
         <AutoTextarea
+          autoFocus
           value={media.caption}
           onChange={(e) => {
             onCaption(e.target.value);
             schedule(e.target.value);
           }}
-          onBlur={flush}
-          placeholder="add a caption"
+          onBlur={() => {
+            flush();
+            onDone();
+          }}
+          placeholder="caption"
           aria-label={`Caption for ${media.kind}`}
-          className="leading-snug"
+          className="border-b border-black/20 text-[13px] leading-snug focus:border-black"
         />
       ) : (
         media.caption && (
-          <p className="text-sm leading-snug whitespace-pre-wrap">
+          <p className="text-[13px] leading-snug whitespace-pre-wrap">
             {media.caption}
           </p>
         )

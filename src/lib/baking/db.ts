@@ -51,8 +51,6 @@ const ADDED_COLUMNS = [
   ["ingredients", "details", "TEXT NOT NULL DEFAULT ''"],
   ["ingredients", "source_key", "TEXT"],
   ["ingredients", "crop", "TEXT NOT NULL DEFAULT ''"],
-  ["logs", "room_temp", "TEXT NOT NULL DEFAULT ''"],
-  ["logs", "humidity", "TEXT NOT NULL DEFAULT ''"],
   ["logs", "start_time", "TEXT NOT NULL DEFAULT ''"],
   ["logs", "end_time", "TEXT NOT NULL DEFAULT ''"],
   ["logs", "deleted_at", "INTEGER"],
@@ -61,6 +59,14 @@ const ADDED_COLUMNS = [
   ["media", "caption", "TEXT NOT NULL DEFAULT ''"],
   ["media", "taken_at", "TEXT"],
   ["logs", "cover_media_id", "TEXT"],
+] as const;
+
+// Columns that were removed. Their data is deleted for good, so only list a
+// column here when that's intended. (logs.room_temp/humidity: the starting
+// room conditions, replaced by per-step readings in the timeline.)
+const DROPPED_COLUMNS = [
+  ["logs", "room_temp"],
+  ["logs", "humidity"],
 ] as const;
 
 async function migrate(c: Client) {
@@ -73,6 +79,16 @@ async function migrate(c: Client) {
     } catch (error) {
       // Another server instance added it at the same moment.
       if (!String(error).includes("duplicate column")) throw error;
+    }
+  }
+  for (const [table, column] of DROPPED_COLUMNS) {
+    const { rows } = await c.execute(`PRAGMA table_info(${table})`);
+    if (!rows.some((row) => row.name === column)) continue;
+    try {
+      await c.execute(`ALTER TABLE ${table} DROP COLUMN ${column}`);
+    } catch (error) {
+      // Another server instance dropped it at the same moment.
+      if (!String(error).includes("no such column")) throw error;
     }
   }
 }

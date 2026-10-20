@@ -138,8 +138,6 @@ export async function getLog(id: string): Promise<BakingLog | null> {
     startTime: str(row.start_time),
     endTime: str(row.end_time),
     coverMediaId: row.cover_media_id ? str(row.cover_media_id) : null,
-    roomTemp: str(row.room_temp),
-    humidity: str(row.humidity),
     process: str(row.process),
     notes: str(row.notes),
     timeline: parseTimeline(row.timeline),

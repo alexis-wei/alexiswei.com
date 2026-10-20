@@ -202,10 +202,10 @@ export function TextSection({
           singleLine={singleLine}
           placeholder={placeholder}
           aria-label={label}
-          className={singleLine ? undefined : "min-h-[4.5rem]"}
+          className={cn("text-sm", !singleLine && "min-h-[4.5rem]")}
         />
       ) : (
-        <p className="leading-relaxed whitespace-pre-wrap">{initial}</p>
+        <p className="text-sm leading-relaxed whitespace-pre-wrap">{initial}</p>
       )}
     </Section>
   );

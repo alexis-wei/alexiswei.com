@@ -66,8 +66,6 @@ export type BakingLog = {
   startTime: string;
   endTime: string;
   coverMediaId: string | null; // chosen cover; null means the first photo
-  roomTemp: string; // free text, e.g. "22°C"
-  humidity: string; // free text, e.g. "45%"
   process: string;
   notes: string;
   timeline: TimelineStep[];
@@ -92,8 +90,6 @@ export type LogPatch = Partial<
     | "bakedOn"
     | "startTime"
     | "endTime"
-    | "roomTemp"
-    | "humidity"
     | "process"
     | "notes"
     | "timeline"
