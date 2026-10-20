@@ -8,6 +8,9 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   themeColor: "#ffffff",
   viewportFit: "cover",
+  // Stops iOS Safari zooming the page when a small (<16px) input is tapped.
+  // iOS still allows pinch-zoom regardless of this.
+  maximumScale: 1,
 };
 
 export default function BakingLayout({

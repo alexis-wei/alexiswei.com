@@ -24,19 +24,75 @@ export function formatTime(hhmm: string) {
   return `${hours % 12 || 12}:${match[2]} ${hours < 12 ? "am" : "pm"}`;
 }
 
-/** Length of a bake, e.g. "3h 30m". An end before the start means it ran past midnight. */
-export function formatDuration(start: string, end: string) {
-  const minutes = (hhmm: string) => {
-    const match = /^(\d{2}):(\d{2})$/.exec(hhmm);
-    return match ? Number(match[1]) * 60 + Number(match[2]) : null;
-  };
-  const from = minutes(start);
-  const to = minutes(end);
-  if (from === null || to === null) return null;
-  const total = (to - from + 24 * 60) % (24 * 60);
-  const h = Math.floor(total / 60);
+const DATE_TIME = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/;
+const TIME_ONLY = /^\d{2}:\d{2}$/;
+
+/**
+ * A bake's start/end as "YYYY-MM-DDTHH:MM" (what datetime-local inputs use).
+ * Logs saved before multi-day bakes stored only "HH:MM"; that means the time
+ * on the log's date. Stored values aren't rewritten until they're edited.
+ */
+export function toDateTime(value: string, logDate: string) {
+  if (DATE_TIME.test(value)) return value.slice(0, 16);
+  if (TIME_ONLY.test(value) && /^\d{4}-\d{2}-\d{2}$/.test(logDate)) {
+    return `${logDate}T${value}`;
+  }
+  return "";
+}
+
+/** The current local date and time as "YYYY-MM-DDTHH:MM". */
+export function nowDateTime() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}T${nowTime()}`;
+}
+
+const shortDay = (day: string) =>
+  new Intl.DateTimeFormat("en-US", {
+    timeZone: "UTC",
+    month: "short",
+    day: "numeric",
+  }).format(new Date(`${day}T00:00:00Z`));
+
+/** Length of a bake, e.g. "3h 30m" or "1d 4h". */
+export function formatDuration(start: string, end: string, logDate = "") {
+  const from = toDateTime(start, logDate);
+  const to = toDateTime(end, logDate);
+  if (!from || !to) return null;
+  let total = (Date.parse(`${to}:00Z`) - Date.parse(`${from}:00Z`)) / 60000;
+  // Old time-only logs: an end before the start meant it ran past midnight.
+  if (total < 0 && TIME_ONLY.test(start) && TIME_ONLY.test(end)) total += 1440;
+  if (!(total >= 0)) return null;
+  const d = Math.floor(total / 1440);
+  const h = Math.floor((total % 1440) / 60);
   const m = total % 60;
-  return h ? (m ? `${h}h ${m}m` : `${h}h`) : `${m}m`;
+  const parts = [d && `${d}d`, h && `${h}h`, m && `${m}m`].filter(Boolean);
+  return parts.length ? parts.join(" ") : "0m";
+}
+
+/** "9:40 am → Oct 16, 1:10 pm": the date is shown when it isn't the log's day. */
+export function formatSpan(start: string, end: string, logDate: string) {
+  const part = (value: string) => {
+    const dateTime = toDateTime(value, logDate);
+    if (!dateTime) return "…";
+    const [day, time] = dateTime.split("T");
+    return day === logDate
+      ? formatTime(time)
+      : `${shortDay(day)}, ${formatTime(time)}`;
+  };
+  return `${part(start)} → ${part(end)}`;
+}
+
+/**
+ * Capture time for a photo: "2:05 pm", or "Oct 16, 2:05 pm" when it was
+ * taken on a different day than the log's date.
+ */
+export function formatTakenAt(stamp: string, logDate?: string) {
+  const match = /^(\d{4}-\d{2}-\d{2})T(\d{2}):(\d{2})/.exec(stamp);
+  if (!match) return null;
+  const [, day, h, m] = match;
+  const time = formatTime(`${h}:${m}`);
+  if (!logDate || day === logDate) return time;
+  return `${shortDay(day)}, ${time}`;
 }
 
 /** Short random id; works on plain-http LAN addresses where crypto.randomUUID doesn't. */

@@ -56,12 +56,29 @@ export function AutoTextarea({
   ...props
 }: ComponentProps<"textarea"> & { value: string }) {
   const ref = useRef<HTMLTextAreaElement>(null);
-  useLayoutEffect(() => {
+  const fit = () => {
     const el = ref.current;
     if (!el) return;
     el.style.height = "auto";
     el.style.height = `${el.scrollHeight}px`;
-  }, [value]);
+  };
+  useLayoutEffect(fit, [value]);
+  // Line wrapping also changes when the box gets wider or narrower (layout,
+  // rotation) and when the web font finishes loading, so re-measure then too.
+  // Only width changes count, since fit() itself changes the height.
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    let width = el.clientWidth;
+    const observer = new ResizeObserver(() => {
+      if (el.clientWidth === width) return;
+      width = el.clientWidth;
+      fit();
+    });
+    observer.observe(el);
+    document.fonts?.ready.then(fit);
+    return () => observer.disconnect();
+  }, []);
   return (
     <textarea
       ref={ref}
@@ -185,10 +202,10 @@ export function TextSection({
           singleLine={singleLine}
           placeholder={placeholder}
           aria-label={label}
-          className={singleLine ? undefined : "min-h-[4.5rem]"}
+          className={cn("text-sm", !singleLine && "min-h-[4.5rem]")}
         />
       ) : (
-        <p className="leading-relaxed whitespace-pre-wrap">{initial}</p>
+        <p className="text-sm leading-relaxed whitespace-pre-wrap">{initial}</p>
       )}
     </Section>
   );

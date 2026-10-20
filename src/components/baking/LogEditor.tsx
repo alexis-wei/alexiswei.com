@@ -5,8 +5,9 @@ import { deleteLog, updateLog } from "@/app/baking/actions";
 import {
   formatDate,
   formatDuration,
-  formatTime,
-  nowTime,
+  formatSpan,
+  nowDateTime,
+  toDateTime,
 } from "@/lib/baking/format";
 import type { BakingLog, Ingredient, LogPatch } from "@/lib/baking/types";
 import { track, useAutosave, useUnsavedChangesWarning } from "./autosave";
@@ -63,21 +64,11 @@ export function LogEditor({
               aria-label="Title"
               className="mt-2 font-serif text-[28px] leading-tight"
             />
-            <BakeTimes start={log.startTime} end={log.endTime} onSave={save} />
-            <div className="mt-3 flex gap-6">
-              <RoomField
-                label="room"
-                initial={log.roomTemp}
-                placeholder="22°C"
-                onSave={(roomTemp) => save({ roomTemp })}
-              />
-              <RoomField
-                label="humidity"
-                initial={log.humidity}
-                placeholder="45%"
-                onSave={(humidity) => save({ humidity })}
-              />
-            </div>
+            <BakeTimes
+              start={toDateTime(log.startTime, log.bakedOn)}
+              end={toDateTime(log.endTime, log.bakedOn)}
+              onSave={save}
+            />
           </>
         ) : (
           <>
@@ -88,20 +79,8 @@ export function LogEditor({
             {(log.startTime || log.endTime) && (
               <Label className="mt-3">
                 {[
-                  [log.startTime, log.endTime]
-                    .map((t) => (t ? formatTime(t) : "…"))
-                    .join(" → "),
-                  formatDuration(log.startTime, log.endTime),
-                ]
-                  .filter(Boolean)
-                  .join(" · ")}
-              </Label>
-            )}
-            {(log.roomTemp || log.humidity) && (
-              <Label className="mt-3">
-                {[
-                  log.roomTemp && `room ${log.roomTemp}`,
-                  log.humidity && `humidity ${log.humidity}`,
+                  formatSpan(log.startTime, log.endTime, log.bakedOn),
+                  formatDuration(log.startTime, log.endTime, log.bakedOn),
                 ]
                   .filter(Boolean)
                   .join(" · ")}
@@ -115,6 +94,8 @@ export function LogEditor({
         <Section label="photos & videos">
           <MediaGallery
             logId={log.id}
+            logDate={log.bakedOn}
+            initialCover={log.coverMediaId}
             initial={log.media}
             editable={editable}
           />
@@ -197,38 +178,11 @@ function DateField({
   );
 }
 
-/** Room conditions at the start of the bake; changes mid-bake go in the timeline. */
-function RoomField({
-  label,
-  initial,
-  placeholder,
-  onSave,
-}: {
-  label: string;
-  initial: string;
-  placeholder: string;
-  onSave: (value: string) => Promise<unknown>;
-}) {
-  const [value, setValue] = useState(initial);
-  const { schedule, flush } = useAutosave(onSave);
-  return (
-    <label className="flex items-baseline gap-2 border-b border-black/15 pb-1 focus-within:border-black">
-      <Label>{label}</Label>
-      <input
-        value={value}
-        onChange={(e) => {
-          setValue(e.target.value);
-          schedule(e.target.value);
-        }}
-        onBlur={flush}
-        placeholder={placeholder}
-        className="w-16 bg-transparent font-mono text-base outline-none placeholder:text-black/25"
-      />
-    </label>
-  );
-}
-
-/** Start and end of the bake, with the running length once both are set. */
+/**
+ * Start and end of the bake (date and time; bakes can run over several
+ * days), with the running length once both are set. Both are saved together
+ * so an old time-only value is upgraded alongside the one being edited.
+ */
 function BakeTimes({
   start: initialStart,
   end: initialEnd,
@@ -238,57 +192,62 @@ function BakeTimes({
   end: string;
   onSave: (patch: LogPatch) => Promise<unknown>;
 }) {
-  const [start, setStart] = useState(initialStart);
-  const [end, setEnd] = useState(initialEnd);
-  const duration = formatDuration(start, end);
+  const [times, setTimes] = useState({ start: initialStart, end: initialEnd });
+  const { schedule, flush } = useAutosave((next: typeof times) =>
+    onSave({ startTime: next.start, endTime: next.end }),
+  );
+  const set = (change: Partial<typeof times>) => {
+    const next = { ...times, ...change };
+    setTimes(next);
+    schedule(next);
+  };
+  const duration = formatDuration(times.start, times.end);
   return (
-    <div className="mt-4 flex flex-wrap items-baseline gap-x-6 gap-y-3">
-      <TimeField
+    <div className="mt-4 flex flex-col items-start gap-3">
+      <DateTimeField
         label="start"
-        value={start}
-        onChange={setStart}
-        onSave={(startTime) => onSave({ startTime })}
+        value={times.start}
+        onChange={(start) => set({ start })}
+        onBlur={flush}
       />
-      <TimeField
+      <DateTimeField
         label="end"
-        value={end}
-        onChange={setEnd}
-        onSave={(endTime) => onSave({ endTime })}
+        value={times.end}
+        onChange={(end) => set({ end })}
+        onBlur={flush}
       />
-      {duration && <Label className="text-black/70">{duration}</Label>}
+      {duration && <Label className="text-black/70">took {duration}</Label>}
     </div>
   );
 }
 
-function TimeField({
+function DateTimeField({
   label,
   value,
   onChange,
-  onSave,
+  onBlur,
 }: {
   label: string;
   value: string;
   onChange: (value: string) => void;
-  onSave: (value: string) => Promise<unknown>;
+  onBlur: () => void;
 }) {
-  const { schedule, flush } = useAutosave(onSave);
-  const set = (next: string) => {
-    onChange(next);
-    schedule(next);
-  };
   return (
     <div className="flex items-baseline gap-2 border-b border-black/15 pb-1 focus-within:border-black">
-      <Label>{label}</Label>
+      <Label className="w-10">{label}</Label>
       <input
-        type="time"
+        type="datetime-local"
         value={value}
-        onChange={(e) => set(e.target.value)}
-        onBlur={flush}
-        aria-label={`${label} time`}
-        className="w-[7.5rem] bg-transparent font-mono text-base outline-none [&::-webkit-calendar-picker-indicator]:opacity-30"
+        onChange={(e) => onChange(e.target.value)}
+        onBlur={onBlur}
+        aria-label={`${label} date and time`}
+        className="w-[15.5rem] bg-transparent font-mono text-base outline-none [&::-webkit-calendar-picker-indicator]:opacity-30"
       />
       {!value && (
-        <TextButton onClick={() => set(nowTime())} className="text-[10px]">
+        <TextButton
+          onClick={() => onChange(nowDateTime())}
+          className="text-[10px]"
+        >
           now
         </TextButton>
       )}

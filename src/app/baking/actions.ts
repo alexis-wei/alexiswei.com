@@ -63,8 +63,6 @@ const COLUMNS = {
   bakedOn: "baked_on",
   startTime: "start_time",
   endTime: "end_time",
-  roomTemp: "room_temp",
-  humidity: "humidity",
   process: "process",
   notes: "notes",
   timeline: "timeline",
@@ -263,6 +261,7 @@ export async function addMedia(
     kind: Media["kind"];
     width: number | null;
     height: number | null;
+    takenAt: string | null;
   },
 ): Promise<Media> {
   await requireEditor();
@@ -270,11 +269,15 @@ export async function addMedia(
     throw new Error("Invalid upload");
   }
   const id = randomUUID();
+  const takenAt =
+    item.takenAt && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/.test(item.takenAt)
+      ? item.takenAt
+      : null;
   await (
     await db()
   ).execute({
-    sql: `INSERT INTO media (id, log_id, key, kind, width, height, position, created_at)
-          VALUES (?, ?, ?, ?, ?, ?, (SELECT COALESCE(MAX(position), -1) + 1 FROM media WHERE log_id = ?), ?)`,
+    sql: `INSERT INTO media (id, log_id, key, kind, width, height, taken_at, position, created_at)
+          VALUES (?, ?, ?, ?, ?, ?, ?, (SELECT COALESCE(MAX(position), -1) + 1 FROM media WHERE log_id = ?), ?)`,
     args: [
       id,
       logId,
@@ -282,6 +285,7 @@ export async function addMedia(
       item.kind,
       item.width,
       item.height,
+      takenAt,
       logId,
       Date.now(),
     ],
@@ -292,7 +296,39 @@ export async function addMedia(
     url: publicUrl(item.key),
     width: item.width,
     height: item.height,
+    caption: "",
+    takenAt,
   };
+}
+
+/** Picks a log's cover photo; null goes back to "first photo". */
+export async function setLogCover(logId: string, mediaId: string | null) {
+  await requireEditor();
+  await (
+    await db()
+  ).execute(
+    mediaId
+      ? {
+          // Only accepts media that belongs to this log.
+          sql: `UPDATE logs SET cover_media_id = ?, updated_at = ? WHERE id = ?
+                AND EXISTS (SELECT 1 FROM media WHERE id = ? AND log_id = ?)`,
+          args: [mediaId, Date.now(), logId, mediaId, logId],
+        }
+      : {
+          sql: "UPDATE logs SET cover_media_id = NULL, updated_at = ? WHERE id = ?",
+          args: [Date.now(), logId],
+        },
+  );
+}
+
+export async function updateMediaCaption(id: string, caption: string) {
+  await requireEditor();
+  await (
+    await db()
+  ).execute({
+    sql: "UPDATE media SET caption = ? WHERE id = ?",
+    args: [caption, id],
+  });
 }
 
 export async function deleteMedia(id: string) {
