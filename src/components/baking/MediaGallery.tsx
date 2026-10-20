@@ -3,12 +3,18 @@
 import { ChevronLeft, ChevronRight, Play, Plus, X } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { addMedia, deleteMedia } from "@/app/baking/actions";
-import { uid } from "@/lib/baking/format";
+import {
+  addMedia,
+  deleteMedia,
+  updateMediaCaption,
+} from "@/app/baking/actions";
+import { takenAt } from "@/lib/baking/capture";
+import { formatTakenAt, uid } from "@/lib/baking/format";
 import { preparePhoto } from "@/lib/baking/image";
 import { compressVideo } from "@/lib/baking/video";
 import type { Media } from "@/lib/baking/types";
-import { track } from "./autosave";
+import { track, useAutosave } from "./autosave";
+import { AutoTextarea } from "./ui";
 import { uploadFile } from "./upload";
 
 type Pending = {
@@ -25,10 +31,12 @@ const isVideo = (file: File) =>
 
 export function MediaGallery({
   logId,
+  logDate,
   initial,
   editable,
 }: {
   logId: string;
+  logDate: string;
   initial: Media[];
   editable: boolean;
 }) {
@@ -59,6 +67,8 @@ export function MediaGallery({
       progress: 0,
     };
     setPending((list) => [...list, temp]);
+    // Read the capture time from the untouched original, before resizing.
+    const taken = takenAt(file, kind);
     try {
       let prepared;
       if (kind === "image") {
@@ -89,6 +99,7 @@ export function MediaGallery({
           kind,
           width: prepared.width,
           height: prepared.height,
+          takenAt: await taken,
         }),
       );
       setItems((list) => [...list, media]);
@@ -110,54 +121,65 @@ export function MediaGallery({
     }
   }
 
+  const setCaption = (id: string, caption: string) =>
+    setItems((list) => list.map((m) => (m.id === id ? { ...m, caption } : m)));
+
   if (!editable && items.length === 0) return null;
 
   return (
     <div>
-      <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-3">
+      <div className="grid grid-cols-2 items-start gap-x-1.5 gap-y-4 sm:grid-cols-3">
         {items.map((media, index) => (
-          <div key={media.id} className="relative">
-            <button
-              type="button"
-              onClick={() => setOpen(index)}
-              aria-label={`Open ${media.kind} ${index + 1}`}
-              className="relative block aspect-square w-full overflow-hidden bg-black/[0.03]"
-            >
-              <Thumb media={media} />
-            </button>
-            {editable && confirming !== media.id && (
+          <div key={media.id}>
+            <div className="relative">
               <button
                 type="button"
-                aria-label="Delete"
-                onClick={() => setConfirming(media.id)}
-                className="absolute top-1.5 right-1.5 flex size-7 items-center justify-center border border-black/10 bg-white/90 text-black/60 backdrop-blur hover:text-black"
+                onClick={() => setOpen(index)}
+                aria-label={`Open ${media.kind} ${index + 1}`}
+                className="relative block aspect-square w-full overflow-hidden bg-black/[0.03]"
               >
-                <X size={14} strokeWidth={1.25} />
+                <Thumb media={media} />
               </button>
-            )}
-            {confirming === media.id && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-white/90 backdrop-blur-sm">
-                <span className="font-mono text-[10px] tracking-[0.14em] text-black/60 uppercase">
-                  delete {media.kind === "video" ? "video" : "photo"}?
-                </span>
-                <div className="flex gap-4">
-                  <button
-                    type="button"
-                    onClick={() => remove(media)}
-                    className="font-mono text-[11px] tracking-[0.1em] text-red-600 uppercase"
-                  >
-                    yes
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setConfirming(null)}
-                    className="font-mono text-[11px] tracking-[0.1em] text-black/55 uppercase"
-                  >
-                    cancel
-                  </button>
+              {editable && confirming !== media.id && (
+                <button
+                  type="button"
+                  aria-label="Delete"
+                  onClick={() => setConfirming(media.id)}
+                  className="absolute top-1.5 right-1.5 flex size-7 items-center justify-center border border-black/10 bg-white/90 text-black/60 backdrop-blur hover:text-black"
+                >
+                  <X size={14} strokeWidth={1.25} />
+                </button>
+              )}
+              {confirming === media.id && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-white/90 backdrop-blur-sm">
+                  <span className="font-mono text-[10px] tracking-[0.14em] text-black/60 uppercase">
+                    delete {media.kind === "video" ? "video" : "photo"}?
+                  </span>
+                  <div className="flex gap-4">
+                    <button
+                      type="button"
+                      onClick={() => remove(media)}
+                      className="font-mono text-[11px] tracking-[0.1em] text-red-600 uppercase"
+                    >
+                      yes
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setConfirming(null)}
+                      className="font-mono text-[11px] tracking-[0.1em] text-black/55 uppercase"
+                    >
+                      cancel
+                    </button>
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
+            <MediaCaption
+              media={media}
+              logDate={logDate}
+              editable={editable}
+              onCaption={(caption) => setCaption(media.id, caption)}
+            />
           </div>
         ))}
 
@@ -243,10 +265,58 @@ export function MediaGallery({
       {open !== null && items[open] && (
         <Lightbox
           items={items}
+          logDate={logDate}
           index={open}
           onIndex={setOpen}
           onClose={() => setOpen(null)}
         />
+      )}
+    </div>
+  );
+}
+
+/** Capture time and caption under a tile; the caption autosaves. */
+function MediaCaption({
+  media,
+  logDate,
+  editable,
+  onCaption,
+}: {
+  media: Media;
+  logDate: string;
+  editable: boolean;
+  onCaption: (caption: string) => void;
+}) {
+  const { schedule, flush } = useAutosave((caption: string) =>
+    updateMediaCaption(media.id, caption),
+  );
+  const time = media.takenAt ? formatTakenAt(media.takenAt, logDate) : null;
+  if (!editable && !time && !media.caption) return null;
+  return (
+    <div className="mt-1.5">
+      {time && (
+        <p className="font-mono text-[10px] tracking-[0.1em] text-black/45 uppercase">
+          {time}
+        </p>
+      )}
+      {editable ? (
+        <AutoTextarea
+          value={media.caption}
+          onChange={(e) => {
+            onCaption(e.target.value);
+            schedule(e.target.value);
+          }}
+          onBlur={flush}
+          placeholder="add a caption"
+          aria-label={`Caption for ${media.kind}`}
+          className="leading-snug"
+        />
+      ) : (
+        media.caption && (
+          <p className="text-sm leading-snug whitespace-pre-wrap">
+            {media.caption}
+          </p>
+        )
       )}
     </div>
   );
@@ -284,16 +354,19 @@ function Thumb({ media }: { media: Media }) {
 
 function Lightbox({
   items,
+  logDate,
   index,
   onIndex,
   onClose,
 }: {
   items: Media[];
+  logDate: string;
   index: number;
   onIndex: (index: number) => void;
   onClose: () => void;
 }) {
   const media = items[index];
+  const time = media.takenAt ? formatTakenAt(media.takenAt, logDate) : null;
   const touchX = useRef<number | null>(null);
   const go = (delta: number) =>
     onIndex((index + delta + items.length) % items.length);
@@ -362,6 +435,20 @@ function Lightbox({
           />
         )}
       </div>
+      {(time || media.caption) && (
+        <div className="shrink-0 border-t border-black/10 px-4 py-3">
+          {time && (
+            <p className="font-mono text-[10px] tracking-[0.1em] text-black/45 uppercase">
+              {time}
+            </p>
+          )}
+          {media.caption && (
+            <p className="mt-0.5 text-sm leading-snug whitespace-pre-wrap">
+              {media.caption}
+            </p>
+          )}
+        </div>
+      )}
       {items.length > 1 && (
         <div className="flex h-14 shrink-0 items-center justify-between border-t border-black/10 px-2 pb-[env(safe-area-inset-bottom)]">
           <button

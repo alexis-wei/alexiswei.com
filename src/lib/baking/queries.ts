@@ -42,6 +42,8 @@ function toMedia(row: Row): Media {
     url: publicUrl(str(row.key)),
     width: num(row.width),
     height: num(row.height),
+    caption: str(row.caption),
+    takenAt: row.taken_at ? str(row.taken_at) : null,
   };
 }
 

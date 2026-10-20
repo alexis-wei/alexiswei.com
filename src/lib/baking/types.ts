@@ -50,6 +50,8 @@ export type Media = {
   url: string;
   width: number | null;
   height: number | null;
+  caption: string;
+  takenAt: string | null; // phone clock time when captured, "YYYY-MM-DDTHH:MM:SS"
 };
 
 export type BakingLog = {

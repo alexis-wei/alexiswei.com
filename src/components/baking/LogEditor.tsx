@@ -115,6 +115,7 @@ export function LogEditor({
         <Section label="photos & videos">
           <MediaGallery
             logId={log.id}
+            logDate={log.bakedOn}
             initial={log.media}
             editable={editable}
           />

@@ -263,6 +263,7 @@ export async function addMedia(
     kind: Media["kind"];
     width: number | null;
     height: number | null;
+    takenAt: string | null;
   },
 ): Promise<Media> {
   await requireEditor();
@@ -270,11 +271,15 @@ export async function addMedia(
     throw new Error("Invalid upload");
   }
   const id = randomUUID();
+  const takenAt =
+    item.takenAt && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/.test(item.takenAt)
+      ? item.takenAt
+      : null;
   await (
     await db()
   ).execute({
-    sql: `INSERT INTO media (id, log_id, key, kind, width, height, position, created_at)
-          VALUES (?, ?, ?, ?, ?, ?, (SELECT COALESCE(MAX(position), -1) + 1 FROM media WHERE log_id = ?), ?)`,
+    sql: `INSERT INTO media (id, log_id, key, kind, width, height, taken_at, position, created_at)
+          VALUES (?, ?, ?, ?, ?, ?, ?, (SELECT COALESCE(MAX(position), -1) + 1 FROM media WHERE log_id = ?), ?)`,
     args: [
       id,
       logId,
@@ -282,6 +287,7 @@ export async function addMedia(
       item.kind,
       item.width,
       item.height,
+      takenAt,
       logId,
       Date.now(),
     ],
@@ -292,7 +298,19 @@ export async function addMedia(
     url: publicUrl(item.key),
     width: item.width,
     height: item.height,
+    caption: "",
+    takenAt,
   };
+}
+
+export async function updateMediaCaption(id: string, caption: string) {
+  await requireEditor();
+  await (
+    await db()
+  ).execute({
+    sql: "UPDATE media SET caption = ? WHERE id = ?",
+    args: [caption, id],
+  });
 }
 
 export async function deleteMedia(id: string) {

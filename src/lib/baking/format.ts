@@ -39,6 +39,24 @@ export function formatDuration(start: string, end: string) {
   return h ? (m ? `${h}h ${m}m` : `${h}h`) : `${m}m`;
 }
 
+/**
+ * Capture time for a photo: "2:05 pm", or "Oct 16, 2:05 pm" when it was
+ * taken on a different day than the log's date.
+ */
+export function formatTakenAt(stamp: string, logDate?: string) {
+  const match = /^(\d{4}-\d{2}-\d{2})T(\d{2}):(\d{2})/.exec(stamp);
+  if (!match) return null;
+  const [, day, h, m] = match;
+  const time = formatTime(`${h}:${m}`);
+  if (!logDate || day === logDate) return time;
+  const date = new Intl.DateTimeFormat("en-US", {
+    timeZone: "UTC",
+    month: "short",
+    day: "numeric",
+  }).format(new Date(`${day}T00:00:00Z`));
+  return `${date}, ${time}`;
+}
+
 /** Short random id; works on plain-http LAN addresses where crypto.randomUUID doesn't. */
 export const uid = () =>
   Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
