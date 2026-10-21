@@ -130,6 +130,10 @@ export async function purgeExpired(now = Date.now()) {
         args: [cutoff, cutoff],
       },
       {
+        sql: "DELETE FROM timeline_steps WHERE log_id IN (SELECT id FROM logs WHERE deleted_at < ?)",
+        args: [cutoff],
+      },
+      {
         sql: `DELETE FROM recipe_files WHERE deleted_at < ?
               OR log_id IN (SELECT id FROM logs WHERE deleted_at < ?)`,
         args: [cutoff, cutoff],

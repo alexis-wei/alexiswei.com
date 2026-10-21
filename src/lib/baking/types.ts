@@ -95,7 +95,6 @@ export type LogPatch = Partial<
     | "recipeUrl"
     | "process"
     | "notes"
-    | "timeline"
   >
 >;
 
@@ -106,5 +105,8 @@ export type RecipeFile = {
   name: string;
   contentType: string;
 };
+
+/** Editable fields of a timeline step. */
+export type StepPatch = Partial<Omit<TimelineStep, "id">>;
 
 export type UploadPurpose = "media" | "ingredient" | "recipe";

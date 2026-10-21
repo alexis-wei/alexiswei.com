@@ -12,6 +12,7 @@ import {
 import { takenAt } from "@/lib/baking/capture";
 import { formatTakenAt, uid } from "@/lib/baking/format";
 import { preparePhoto } from "@/lib/baking/image";
+import { effectiveCover } from "@/lib/baking/order";
 import { compressVideo } from "@/lib/baking/video";
 import type { Media } from "@/lib/baking/types";
 import { track, useAutosave } from "./autosave";
@@ -128,10 +129,7 @@ export function MediaGallery({
 
   // The chosen cover if it's still here; otherwise the first photo (or video),
   // matching what the logs list shows.
-  const cover =
-    items.find((m) => m.id === coverId) ??
-    items.find((m) => m.kind === "image") ??
-    items[0];
+  const cover = effectiveCover(items, coverId);
 
   async function chooseCover(media: Media) {
     const previous = coverId;

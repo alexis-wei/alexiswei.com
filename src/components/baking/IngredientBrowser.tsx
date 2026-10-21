@@ -157,6 +157,22 @@ export function IngredientBrowser({
                       />
                     </li>
                   ))}
+                  {/* Always available, so adding never depends on searching first. */}
+                  <li>
+                    <button
+                      type="button"
+                      onClick={() => setAdding(exact ? "" : q)}
+                      aria-label="New ingredient"
+                      className="group block w-full text-left"
+                    >
+                      <div className="flex aspect-square items-center justify-center border border-dashed border-black/25 text-black/40 transition-colors group-hover:border-black group-hover:text-black">
+                        <Plus size={20} strokeWidth={1} />
+                      </div>
+                      <p className="mt-1.5 text-[13px] leading-tight text-black/45">
+                        new
+                      </p>
+                    </button>
+                  </li>
                 </ul>
               )}
             </div>
