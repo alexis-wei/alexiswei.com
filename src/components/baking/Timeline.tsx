@@ -8,24 +8,33 @@ import {
   reorderSteps,
   updateStep,
 } from "@/app/baking/actions";
-import { nowTime } from "@/lib/baking/format";
+import { nowDateTime } from "@/lib/baking/format";
 import { dropIndex, moveItem, sameOrder } from "@/lib/baking/order";
+import {
+  resolveStepTimes,
+  stepTimeLabels,
+  stepGaps,
+  type StepGap,
+} from "@/lib/baking/timeline";
 import type { TimelineStep } from "@/lib/baking/types";
 import { cn } from "@/lib/utils";
 import { track, useAutosave } from "./autosave";
 import { AutoTextarea, TextButton } from "./ui";
 
 /**
- * A log's timeline. Each step saves on its own; order is changed by dragging
- * a step's handle (touch or mouse), or with ↑/↓ on the focused handle, and a
- * forgotten step can be inserted right after any other.
+ * A log's timeline. Each step has a date and time (bakes can span days) and
+ * saves on its own. The time since the previous step is shown between steps.
+ * Order is changed by dragging a step's handle (touch or mouse), or with ↑/↓
+ * on the focused handle, and a forgotten step can be inserted after any other.
  */
 export function Timeline({
   logId,
+  logDate,
   initial,
   editable,
 }: {
   logId: string;
+  logDate: string;
   initial: TimelineStep[];
   editable: boolean;
 }) {
@@ -36,7 +45,22 @@ export function Timeline({
   const rows = useRef(new Map<string, HTMLLIElement>());
   const dragStart = useRef<string[]>([]);
 
-  if (!editable) return <ReadOnlyTimeline steps={steps} />;
+  const resolved = resolveStepTimes(
+    steps.map((s) => s.time),
+    logDate,
+  );
+  const gaps = stepGaps(resolved);
+
+  if (!editable) {
+    return (
+      <ReadOnlyTimeline
+        steps={steps}
+        resolved={resolved}
+        gaps={gaps}
+        logDate={logDate}
+      />
+    );
+  }
 
   const ids = () => steps.map((s) => s.id);
 
@@ -44,7 +68,7 @@ export function Timeline({
     setBusy(true);
     try {
       const step = await track(
-        addStep(logId, afterId, { time: afterId ? "" : nowTime() }),
+        addStep(logId, afterId, { time: afterId ? "" : nowDateTime() }),
       );
       setSteps((list) => {
         const at = afterId ? list.findIndex((s) => s.id === afterId) + 1 : 0;
@@ -134,6 +158,8 @@ export function Timeline({
           <StepRow
             key={step.id}
             step={step}
+            time={resolved[index]}
+            gap={gaps[index]}
             index={index}
             count={steps.length}
             dragging={dragId === step.id}
@@ -162,18 +188,31 @@ export function Timeline({
   );
 }
 
-function ReadOnlyTimeline({ steps }: { steps: TimelineStep[] }) {
+function ReadOnlyTimeline({
+  steps,
+  resolved,
+  gaps,
+  logDate,
+}: {
+  steps: TimelineStep[];
+  resolved: string[];
+  gaps: (StepGap | null)[];
+  logDate: string;
+}) {
+  const labels = stepTimeLabels(resolved, logDate);
   return (
     <ol className="relative border-l border-black/15 pl-5">
-      {steps.map((step) => {
+      {steps.map((step, index) => {
         const readings = [
-          step.time,
+          labels[index],
           step.roomTemp && `room ${step.roomTemp}`,
           step.humidity && `rh ${step.humidity}`,
           step.internalTemp && `internal ${step.internalTemp}`,
         ].filter(Boolean);
+        const gap = gaps[index];
         return (
           <li key={step.id} className="relative pb-5 last:pb-0">
+            {gap && <GapLabel gap={gap} className="-mt-2 mb-2" />}
             <span className="absolute top-[0.6rem] -left-[23.5px] size-[7px] rounded-full border border-black/60 bg-white" />
             {readings.length > 0 && (
               <p className="font-mono text-[11px] text-black/45">
@@ -190,8 +229,30 @@ function ReadOnlyTimeline({ steps }: { steps: TimelineStep[] }) {
   );
 }
 
+/** The time since the previous step, e.g. "1h 30m later". */
+function GapLabel({ gap, className }: { gap: StepGap; className?: string }) {
+  return (
+    <p
+      className={cn(
+        "font-mono text-[10px] tracking-[0.06em]",
+        gap.backwards ? "text-red-600/80" : "text-black/40",
+        className,
+      )}
+      title={
+        gap.backwards ? "This step is timed before the one above it" : undefined
+      }
+    >
+      {gap.backwards
+        ? `${gap.label} (before the step above)`
+        : `${gap.label} later`}
+    </p>
+  );
+}
+
 function StepRow({
   step,
+  time,
+  gap,
   index,
   count,
   dragging,
@@ -207,6 +268,8 @@ function StepRow({
   onDragEnd,
 }: {
   step: TimelineStep;
+  time: string; // resolved "YYYY-MM-DDTHH:MM", or ""
+  gap: StepGap | null;
   index: number;
   count: number;
   dragging: boolean;
@@ -247,11 +310,17 @@ function StepRow({
     <li
       ref={rowRef}
       className={cn(
-        "py-2.5 transition-colors",
-        dragging && "relative z-10 bg-black/[0.03]",
+        "relative py-2.5 transition-colors",
+        dragging && "z-10 bg-black/[0.03]",
       )}
     >
-      <div className="flex items-start gap-2">
+      {gap && (
+        <GapLabel
+          gap={gap}
+          className="absolute -top-[7px] left-1/2 -translate-x-1/2 bg-white px-2 whitespace-nowrap"
+        />
+      )}
+      <div className="flex items-center gap-2">
         <button
           type="button"
           aria-label={`Move step ${index + 1} of ${count}`}
@@ -274,22 +343,23 @@ function StepRow({
           <GripVertical size={15} strokeWidth={1.25} />
         </button>
         <input
-          type="time"
-          value={step.time}
+          type="datetime-local"
+          value={time}
           onChange={(e) => patch({ time: e.target.value })}
           onBlur={flush}
-          aria-label="Time"
-          className="w-[6.75rem] shrink-0 bg-transparent py-0.5 font-mono text-sm text-black/70 outline-none [&::-webkit-calendar-picker-indicator]:opacity-30"
+          aria-label="Step date and time"
+          className="w-[12.75rem] min-w-0 bg-transparent py-0.5 font-mono text-[13px] text-black/70 outline-none [&::-webkit-calendar-picker-indicator]:opacity-30"
         />
-        <AutoTextarea
-          value={step.text}
-          onChange={(e) => patch({ text: e.target.value })}
-          onBlur={flush}
-          autoFocus={autoFocus}
-          placeholder="what happened"
-          aria-label="Step"
-          className="py-0.5 text-sm"
-        />
+        {!time && (
+          <button
+            type="button"
+            onClick={() => patch({ time: nowDateTime() })}
+            className="shrink-0 font-mono text-[10px] tracking-[0.1em] text-black/45 uppercase hover:text-black"
+          >
+            now
+          </button>
+        )}
+        <span className="flex-1" />
         {confirming ? (
           <button
             type="button"
@@ -309,6 +379,15 @@ function StepRow({
           </button>
         )}
       </div>
+      <AutoTextarea
+        value={step.text}
+        onChange={(e) => patch({ text: e.target.value })}
+        onBlur={flush}
+        autoFocus={autoFocus}
+        placeholder="what happened"
+        aria-label="Step"
+        className="mt-1 pl-6 text-sm"
+      />
       <div className="mt-1.5 flex items-center gap-5 pl-6">
         <Reading
           label="room"
