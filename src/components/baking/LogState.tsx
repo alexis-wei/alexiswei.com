@@ -22,6 +22,9 @@ type LogState = {
   setMedia: Dispatch<SetStateAction<Media[]>>;
   /** Attaches a photo to a step (or detaches it with null), saving it. */
   linkMedia: (mediaId: string, stepId: string | null) => Promise<void>;
+  /** The timeline's "edit" mode: shows drag handles and delete buttons. */
+  arranging: boolean;
+  setArranging: Dispatch<SetStateAction<boolean>>;
 };
 
 const Context = createContext<LogState | null>(null);
@@ -37,6 +40,7 @@ export function LogStateProvider({
 }) {
   const [steps, setSteps] = useState(initialSteps);
   const [media, setMedia] = useState(initialMedia);
+  const [arranging, setArranging] = useState(false);
 
   async function linkMedia(mediaId: string, stepId: string | null) {
     const previous = media.find((m) => m.id === mediaId)?.stepId ?? null;
@@ -53,7 +57,17 @@ export function LogStateProvider({
   }
 
   return (
-    <Context.Provider value={{ steps, setSteps, media, setMedia, linkMedia }}>
+    <Context.Provider
+      value={{
+        steps,
+        setSteps,
+        media,
+        setMedia,
+        linkMedia,
+        arranging,
+        setArranging,
+      }}
+    >
       {children}
     </Context.Provider>
   );

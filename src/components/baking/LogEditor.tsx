@@ -16,7 +16,7 @@ import { LogIngredients } from "./LogIngredients";
 import { LogStateProvider } from "./LogState";
 import { MediaGallery } from "./MediaGallery";
 import { RecipeSection } from "./RecipeSection";
-import { Timeline } from "./Timeline";
+import { Timeline, TimelineEditToggle } from "./Timeline";
 import {
   AutosaveText,
   Label,
@@ -128,7 +128,10 @@ export function LogEditor({
         )}
 
         {show(log.timeline.length > 0) && (
-          <Section label="timeline">
+          <Section
+            label="timeline"
+            action={editable ? <TimelineEditToggle /> : undefined}
+          >
             <Timeline
               logId={log.id}
               logDate={log.bakedOn}

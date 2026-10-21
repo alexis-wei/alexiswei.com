@@ -14,7 +14,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { setMediaStep } from "@/app/baking/actions";
 import { LogStateProvider } from "@/components/baking/LogState";
 import { MediaGallery } from "@/components/baking/MediaGallery";
-import { Timeline } from "@/components/baking/Timeline";
+import { Timeline, TimelineEditToggle } from "@/components/baking/Timeline";
 import type { Media, TimelineStep } from "@/lib/baking/types";
 
 vi.mock("@/app/baking/actions", () => ({
@@ -73,6 +73,7 @@ function LogPage({
         initialCover={null}
         editable={editable}
       />
+      {editable && <TimelineEditToggle />}
       <Timeline logId="log1" logDate="2026-10-15" editable={editable} />
     </LogStateProvider>
   );
@@ -80,9 +81,7 @@ function LogPage({
 
 /** The photos shown on the nth step (1-based), by caption. */
 function photosOnStep(n: number) {
-  const row = screen
-    .getAllByLabelText(/^Move step \d+ of \d+$/)
-    [n - 1].closest("li")!;
+  const row = screen.getAllByLabelText("Step")[n - 1].closest("li")!;
   const strip = within(row).queryByLabelText("Photos for this step");
   return strip
     ? within(strip)
@@ -99,6 +98,7 @@ afterEach(() => {
 describe("adding photos from a step", () => {
   it("attaches the chosen photo and shows it on the step and in the gallery", async () => {
     render(<LogPage />);
+    fireEvent.click(screen.getByLabelText("More for step 1"));
     fireEvent.click(screen.getByLabelText("Choose photos for step 1"));
     const sheet = screen.getByRole("dialog", { name: "photos for step 1" });
     fireEvent.click(within(sheet).getByLabelText("Add image “p1”"));
@@ -110,6 +110,7 @@ describe("adding photos from a step", () => {
 
   it("detaches a photo when it's tapped again", async () => {
     render(<LogPage media={[photo("p1", "a")]} />);
+    fireEvent.click(screen.getByLabelText("More for step 1"));
     fireEvent.click(screen.getByLabelText("Choose photos for step 1"));
     fireEvent.click(screen.getByLabelText("Remove image “p1”"));
 
@@ -119,6 +120,7 @@ describe("adding photos from a step", () => {
 
   it("labels photos already on another step, and moves them when picked", async () => {
     render(<LogPage media={[photo("p1", "b")]} />);
+    fireEvent.click(screen.getByLabelText("More for step 1"));
     fireEvent.click(screen.getByLabelText("Choose photos for step 1"));
     const sheet = screen.getByRole("dialog", { name: "photos for step 1" });
     expect(within(sheet).getByText("step 2")).toBeTruthy();
@@ -131,6 +133,7 @@ describe("adding photos from a step", () => {
 
   it("explains when the log has no photos yet", () => {
     render(<LogPage media={[]} />);
+    fireEvent.click(screen.getByLabelText("More for step 1"));
     fireEvent.click(screen.getByLabelText("Choose photos for step 1"));
     expect(screen.getByText(/no photos in this log yet/)).toBeTruthy();
   });
@@ -163,6 +166,7 @@ describe("keeping links consistent", () => {
     render(<LogPage media={[photo("p1", "a")]} />);
     expect(screen.getByText("↳ step 1 · mix")).toBeTruthy();
 
+    fireEvent.click(screen.getByText("edit"));
     fireEvent.keyDown(screen.getByLabelText("Move step 1 of 2"), {
       key: "ArrowDown",
     });
@@ -172,6 +176,7 @@ describe("keeping links consistent", () => {
 
   it("keeps a deleted step's photos in the gallery, unlinked", async () => {
     render(<LogPage media={[photo("p1", "a"), photo("p2")]} />);
+    fireEvent.click(screen.getByText("edit"));
     const row = screen.getByLabelText("Move step 1 of 2").closest("li")!;
     fireEvent.click(within(row).getByLabelText("Remove step"));
     fireEvent.click(within(row).getByText("delete"));
@@ -189,6 +194,7 @@ describe("keeping links consistent", () => {
   it("puts the link back if saving it fails", async () => {
     vi.mocked(setMediaStep).mockRejectedValueOnce(new Error("offline"));
     render(<LogPage />);
+    fireEvent.click(screen.getByLabelText("More for step 1"));
     fireEvent.click(screen.getByLabelText("Choose photos for step 1"));
     fireEvent.click(screen.getByLabelText("Add image “p1”"));
 

@@ -15,7 +15,10 @@ import {
 } from "@/app/baking/actions";
 import type { TimelineStep } from "@/lib/baking/types";
 import { LogStateProvider } from "@/components/baking/LogState";
-import { Timeline as LogTimeline } from "@/components/baking/Timeline";
+import {
+  Timeline as LogTimeline,
+  TimelineEditToggle,
+} from "@/components/baking/Timeline";
 import type { Media } from "@/lib/baking/types";
 
 /** The timeline as the log page renders it, inside the shared log state. */
@@ -32,6 +35,7 @@ function Timeline({
 }) {
   return (
     <LogStateProvider initialSteps={initial} initialMedia={media}>
+      {props.editable && <TimelineEditToggle />}
       <LogTimeline {...props} />
     </LogStateProvider>
   );
@@ -91,6 +95,7 @@ describe("Timeline (editing)", () => {
     render(
       <Timeline logId="log1" logDate="2026-10-15" initial={initial} editable />,
     );
+    fireEvent.click(screen.getByLabelText("More for step 1"));
     fireEvent.click(screen.getByLabelText("Insert a step after step 1"));
 
     await waitFor(() => expect(shownOrder()).toHaveLength(4));
@@ -102,6 +107,7 @@ describe("Timeline (editing)", () => {
     render(
       <Timeline logId="log1" logDate="2026-10-15" initial={initial} editable />,
     );
+    fireEvent.click(screen.getByText("edit"));
     fireEvent.keyDown(screen.getByLabelText("Move step 1 of 3"), {
       key: "ArrowDown",
     });
@@ -116,6 +122,7 @@ describe("Timeline (editing)", () => {
     render(
       <Timeline logId="log1" logDate="2026-10-15" initial={initial} editable />,
     );
+    fireEvent.click(screen.getByText("edit"));
     fireEvent.keyDown(screen.getByLabelText("Move step 1 of 3"), {
       key: "ArrowUp",
     });
@@ -128,6 +135,7 @@ describe("Timeline (editing)", () => {
     render(
       <Timeline logId="log1" logDate="2026-10-15" initial={initial} editable />,
     );
+    fireEvent.click(screen.getByText("edit"));
     fireEvent.keyDown(screen.getByLabelText("Move step 3 of 3"), {
       key: "ArrowUp",
     });
@@ -139,6 +147,7 @@ describe("Timeline (editing)", () => {
     render(
       <Timeline logId="log1" logDate="2026-10-15" initial={initial} editable />,
     );
+    fireEvent.click(screen.getByText("edit"));
     const row = screen.getAllByRole("listitem")[1];
     fireEvent.click(within(row).getByLabelText("Remove step"));
     expect(deleteStep).not.toHaveBeenCalled();
@@ -174,12 +183,22 @@ describe("Timeline (read-only)", () => {
       <Timeline
         logId="log1"
         logDate="2026-10-15"
-        initial={[{ ...step("a", "mix"), time: "09:00", humidity: "48%" }]}
+        initial={[
+          {
+            ...step("a", "mix"),
+            time: "09:00",
+            roomTemp: "24",
+            humidity: "48%",
+            internalTemp: "205",
+          },
+        ]}
         editable={false}
       />,
     );
     expect(screen.getByText("mix")).toBeTruthy();
-    expect(screen.getByText("9:00 am · rh 48%")).toBeTruthy();
+    expect(
+      screen.getByText("9:00 am · room 24°C · rh 48% · internal 205°F"),
+    ).toBeTruthy();
     expect(screen.queryByText("+ add step")).toBeNull();
     expect(screen.queryByLabelText(/Move step/)).toBeNull();
   });
@@ -216,6 +235,7 @@ describe("Timeline dates and gaps", () => {
     render(
       <Timeline logId="log1" logDate="2026-10-15" initial={timed} editable />,
     );
+    fireEvent.click(screen.getByText("edit"));
     fireEvent.keyDown(screen.getByLabelText("Move step 3 of 3"), {
       key: "ArrowUp",
     });
@@ -274,5 +294,126 @@ describe("Timeline dates and gaps", () => {
     expect(screen.getAllByText(/later$/).map((el) => el.textContent)).toEqual([
       "1h later",
     ]);
+  });
+});
+
+describe("Timeline edit mode", () => {
+  it("hides drag handles and delete buttons until “edit” is tapped", () => {
+    render(
+      <Timeline logId="log1" logDate="2026-10-15" initial={initial} editable />,
+    );
+    expect(screen.queryByLabelText(/^Move step/)).toBeNull();
+    expect(screen.queryByLabelText("Remove step")).toBeNull();
+    // Everything else stays editable.
+    expect(screen.getAllByLabelText("Step")).toHaveLength(3);
+    expect(screen.getAllByLabelText(/^More for step/)).toHaveLength(3);
+
+    fireEvent.click(screen.getByText("edit"));
+    expect(screen.getAllByLabelText(/^Move step/)).toHaveLength(3);
+    expect(screen.getAllByLabelText("Remove step")).toHaveLength(3);
+  });
+
+  it("hides them again with “done”", () => {
+    render(
+      <Timeline logId="log1" logDate="2026-10-15" initial={initial} editable />,
+    );
+    fireEvent.click(screen.getByText("edit"));
+    fireEvent.click(screen.getByText("done"));
+    expect(screen.queryByLabelText(/^Move step/)).toBeNull();
+    expect(screen.queryByLabelText("Remove step")).toBeNull();
+    expect(screen.getByText("edit")).toBeTruthy();
+  });
+
+  it("isn't offered for an empty timeline", () => {
+    render(
+      <Timeline logId="log1" logDate="2026-10-15" initial={[]} editable />,
+    );
+    expect(screen.queryByText("edit")).toBeNull();
+  });
+
+  it("isn't offered to visitors", () => {
+    render(
+      <Timeline
+        logId="log1"
+        logDate="2026-10-15"
+        initial={initial}
+        editable={false}
+      />,
+    );
+    expect(screen.queryByText("edit")).toBeNull();
+  });
+});
+
+describe("Timeline step menu", () => {
+  it("keeps “+ photo” and “+ step below” in each step's ⋮ menu", () => {
+    render(
+      <Timeline logId="log1" logDate="2026-10-15" initial={initial} editable />,
+    );
+    expect(screen.queryByLabelText(/^Insert a step after/)).toBeNull();
+    expect(screen.queryByLabelText(/^Choose photos for/)).toBeNull();
+
+    fireEvent.click(screen.getByLabelText("More for step 2"));
+    const menu = screen.getByRole("menu");
+    expect(
+      within(menu)
+        .getAllByRole("menuitem")
+        .map((item) => item.textContent),
+    ).toEqual(["+ photo", "+ step below"]);
+    expect(
+      within(menu).getByLabelText("Insert a step after step 2"),
+    ).toBeTruthy();
+  });
+
+  it("closes after choosing an item", () => {
+    render(
+      <Timeline logId="log1" logDate="2026-10-15" initial={initial} editable />,
+    );
+    fireEvent.click(screen.getByLabelText("More for step 1"));
+    fireEvent.click(screen.getByLabelText("Choose photos for step 1"));
+    expect(screen.queryByRole("menu")).toBeNull();
+    expect(
+      screen.getByRole("dialog", { name: "photos for step 1" }),
+    ).toBeTruthy();
+  });
+
+  it("shows each reading's unit beside its box", () => {
+    render(
+      <Timeline logId="log1" logDate="2026-10-15" initial={initial} editable />,
+    );
+    const row = screen.getAllByLabelText("Step")[0].closest("li")!;
+    expect(
+      within(row).getByLabelText("Room temperature at this step").parentElement!
+        .textContent,
+    ).toBe("room°C");
+    expect(
+      within(row).getByLabelText("Humidity at this step").parentElement!
+        .textContent,
+    ).toBe("rh%");
+    expect(
+      within(row).getByLabelText("Internal temperature at this step")
+        .parentElement!.textContent,
+    ).toBe("internal°F");
+  });
+});
+
+describe("Timeline readings typed before units were shown", () => {
+  it("doesn't repeat the unit in the box, and saves only when edited", () => {
+    render(
+      <Timeline
+        logId="log1"
+        logDate="2026-10-15"
+        initial={[{ ...step("a", "mix"), roomTemp: "23°C", humidity: "48%" }]}
+        editable
+      />,
+    );
+    const room = screen.getByLabelText(
+      "Room temperature at this step",
+    ) as HTMLInputElement;
+    expect(room.value).toBe("23");
+    expect(
+      (screen.getByLabelText("Humidity at this step") as HTMLInputElement)
+        .value,
+    ).toBe("48");
+    expect(updateStep).not.toHaveBeenCalled();
   });
 });

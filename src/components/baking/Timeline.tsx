@@ -1,6 +1,6 @@
 "use client";
 
-import { GripVertical, Plus, X } from "lucide-react";
+import { GripVertical, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import {
   addStep,
@@ -8,7 +8,7 @@ import {
   reorderSteps,
   updateStep,
 } from "@/app/baking/actions";
-import { nowDateTime } from "@/lib/baking/format";
+import { nowDateTime, withoutUnit, withUnit } from "@/lib/baking/format";
 import { dropIndex, moveItem, sameOrder } from "@/lib/baking/order";
 import {
   resolveStepTimes,
@@ -20,6 +20,7 @@ import type { Media, TimelineStep } from "@/lib/baking/types";
 import { cn } from "@/lib/utils";
 import { track, useAutosave } from "./autosave";
 import { useLogState } from "./LogState";
+import { MoreMenu } from "./MoreMenu";
 import { StepPhotoPicker, StepPhotoStrip } from "./StepPhotos";
 import { AutoTextarea, TextButton } from "./ui";
 
@@ -38,7 +39,8 @@ export function Timeline({
   logDate: string;
   editable: boolean;
 }) {
-  const { steps, setSteps, media, setMedia, linkMedia } = useLogState();
+  const { steps, setSteps, media, setMedia, linkMedia, arranging } =
+    useLogState();
   const [busy, setBusy] = useState(false);
   const [focusId, setFocusId] = useState<string | null>(null);
   const [dragId, setDragId] = useState<string | null>(null);
@@ -166,6 +168,7 @@ export function Timeline({
           <StepRow
             key={step.id}
             step={step}
+            arranging={arranging}
             photos={photosFor(step.id)}
             onPickPhotos={() => setPickingFor(step.id)}
             time={resolved[index]}
@@ -228,9 +231,9 @@ function ReadOnlyTimeline({
       {steps.map((step, index) => {
         const readings = [
           labels[index],
-          step.roomTemp && `room ${step.roomTemp}`,
-          step.humidity && `rh ${step.humidity}`,
-          step.internalTemp && `internal ${step.internalTemp}`,
+          step.roomTemp && `room ${withUnit(step.roomTemp, "°C")}`,
+          step.humidity && `rh ${withUnit(step.humidity, "%")}`,
+          step.internalTemp && `internal ${withUnit(step.internalTemp, "°F")}`,
         ].filter(Boolean);
         const gap = gaps[index];
         return (
@@ -277,6 +280,7 @@ function GapLabel({ gap, className }: { gap: StepGap; className?: string }) {
 
 function StepRow({
   step,
+  arranging,
   photos,
   onPickPhotos,
   time,
@@ -296,6 +300,7 @@ function StepRow({
   onDragEnd,
 }: {
   step: TimelineStep;
+  arranging: boolean;
   photos: Media[];
   onPickPhotos: () => void;
   time: string; // resolved "YYYY-MM-DDTHH:MM", or ""
@@ -351,27 +356,29 @@ function StepRow({
         />
       )}
       <div className="flex items-center gap-2">
-        <button
-          type="button"
-          aria-label={`Move step ${index + 1} of ${count}`}
-          title="Drag to reorder (or use ↑/↓)"
-          onPointerDown={onDragStart}
-          onPointerMove={onDragMove}
-          onPointerUp={onDragEnd}
-          onPointerCancel={onDragEnd}
-          onKeyDown={(e) => {
-            if (e.key === "ArrowUp") {
-              e.preventDefault();
-              onMove(-1);
-            } else if (e.key === "ArrowDown") {
-              e.preventDefault();
-              onMove(1);
-            }
-          }}
-          className="-ml-1 mt-0.5 shrink-0 cursor-grab touch-none p-0.5 text-black/25 hover:text-black active:cursor-grabbing"
-        >
-          <GripVertical size={15} strokeWidth={1.25} />
-        </button>
+        {arranging && (
+          <button
+            type="button"
+            aria-label={`Move step ${index + 1} of ${count}`}
+            title="Drag to reorder (or use ↑/↓)"
+            onPointerDown={onDragStart}
+            onPointerMove={onDragMove}
+            onPointerUp={onDragEnd}
+            onPointerCancel={onDragEnd}
+            onKeyDown={(e) => {
+              if (e.key === "ArrowUp") {
+                e.preventDefault();
+                onMove(-1);
+              } else if (e.key === "ArrowDown") {
+                e.preventDefault();
+                onMove(1);
+              }
+            }}
+            className="-ml-1 mt-0.5 shrink-0 cursor-grab touch-none p-0.5 text-black/25 hover:text-black active:cursor-grabbing"
+          >
+            <GripVertical size={15} strokeWidth={1.25} />
+          </button>
+        )}
         <input
           type="datetime-local"
           value={time}
@@ -390,24 +397,42 @@ function StepRow({
           </button>
         )}
         <span className="flex-1" />
-        {confirming ? (
-          <button
-            type="button"
-            onClick={onDelete}
-            className="mt-1 shrink-0 font-mono text-[10px] tracking-[0.1em] text-red-600 uppercase"
-          >
-            delete
-          </button>
-        ) : (
-          <button
-            type="button"
-            aria-label="Remove step"
-            onClick={() => setConfirming(true)}
-            className="mt-1 shrink-0 text-black/30 hover:text-black"
-          >
-            <X size={16} strokeWidth={1.25} />
-          </button>
-        )}
+        <MoreMenu
+          label={`More for step ${index + 1}`}
+          align="right"
+          items={[
+            {
+              label: "+ photo",
+              ariaLabel: `Choose photos for step ${index + 1}`,
+              onSelect: onPickPhotos,
+            },
+            {
+              label: "+ step below",
+              ariaLabel: `Insert a step after step ${index + 1}`,
+              onSelect: onInsertAfter,
+              disabled: busy,
+            },
+          ]}
+        />
+        {arranging &&
+          (confirming ? (
+            <button
+              type="button"
+              onClick={onDelete}
+              className="mt-1 shrink-0 font-mono text-[10px] tracking-[0.1em] text-red-600 uppercase"
+            >
+              delete
+            </button>
+          ) : (
+            <button
+              type="button"
+              aria-label="Remove step"
+              onClick={() => setConfirming(true)}
+              className="mt-1 shrink-0 text-black/30 hover:text-black"
+            >
+              <X size={16} strokeWidth={1.25} />
+            </button>
+          ))}
       </div>
       <AutoTextarea
         value={step.text}
@@ -416,15 +441,21 @@ function StepRow({
         autoFocus={autoFocus}
         placeholder="what happened"
         aria-label="Step"
-        className="mt-1 pl-6 text-sm"
+        className={cn("mt-1 text-sm", arranging && "pl-6")}
       />
-      <div className="mt-2 pl-6 empty:hidden">
+      <div className={cn("mt-2 empty:hidden", arranging && "pl-6")}>
         <StepPhotoStrip photos={photos} onOpen={onPickPhotos} />
       </div>
       {/* Readings wrap rather than overflow on narrow phones. */}
-      <div className="mt-1.5 flex flex-wrap items-center gap-x-5 gap-y-1.5 pl-6">
+      <div
+        className={cn(
+          "mt-1.5 flex flex-wrap items-center gap-x-5 gap-y-1.5",
+          arranging && "pl-6",
+        )}
+      >
         <Reading
           label="room"
+          unit="°C"
           value={step.roomTemp}
           onChange={(roomTemp) => patch({ roomTemp })}
           onBlur={flush}
@@ -432,6 +463,7 @@ function StepRow({
         />
         <Reading
           label="rh"
+          unit="%"
           value={step.humidity}
           onChange={(humidity) => patch({ humidity })}
           onBlur={flush}
@@ -439,49 +471,28 @@ function StepRow({
         />
         <Reading
           label="internal"
+          unit="°F"
           value={step.internalTemp}
           onChange={(internalTemp) => patch({ internalTemp })}
           onBlur={flush}
           aria-label="Internal temperature at this step"
         />
       </div>
-      {/* Actions get their own line so they always fit on a phone. */}
-      <div className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-1 pl-6">
-        <button
-          type="button"
-          onClick={onPickPhotos}
-          aria-label={`Choose photos for step ${index + 1}`}
-          className={stepAction}
-        >
-          <Plus size={11} strokeWidth={1.25} /> photo
-        </button>
-        <button
-          type="button"
-          disabled={busy}
-          onClick={onInsertAfter}
-          aria-label={`Insert a step after step ${index + 1}`}
-          title="Insert a step after this one"
-          className={stepAction}
-        >
-          <Plus size={11} strokeWidth={1.25} /> step below
-        </button>
-      </div>
     </li>
   );
 }
 
-const stepAction =
-  "flex items-center gap-1 py-0.5 font-mono text-[9px] tracking-[0.1em] text-black/40 uppercase hover:text-black disabled:opacity-40";
-
 /** A small labelled reading (room temp, humidity, internal temp) under a step. */
 function Reading({
   label,
+  unit,
   value,
   onChange,
   onBlur,
   "aria-label": ariaLabel,
 }: {
   label: string;
+  unit: string;
   value: string | undefined;
   onChange: (value: string) => void;
   onBlur: () => void;
@@ -493,14 +504,32 @@ function Reading({
         {label}
       </span>
       <input
-        value={value ?? ""}
+        value={withoutUnit(value ?? "", unit)}
         onChange={(e) => onChange(e.target.value)}
         onBlur={onBlur}
         placeholder="—"
         inputMode="decimal"
         aria-label={ariaLabel}
-        className="w-12 min-w-0 border-b border-black/10 bg-transparent font-mono text-[13px] text-black/70 outline-none placeholder:text-black/20 focus:border-black"
+        className="w-10 min-w-0 border-b border-black/10 bg-transparent font-mono text-[13px] text-black/70 outline-none placeholder:text-black/20 focus:border-black"
       />
+      <span className="font-mono text-[11px] text-black/40">{unit}</span>
     </label>
+  );
+}
+
+/**
+ * "edit" / "done" beside the timeline heading: shows the steps' drag handles
+ * and delete buttons only while arranging, to keep the timeline compact.
+ */
+export function TimelineEditToggle() {
+  const { steps, arranging, setArranging } = useLogState();
+  if (steps.length === 0 && !arranging) return null;
+  return (
+    <TextButton
+      aria-pressed={arranging}
+      onClick={() => setArranging((on) => !on)}
+    >
+      {arranging ? "done" : "edit"}
+    </TextButton>
   );
 }
