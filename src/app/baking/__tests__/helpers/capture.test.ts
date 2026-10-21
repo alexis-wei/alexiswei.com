@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { fromExif } from "./capture";
+import { fromExif } from "@/lib/baking/capture";
 
 describe("fromExif (photo capture time)", () => {
   it("turns EXIF dates into the phone's clock time", () => {

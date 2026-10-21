@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatDuration, safeHref, toDateTime } from "./format";
+import { formatDuration, safeHref, toDateTime } from "@/lib/baking/format";
 
 describe("safeHref", () => {
   it("keeps http(s) links", () => {

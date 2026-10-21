@@ -94,6 +94,9 @@ const ADDED_COLUMNS = [
   ["media", "taken_at", "TEXT"],
   ["logs", "cover_media_id", "TEXT"],
   ["logs", "recipe_url", "TEXT NOT NULL DEFAULT ''"],
+  // The timeline step a photo/video belongs to (one step per photo; a step
+  // can have many). Linked by id, so reordering steps never loses the link.
+  ["media", "step_id", "TEXT"],
 ] as const;
 
 // Columns that were removed. Their data is deleted for good, so only list a

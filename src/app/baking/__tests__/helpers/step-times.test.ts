@@ -5,7 +5,7 @@ import {
   resolveStepTimes,
   stepGaps,
   stepTimeLabels,
-} from "./timeline";
+} from "@/lib/baking/timeline";
 
 describe("resolveStepTimes", () => {
   it("keeps full dates and times as they are", () => {

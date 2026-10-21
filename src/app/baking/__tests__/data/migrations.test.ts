@@ -1,11 +1,12 @@
 // @vitest-environment node
 //
+// Schema and data migrations, run against a database shaped like production
+// before each release.
 // Runs the real database code against a throwaway in-memory SQLite database
-// (never Turso or the local dev file), so migrations and step ordering are
-// tested exactly as they run in production.
+// (never Turso or the local dev file). See ./harness.ts.
 
 import { createClient, type Client } from "@libsql/client";
-import { afterAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.hoisted(() => {
   process.env.TURSO_DATABASE_URL = ":memory:";
@@ -20,28 +21,7 @@ vi.mock("next/navigation", () => ({ redirect: vi.fn() }));
 vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
 vi.mock("next/server", () => ({ after: vi.fn() }));
 
-const { db, migrate } = await import("./db");
-const { getLog } = await import("./queries");
-const { purgeExpired } = await import("./trash");
-const { addStep, deleteStep, reorderSteps, updateStep } =
-  await import("@/app/baking/actions");
-
-const DAY = 24 * 60 * 60 * 1000;
-
-async function insertLog(
-  c: Client,
-  id: string,
-  deletedAt: number | null = null,
-) {
-  await c.execute({
-    sql: `INSERT INTO logs (id, title, baked_on, created_at, updated_at, deleted_at)
-          VALUES (?, ?, '2026-10-15', 1, 1, ?)`,
-    args: [id, `log ${id}`, deletedAt],
-  });
-}
-
-const texts = async (logId: string) =>
-  (await getLog(logId))?.timeline.map((s) => s.text);
+const { migrate } = await import("@/lib/baking/db");
 
 describe("migrating an existing database", () => {
   let c: Client;
@@ -154,99 +134,5 @@ describe("migrating an existing database", () => {
     );
     expect(columns).not.toContain("room_temp");
     expect(columns).not.toContain("humidity");
-  });
-});
-
-describe("timeline steps", () => {
-  let c: Client;
-
-  beforeEach(async () => {
-    c = await db();
-    await c.batch(
-      [
-        "DELETE FROM timeline_steps",
-        "DELETE FROM logs",
-        "DELETE FROM recipe_files",
-      ],
-      "write",
-    );
-    await insertLog(c, "log1");
-  });
-
-  afterAll(() => c.close());
-
-  it("appends steps, and inserts a forgotten one in the right place", async () => {
-    const mix = await addStep("log1", null, { text: "mix", time: "09:00" });
-    await addStep("log1", null, { text: "bake" });
-    await addStep("log1", mix.id, { text: "rest" });
-    expect(await texts("log1")).toEqual(["mix", "rest", "bake"]);
-  });
-
-  it("inserts after the last step", async () => {
-    await addStep("log1", null, { text: "mix" });
-    const bake = await addStep("log1", null, { text: "bake" });
-    await addStep("log1", bake.id, { text: "cool" });
-    expect(await texts("log1")).toEqual(["mix", "bake", "cool"]);
-  });
-
-  it("appends when the step to insert after no longer exists", async () => {
-    await addStep("log1", null, { text: "mix" });
-    await addStep("log1", "deleted-step", { text: "bake" });
-    expect(await texts("log1")).toEqual(["mix", "bake"]);
-  });
-
-  it("saves a new order", async () => {
-    const a = await addStep("log1", null, { text: "a" });
-    const b = await addStep("log1", null, { text: "b" });
-    const d = await addStep("log1", null, { text: "c" });
-    await reorderSteps("log1", [d.id, a.id, b.id]);
-    expect(await texts("log1")).toEqual(["c", "a", "b"]);
-  });
-
-  it("only reorders steps that belong to the log", async () => {
-    await insertLog(c, "log2");
-    const other = await addStep("log2", null, { text: "other log" });
-    const mine = await addStep("log1", null, { text: "mine" });
-    await reorderSteps("log1", [other.id, mine.id]);
-    expect(await texts("log2")).toEqual(["other log"]);
-    expect(await texts("log1")).toEqual(["mine"]);
-  });
-
-  it("keeps order after a delete, and inserts correctly into the gap", async () => {
-    const a = await addStep("log1", null, { text: "a" });
-    const b = await addStep("log1", null, { text: "b" });
-    await addStep("log1", null, { text: "c" });
-    await deleteStep(b.id);
-    await addStep("log1", a.id, { text: "a2" });
-    expect(await texts("log1")).toEqual(["a", "a2", "c"]);
-  });
-
-  it("updates one field without touching the others", async () => {
-    const step = await addStep("log1", null, { text: "proof", time: "10:00" });
-    await updateStep(step.id, { humidity: "52%" });
-    const [saved] = (await getLog("log1"))!.timeline;
-    expect(saved).toMatchObject({
-      text: "proof",
-      time: "10:00",
-      humidity: "52%",
-      roomTemp: "",
-    });
-  });
-
-  it("purges a log's steps along with it after 30 days", async () => {
-    await insertLog(c, "old", Date.now() - 31 * DAY);
-    await insertLog(c, "recent", Date.now() - 2 * DAY);
-    await addStep("old", null, { text: "gone" });
-    await addStep("recent", null, { text: "kept" });
-    await addStep("log1", null, { text: "kept too" });
-
-    await purgeExpired();
-
-    const { rows } = await c.execute(
-      "SELECT log_id FROM timeline_steps ORDER BY log_id",
-    );
-    expect(rows.map((r) => r.log_id)).toEqual(["log1", "recent"]);
-    const logs = await c.execute("SELECT id FROM logs ORDER BY id");
-    expect(logs.rows.map((r) => r.id)).toEqual(["log1", "recent"]);
   });
 });

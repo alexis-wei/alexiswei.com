@@ -16,9 +16,11 @@ import {
   stepGaps,
   type StepGap,
 } from "@/lib/baking/timeline";
-import type { TimelineStep } from "@/lib/baking/types";
+import type { Media, TimelineStep } from "@/lib/baking/types";
 import { cn } from "@/lib/utils";
 import { track, useAutosave } from "./autosave";
+import { useLogState } from "./LogState";
+import { StepPhotoPicker, StepPhotoStrip } from "./StepPhotos";
 import { AutoTextarea, TextButton } from "./ui";
 
 /**
@@ -30,18 +32,19 @@ import { AutoTextarea, TextButton } from "./ui";
 export function Timeline({
   logId,
   logDate,
-  initial,
   editable,
 }: {
   logId: string;
   logDate: string;
-  initial: TimelineStep[];
   editable: boolean;
 }) {
-  const [steps, setSteps] = useState(initial);
+  const { steps, setSteps, media, setMedia, linkMedia } = useLogState();
   const [busy, setBusy] = useState(false);
   const [focusId, setFocusId] = useState<string | null>(null);
   const [dragId, setDragId] = useState<string | null>(null);
+  const [pickingFor, setPickingFor] = useState<string | null>(null);
+  const photosFor = (stepId: string) =>
+    media.filter((m) => m.stepId === stepId);
   const rows = useRef(new Map<string, HTMLLIElement>());
   const dragStart = useRef<string[]>([]);
 
@@ -55,6 +58,7 @@ export function Timeline({
     return (
       <ReadOnlyTimeline
         steps={steps}
+        photosFor={photosFor}
         resolved={resolved}
         gaps={gaps}
         logDate={logDate}
@@ -85,6 +89,10 @@ export function Timeline({
   async function remove(id: string) {
     const before = steps;
     setSteps((list) => list.filter((s) => s.id !== id));
+    // The step's photos stay in the gallery, unlinked (as on the server).
+    setMedia((list) =>
+      list.map((m) => (m.stepId === id ? { ...m, stepId: null } : m)),
+    );
     try {
       await track(deleteStep(id));
     } catch {
@@ -158,6 +166,8 @@ export function Timeline({
           <StepRow
             key={step.id}
             step={step}
+            photos={photosFor(step.id)}
+            onPickPhotos={() => setPickingFor(step.id)}
             time={resolved[index]}
             gap={gaps[index]}
             index={index}
@@ -181,6 +191,17 @@ export function Timeline({
           />
         ))}
       </ol>
+      {pickingFor && steps.some((s) => s.id === pickingFor) && (
+        <StepPhotoPicker
+          step={steps.find((s) => s.id === pickingFor)!}
+          steps={steps}
+          media={media}
+          onToggle={(photo, attach) =>
+            linkMedia(photo.id, attach ? pickingFor : null)
+          }
+          onClose={() => setPickingFor(null)}
+        />
+      )}
       <TextButton className="mt-3" disabled={busy} onClick={() => insert(null)}>
         + add step
       </TextButton>
@@ -190,11 +211,13 @@ export function Timeline({
 
 function ReadOnlyTimeline({
   steps,
+  photosFor,
   resolved,
   gaps,
   logDate,
 }: {
   steps: TimelineStep[];
+  photosFor: (stepId: string) => Media[];
   resolved: string[];
   gaps: (StepGap | null)[];
   logDate: string;
@@ -222,6 +245,9 @@ function ReadOnlyTimeline({
             <p className="text-sm leading-relaxed whitespace-pre-wrap">
               {step.text}
             </p>
+            <div className="mt-2 empty:hidden">
+              <StepPhotoStrip photos={photosFor(step.id)} href />
+            </div>
           </li>
         );
       })}
@@ -251,6 +277,8 @@ function GapLabel({ gap, className }: { gap: StepGap; className?: string }) {
 
 function StepRow({
   step,
+  photos,
+  onPickPhotos,
   time,
   gap,
   index,
@@ -268,6 +296,8 @@ function StepRow({
   onDragEnd,
 }: {
   step: TimelineStep;
+  photos: Media[];
+  onPickPhotos: () => void;
   time: string; // resolved "YYYY-MM-DDTHH:MM", or ""
   gap: StepGap | null;
   index: number;
@@ -388,7 +418,11 @@ function StepRow({
         aria-label="Step"
         className="mt-1 pl-6 text-sm"
       />
-      <div className="mt-1.5 flex items-center gap-5 pl-6">
+      <div className="mt-2 pl-6 empty:hidden">
+        <StepPhotoStrip photos={photos} onOpen={onPickPhotos} />
+      </div>
+      {/* Readings wrap rather than overflow on narrow phones. */}
+      <div className="mt-1.5 flex flex-wrap items-center gap-x-5 gap-y-1.5 pl-6">
         <Reading
           label="room"
           value={step.roomTemp}
@@ -410,20 +444,34 @@ function StepRow({
           onBlur={flush}
           aria-label="Internal temperature at this step"
         />
+      </div>
+      {/* Actions get their own line so they always fit on a phone. */}
+      <div className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-1 pl-6">
+        <button
+          type="button"
+          onClick={onPickPhotos}
+          aria-label={`Choose photos for step ${index + 1}`}
+          className={stepAction}
+        >
+          <Plus size={11} strokeWidth={1.25} /> photo
+        </button>
         <button
           type="button"
           disabled={busy}
           onClick={onInsertAfter}
           aria-label={`Insert a step after step ${index + 1}`}
           title="Insert a step after this one"
-          className="ml-auto flex items-center gap-1 font-mono text-[9px] tracking-[0.1em] text-black/35 uppercase hover:text-black disabled:opacity-40"
+          className={stepAction}
         >
-          <Plus size={11} strokeWidth={1.25} /> step
+          <Plus size={11} strokeWidth={1.25} /> step below
         </button>
       </div>
     </li>
   );
 }
+
+const stepAction =
+  "flex items-center gap-1 py-0.5 font-mono text-[9px] tracking-[0.1em] text-black/40 uppercase hover:text-black disabled:opacity-40";
 
 /** A small labelled reading (room temp, humidity, internal temp) under a step. */
 function Reading({

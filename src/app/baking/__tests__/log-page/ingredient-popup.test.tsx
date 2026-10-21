@@ -8,8 +8,8 @@ import {
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createIngredient } from "@/app/baking/actions";
 import type { Ingredient } from "@/lib/baking/types";
-import { IngredientBrowser } from "./IngredientBrowser";
-import { uploadIcon } from "./IconPicker";
+import { IngredientBrowser } from "@/components/baking/IngredientBrowser";
+import { uploadIcon } from "@/components/baking/IconPicker";
 
 // Server actions and uploads are replaced so the test exercises only the
 // popup's own logic: when it saves a new ingredient, and with what.
@@ -21,7 +21,7 @@ const uploaded = {
   crop: { x: 0, y: 0, width: 1 },
 };
 
-vi.mock("./IconPicker", () => ({
+vi.mock("@/components/baking/IconPicker", () => ({
   // Stands in for the file picker + crop step: one click "picks" an image.
   IconPicker: ({ onIcon }: { onIcon: (icon: object) => void }) => (
     <button

@@ -14,8 +14,11 @@ import { formatTakenAt, uid } from "@/lib/baking/format";
 import { preparePhoto } from "@/lib/baking/image";
 import { effectiveCover } from "@/lib/baking/order";
 import { compressVideo } from "@/lib/baking/video";
-import type { Media } from "@/lib/baking/types";
+import type { Media, TimelineStep } from "@/lib/baking/types";
 import { track, useAutosave } from "./autosave";
+import { stepLabel, useLogState } from "./LogState";
+import { MediaThumb } from "./MediaThumb";
+import { PhotoStepPicker } from "./StepPhotos";
 import { AutoTextarea } from "./ui";
 import { uploadFile } from "./upload";
 
@@ -34,22 +37,22 @@ const isVideo = (file: File) =>
 export function MediaGallery({
   logId,
   logDate,
-  initial,
   initialCover,
   editable,
 }: {
   logId: string;
   logDate: string;
-  initial: Media[];
   initialCover: string | null;
   editable: boolean;
 }) {
-  const [items, setItems] = useState(initial);
+  const { media: items, setMedia: setItems, steps, linkMedia } = useLogState();
   const [coverId, setCoverId] = useState(initialCover);
   const [pending, setPending] = useState<Pending[]>([]);
   const [open, setOpen] = useState<number | null>(null);
   const [confirming, setConfirming] = useState<string | null>(null);
   const [captioning, setCaptioning] = useState<string | null>(null);
+  const [steppingFor, setSteppingFor] = useState<string | null>(null);
+  const stepping = items.find((m) => m.id === steppingFor);
   const input = useRef<HTMLInputElement>(null);
   // Videos compress one at a time; encoding several at once would bog down a phone.
   const videoQueue = useRef<Promise<unknown>>(Promise.resolve());
@@ -158,7 +161,7 @@ export function MediaGallery({
                 aria-label={`Open ${media.kind} ${index + 1}`}
                 className="relative block aspect-square w-full overflow-hidden bg-black/[0.03]"
               >
-                <Thumb media={media} />
+                <MediaThumb media={media} />
               </button>
               {editable &&
                 confirming !== media.id &&
@@ -225,6 +228,9 @@ export function MediaGallery({
               media={media}
               logDate={logDate}
               editing={captioning === media.id}
+              editable={editable}
+              step={stepLabel(steps, media.stepId)}
+              onPickStep={() => setSteppingFor(media.id)}
               onDone={() => setCaptioning(null)}
               onCaption={(caption) => setCaption(media.id, caption)}
             />
@@ -313,10 +319,24 @@ export function MediaGallery({
       {open !== null && items[open] && (
         <Lightbox
           items={items}
+          steps={steps}
           logDate={logDate}
           index={open}
           onIndex={setOpen}
           onClose={() => setOpen(null)}
+        />
+      )}
+
+      {stepping && (
+        <PhotoStepPicker
+          photo={stepping}
+          steps={steps}
+          logDate={logDate}
+          onPick={(stepId) => {
+            linkMedia(stepping.id, stepId);
+            setSteppingFor(null);
+          }}
+          onClose={() => setSteppingFor(null)}
         />
       )}
     </div>
@@ -332,12 +352,18 @@ function MediaCaption({
   media,
   logDate,
   editing,
+  editable,
+  step,
+  onPickStep,
   onDone,
   onCaption,
 }: {
   media: Media;
   logDate: string;
   editing: boolean;
+  editable: boolean;
+  step: string | null; // label of the step it belongs to
+  onPickStep: () => void;
   onDone: () => void;
   onCaption: (caption: string) => void;
 }) {
@@ -345,9 +371,27 @@ function MediaCaption({
     updateMediaCaption(media.id, caption),
   );
   const time = media.takenAt ? formatTakenAt(media.takenAt, logDate) : null;
-  if (!editing && !time && !media.caption) return null;
+  if (!editing && !editable && !time && !media.caption && !step) return null;
   return (
     <div className="mt-1.5">
+      {editable ? (
+        <button
+          type="button"
+          onClick={onPickStep}
+          aria-label={
+            step ? `Change step (${step})` : `Link this ${media.kind} to a step`
+          }
+          className="mb-0.5 flex max-w-full items-center gap-1 font-mono text-[10px] tracking-[0.06em] text-black/45 hover:text-black"
+        >
+          <span className="truncate">{step ? `↳ ${step}` : "+ step"}</span>
+        </button>
+      ) : (
+        step && (
+          <p className="mb-0.5 truncate font-mono text-[10px] tracking-[0.06em] text-black/45">
+            ↳ {step}
+          </p>
+        )
+      )}
       {time && (
         <p className="font-mono text-[10px] tracking-[0.1em] text-black/45 uppercase">
           {time}
@@ -380,44 +424,16 @@ function MediaCaption({
   );
 }
 
-function Thumb({ media }: { media: Media }) {
-  if (media.kind === "video") {
-    return (
-      <>
-        {/* #t=0.1 makes iOS Safari paint the first frame as a poster. */}
-        <video
-          src={`${media.url}#t=0.1`}
-          muted
-          playsInline
-          preload="metadata"
-          className="size-full object-cover"
-        />
-        <span className="absolute bottom-2 left-2 flex size-7 items-center justify-center rounded-full bg-white/90">
-          <Play size={12} strokeWidth={1.5} className="translate-x-px" />
-        </span>
-      </>
-    );
-  }
-  return (
-    <Image
-      src={media.url}
-      alt=""
-      fill
-      unoptimized
-      sizes="(min-width: 640px) 220px, 50vw"
-      className="object-cover"
-    />
-  );
-}
-
 function Lightbox({
   items,
+  steps,
   logDate,
   index,
   onIndex,
   onClose,
 }: {
   items: Media[];
+  steps: TimelineStep[];
   logDate: string;
   index: number;
   onIndex: (index: number) => void;
@@ -425,6 +441,7 @@ function Lightbox({
 }) {
   const media = items[index];
   const time = media.takenAt ? formatTakenAt(media.takenAt, logDate) : null;
+  const step = stepLabel(steps, media.stepId);
   const touchX = useRef<number | null>(null);
   const go = (delta: number) =>
     onIndex((index + delta + items.length) % items.length);
@@ -493,8 +510,13 @@ function Lightbox({
           />
         )}
       </div>
-      {(time || media.caption) && (
+      {(time || media.caption || step) && (
         <div className="shrink-0 border-t border-black/10 px-4 py-3">
+          {step && (
+            <p className="truncate font-mono text-[10px] tracking-[0.06em] text-black/45">
+              ↳ {step}
+            </p>
+          )}
           {time && (
             <p className="font-mono text-[10px] tracking-[0.1em] text-black/45 uppercase">
               {time}

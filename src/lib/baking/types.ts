@@ -55,6 +55,7 @@ export type Media = {
   height: number | null;
   caption: string;
   takenAt: string | null; // phone clock time when captured, "YYYY-MM-DDTHH:MM:SS"
+  stepId: string | null; // the timeline step it belongs to, if any
 };
 
 export type BakingLog = {

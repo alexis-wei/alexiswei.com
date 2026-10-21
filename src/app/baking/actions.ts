@@ -301,6 +301,7 @@ export async function addMedia(
     height: item.height,
     caption: "",
     takenAt,
+    stepId: null,
   };
 }
 
@@ -389,11 +390,35 @@ export async function updateStep(id: string, patch: StepPatch) {
   });
 }
 
+/** Deletes a step. Its photos stay in the log's gallery, just unlinked. */
 export async function deleteStep(id: string) {
   await requireEditor();
   await (
     await db()
-  ).execute({ sql: "DELETE FROM timeline_steps WHERE id = ?", args: [id] });
+  ).batch(
+    [
+      { sql: "UPDATE media SET step_id = NULL WHERE step_id = ?", args: [id] },
+      { sql: "DELETE FROM timeline_steps WHERE id = ?", args: [id] },
+    ],
+    "write",
+  );
+}
+
+/**
+ * Attaches a photo/video to a step of the same log, or detaches it (null).
+ * A photo belongs to at most one step, so attaching moves it.
+ */
+export async function setMediaStep(mediaId: string, stepId: string | null) {
+  await requireEditor();
+  const { rowsAffected } = await (
+    await db()
+  ).execute({
+    sql: `UPDATE media SET step_id = ? WHERE id = ?
+          AND (? IS NULL OR EXISTS (
+            SELECT 1 FROM timeline_steps s WHERE s.id = ? AND s.log_id = media.log_id))`,
+    args: [stepId, mediaId, stepId, stepId],
+  });
+  if (rowsAffected === 0) throw new Error("That step isn't part of this log");
 }
 
 /** Saves a log's step order: `ids` in their new order. */

@@ -32,6 +32,9 @@ Anyone can read it; only Alexis can edit, after unlocking with a passcode.
 - **Timeline step times** are "YYYY-MM-DDTHH:MM". Older steps may hold "HH:MM";
   `resolveStepTimes` reads them on the log's date, rolling to the next day when
   time goes backwards. Gaps between steps are computed on render, not stored.
+- **Photos ↔ steps:** a photo belongs to at most one step via `media.step_id`
+  (a step can have many photos). The link is by id, so reordering steps never
+  loses it. Deleting a step unlinks its photos; they stay in the gallery.
 - **Ordering** (timeline steps, photos, ingredients, recipe files) is an integer
   `position` per log. Reordering rewrites the positions of that log's rows in one
   batch. Gaps are fine; only the order matters.
@@ -55,20 +58,30 @@ CI runs this on every pull request.
   rewrite the test to describe the new intended behaviour.
 - **Bug fix:** add a test that fails without the fix (check this by running it against the old code once).
 - **Database change** (new table/column, migration, ordering, trash): cover it in
-  `src/lib/baking/data.test.ts`. It runs the real code against an in-memory SQLite
-  database and includes an "existing database" case shaped like production.
+  `__tests__/data/`, including the "existing database" case in `migrations.test.ts`.
 
-| Test file                                          | Covers                                                                                 |
-| -------------------------------------------------- | -------------------------------------------------------------------------------------- |
-| `src/lib/baking/data.test.ts`                      | Migrations on an existing database, timeline step insert/reorder/delete, 30-day purge  |
-| `src/lib/baking/format.test.ts`                    | Safe recipe links, bake start/end and durations                                        |
-| `src/lib/baking/order.test.ts`                     | Reorder helpers, drop position, cover choice                                           |
-| `src/lib/baking/timeline.test.ts`                  | Step dates (incl. older time-only steps), gaps between steps, date labels              |
-| `src/lib/baking/image.test.ts`                     | 1080p sizing, saved ingredient crops                                                   |
-| `src/lib/baking/capture.test.ts`                   | Photo capture time from EXIF                                                           |
-| `src/components/baking/Timeline.test.tsx`          | Adding, inserting, reordering and deleting steps; per-step saving; step dates and gaps |
-| `src/components/baking/IngredientBrowser.test.tsx` | Adding an ingredient from a log (with image) and saving on every exit                  |
-| `src/components/baking/autosave.test.tsx`          | Debounced, ordered, retrying autosave                                                  |
+Tests live in `src/app/baking/__tests__/`, grouped by **page** (what you see
+and do there) and by **function** (data and helpers). Put a new test in the
+folder that matches what it checks, and add it to this table:
+
+| Folder      | File                        | Covers                                                                                 |
+| ----------- | --------------------------- | -------------------------------------------------------------------------------------- |
+| `log-page/` | `timeline.test.tsx`         | Adding, inserting, reordering and deleting steps; per-step saving; step dates and gaps |
+| `log-page/` | `step-photos.test.tsx`      | Linking photos to steps from either side; links surviving reorders and deletes         |
+| `log-page/` | `ingredient-popup.test.tsx` | Adding an ingredient from a log (with image), "+ new", saving on every exit            |
+| `log-page/` | `autosave.test.tsx`         | Debounced, ordered, retrying autosave                                                  |
+| `data/`     | `migrations.test.ts`        | Schema and data migrations on a production-shaped database                             |
+| `data/`     | `timeline-steps.test.ts`    | Step insert/reorder/update/delete in the database                                      |
+| `data/`     | `photo-steps.test.ts`       | `media.step_id` links: same-log only, moves, reorders, step deletes, restores          |
+| `data/`     | `trash.test.ts`             | The 30-day purge of logs, steps and photos                                             |
+| `helpers/`  | `format.test.ts`            | Safe recipe links, bake start/end and durations                                        |
+| `helpers/`  | `step-times.test.ts`        | Step dates (incl. older time-only steps), gaps, date labels                            |
+| `helpers/`  | `order.test.ts`             | Reorder helpers, drop position, cover choice                                           |
+| `helpers/`  | `image.test.ts`             | 1080p sizing, saved ingredient crops                                                   |
+| `helpers/`  | `capture.test.ts`           | Photo capture time from EXIF                                                           |
+
+Database tests use `data/harness.ts`. Each one runs the real code against a
+fresh in-memory SQLite database, never Turso or the local dev file.
 
 **Before shipping:** run `pnpm test`, `pnpm lint`, `npx tsc --noEmit` and a
 production build, then click through the change locally at phone width.

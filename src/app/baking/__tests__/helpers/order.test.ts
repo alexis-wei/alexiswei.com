@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { dropIndex, effectiveCover, moveItem, sameOrder } from "./order";
+import {
+  dropIndex,
+  effectiveCover,
+  moveItem,
+  sameOrder,
+} from "@/lib/baking/order";
 
 describe("moveItem", () => {
   const steps = ["mix", "rest", "shape", "bake"];

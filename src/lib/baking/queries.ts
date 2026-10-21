@@ -45,6 +45,7 @@ function toMedia(row: Row): Media {
     height: num(row.height),
     caption: str(row.caption),
     takenAt: row.taken_at ? str(row.taken_at) : null,
+    stepId: row.step_id ? str(row.step_id) : null,
   };
 }
 

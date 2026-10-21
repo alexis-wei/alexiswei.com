@@ -14,13 +14,35 @@ import {
   updateStep,
 } from "@/app/baking/actions";
 import type { TimelineStep } from "@/lib/baking/types";
-import { Timeline } from "./Timeline";
+import { LogStateProvider } from "@/components/baking/LogState";
+import { Timeline as LogTimeline } from "@/components/baking/Timeline";
+import type { Media } from "@/lib/baking/types";
+
+/** The timeline as the log page renders it, inside the shared log state. */
+function Timeline({
+  initial,
+  media = [],
+  ...props
+}: {
+  initial: TimelineStep[];
+  media?: Media[];
+  logId: string;
+  logDate: string;
+  editable: boolean;
+}) {
+  return (
+    <LogStateProvider initialSteps={initial} initialMedia={media}>
+      <LogTimeline {...props} />
+    </LogStateProvider>
+  );
+}
 
 vi.mock("@/app/baking/actions", () => ({
   addStep: vi.fn(),
   deleteStep: vi.fn(async () => {}),
   reorderSteps: vi.fn(async () => {}),
   updateStep: vi.fn(async () => {}),
+  setMediaStep: vi.fn(async () => {}),
 }));
 
 const step = (id: string, text: string): TimelineStep => ({
