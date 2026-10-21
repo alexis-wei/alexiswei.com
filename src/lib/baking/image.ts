@@ -155,7 +155,10 @@ export const toSavedCrop = (crop: Crop, img: HTMLImageElement): SavedCrop => ({
   width: crop.scale * img.naturalWidth,
 });
 
-const fromSavedCrop = (saved: SavedCrop, img: HTMLImageElement): Crop => ({
+export const fromSavedCrop = (
+  saved: SavedCrop,
+  img: HTMLImageElement,
+): Crop => ({
   x: saved.x,
   y: saved.y,
   scale: saved.width / img.naturalWidth,

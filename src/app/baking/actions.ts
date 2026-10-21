@@ -20,6 +20,8 @@ import type {
   LogPatch,
   Media,
   RecipeFile,
+  StepPatch,
+  TimelineStep,
 } from "@/lib/baking/types";
 
 const torontoToday = () =>
@@ -67,7 +69,6 @@ const COLUMNS = {
   recipeUrl: "recipe_url",
   process: "process",
   notes: "notes",
-  timeline: "timeline",
 } as const;
 
 export async function updateLog(id: string, patch: LogPatch) {
@@ -301,6 +302,113 @@ export async function addMedia(
     caption: "",
     takenAt,
   };
+}
+
+// Timeline steps: one row each in timeline_steps, ordered by `position`.
+
+const STEP_COLUMNS = {
+  time: "time",
+  text: "text",
+  roomTemp: "room_temp",
+  humidity: "humidity",
+  internalTemp: "internal_temp",
+} as const;
+
+/**
+ * Adds a step to a log: after `afterId` (shifting later steps down one), or
+ * at the end when afterId is null or no longer exists.
+ */
+export async function addStep(
+  logId: string,
+  afterId: string | null,
+  initial: StepPatch = {},
+): Promise<TimelineStep> {
+  await requireEditor();
+  const step: TimelineStep = {
+    id: randomUUID(),
+    time: initial.time ?? "",
+    text: initial.text ?? "",
+    roomTemp: initial.roomTemp ?? "",
+    humidity: initial.humidity ?? "",
+    internalTemp: initial.internalTemp ?? "",
+  };
+  const now = Date.now();
+  const after =
+    "(SELECT position FROM timeline_steps WHERE id = ? AND log_id = ?)";
+  const end =
+    "(SELECT COALESCE(MAX(position), -1) + 1 FROM timeline_steps WHERE log_id = ?)";
+  await (
+    await db()
+  ).batch(
+    [
+      {
+        sql: `UPDATE timeline_steps SET position = position + 1
+              WHERE log_id = ? AND position > ${after}`,
+        args: [logId, afterId, logId],
+      },
+      {
+        sql: `INSERT INTO timeline_steps
+              (id, log_id, position, time, text, room_temp, humidity, internal_temp, created_at, updated_at)
+              VALUES (?, ?, COALESCE(${after} + 1, ${end}), ?, ?, ?, ?, ?, ?, ?)`,
+        args: [
+          step.id,
+          logId,
+          afterId,
+          logId,
+          logId,
+          step.time,
+          step.text,
+          step.roomTemp ?? "",
+          step.humidity ?? "",
+          step.internalTemp ?? "",
+          now,
+          now,
+        ],
+      },
+    ],
+    "write",
+  );
+  return step;
+}
+
+export async function updateStep(id: string, patch: StepPatch) {
+  await requireEditor();
+  const fields = Object.entries(STEP_COLUMNS).filter(
+    ([field]) => typeof patch[field as keyof StepPatch] === "string",
+  );
+  if (fields.length === 0) return;
+  await (
+    await db()
+  ).execute({
+    sql: `UPDATE timeline_steps SET ${fields.map(([, column]) => `${column} = ?`).join(", ")}, updated_at = ? WHERE id = ?`,
+    args: [
+      ...fields.map(([field]) => patch[field as keyof StepPatch] as string),
+      Date.now(),
+      id,
+    ],
+  });
+}
+
+export async function deleteStep(id: string) {
+  await requireEditor();
+  await (
+    await db()
+  ).execute({ sql: "DELETE FROM timeline_steps WHERE id = ?", args: [id] });
+}
+
+/** Saves a log's step order: `ids` in their new order. */
+export async function reorderSteps(logId: string, ids: string[]) {
+  await requireEditor();
+  if (ids.length === 0) return;
+  await (
+    await db()
+  ).batch(
+    ids.map((id, position) => ({
+      sql: "UPDATE timeline_steps SET position = ? WHERE id = ? AND log_id = ?",
+      args: [position, id, logId],
+    })),
+    "write",
+  );
 }
 
 /** Picks a log's cover photo; null goes back to "first photo". */

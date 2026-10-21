@@ -55,6 +55,27 @@ const SCHEMA = [
     deleted_at INTEGER
   ) STRICT`,
   `CREATE INDEX IF NOT EXISTS recipe_files_log ON recipe_files (log_id, position)`,
+  // One row per timeline step. Order is `position` within a log: moving or
+  // inserting a step renumbers only that log's rows, in one transaction.
+  // Positions may have gaps (after deletes); only their order matters.
+  `CREATE TABLE IF NOT EXISTS timeline_steps (
+    id TEXT PRIMARY KEY,
+    log_id TEXT NOT NULL,
+    position INTEGER NOT NULL,
+    time TEXT NOT NULL DEFAULT '',
+    text TEXT NOT NULL DEFAULT '',
+    room_temp TEXT NOT NULL DEFAULT '',
+    humidity TEXT NOT NULL DEFAULT '',
+    internal_temp TEXT NOT NULL DEFAULT '',
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL
+  ) STRICT`,
+  `CREATE INDEX IF NOT EXISTS timeline_steps_log ON timeline_steps (log_id, position)`,
+  // One-time data migrations that have run (see DATA_MIGRATIONS).
+  `CREATE TABLE IF NOT EXISTS schema_migrations (
+    name TEXT PRIMARY KEY,
+    applied_at INTEGER NOT NULL
+  ) STRICT`,
 ];
 
 // Columns added after the first release. CREATE TABLE IF NOT EXISTS won't add
@@ -83,7 +104,87 @@ const DROPPED_COLUMNS = [
   ["logs", "humidity"],
 ] as const;
 
-async function migrate(c: Client) {
+type Statement = { sql: string; args: (string | number | null)[] };
+
+/**
+ * One-time data migrations, each recorded in schema_migrations so it never
+ * runs twice. A migration's statements and its record are written in one
+ * transaction: if two server instances race, the second fails on the record's
+ * primary key and rolls back, changing nothing.
+ */
+const DATA_MIGRATIONS: {
+  name: string;
+  statements: (c: Client) => Promise<Statement[]>;
+}[] = [
+  {
+    // Steps used to live as JSON in logs.timeline. Copy them into
+    // timeline_steps. logs.timeline is left untouched as a backup.
+    name: "2026-10-timeline-steps",
+    async statements(c) {
+      const { rows } = await c.execute(
+        "SELECT id, timeline, updated_at FROM logs",
+      );
+      const out: Statement[] = [];
+      for (const row of rows) {
+        let steps: Record<string, unknown>[] = [];
+        try {
+          const parsed = JSON.parse(String(row.timeline ?? "[]"));
+          if (Array.isArray(parsed)) steps = parsed;
+        } catch {
+          continue;
+        }
+        steps.forEach((step, position) => {
+          const text = (key: string) =>
+            typeof step[key] === "string" ? (step[key] as string) : "";
+          out.push({
+            sql: `INSERT INTO timeline_steps
+                  (id, log_id, position, time, text, room_temp, humidity, internal_temp, created_at, updated_at)
+                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            args: [
+              `${row.id}:${text("id") || position}`,
+              String(row.id),
+              position,
+              text("time"),
+              text("text"),
+              text("roomTemp"),
+              text("humidity"),
+              text("internalTemp"),
+              Number(row.updated_at) || Date.now(),
+              Number(row.updated_at) || Date.now(),
+            ],
+          });
+        });
+      }
+      return out;
+    },
+  },
+];
+
+async function runDataMigrations(c: Client) {
+  const { rows } = await c.execute("SELECT name FROM schema_migrations");
+  const done = new Set(rows.map((row) => String(row.name)));
+  for (const migration of DATA_MIGRATIONS) {
+    if (done.has(migration.name)) continue;
+    const statements = await migration.statements(c);
+    try {
+      await c.batch(
+        [
+          ...statements,
+          {
+            sql: "INSERT INTO schema_migrations (name, applied_at) VALUES (?, ?)",
+            args: [migration.name, Date.now()],
+          },
+        ],
+        "write",
+      );
+    } catch (error) {
+      // Another instance applied it first; this attempt was rolled back.
+      if (!String(error).includes("UNIQUE")) throw error;
+    }
+  }
+}
+
+export async function migrate(c: Client) {
   await c.batch(SCHEMA, "write");
   for (const [table, column, type] of ADDED_COLUMNS) {
     const { rows } = await c.execute(`PRAGMA table_info(${table})`);
@@ -105,6 +206,7 @@ async function migrate(c: Client) {
       if (!String(error).includes("no such column")) throw error;
     }
   }
+  await runDataMigrations(c);
 }
 
 let client: Client | undefined;

@@ -10,7 +10,7 @@ const localStamp = (d: Date) =>
   `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
 
 /** EXIF dates look like "2026:10:17 14:05:03". */
-function fromExif(value: unknown) {
+export function fromExif(value: unknown) {
   const match = /^(\d{4}):(\d{2}):(\d{2})[ T](\d{2}):(\d{2}):(\d{2})/.exec(
     String(value ?? ""),
   );

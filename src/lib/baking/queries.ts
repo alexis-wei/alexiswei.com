@@ -57,13 +57,15 @@ function toRecipeFile(row: Row): RecipeFile {
   };
 }
 
-function parseTimeline(value: unknown): TimelineStep[] {
-  try {
-    const parsed = JSON.parse(str(value) || "[]");
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
-    return [];
-  }
+function toStep(row: Row): TimelineStep {
+  return {
+    id: str(row.id),
+    time: str(row.time),
+    text: str(row.text),
+    roomTemp: str(row.room_temp),
+    humidity: str(row.humidity),
+    internalTemp: str(row.internal_temp),
+  };
 }
 
 export async function listIngredients(): Promise<Ingredient[]> {
@@ -119,7 +121,7 @@ export async function listLogs(): Promise<LogSummary[]> {
 }
 
 export async function getLog(id: string): Promise<BakingLog | null> {
-  const [logs, ingredients, media, recipeFiles] = await (
+  const [logs, ingredients, media, recipeFiles, steps] = await (
     await db()
   ).batch(
     [
@@ -139,6 +141,10 @@ export async function getLog(id: string): Promise<BakingLog | null> {
         sql: "SELECT * FROM recipe_files WHERE log_id = ? AND deleted_at IS NULL ORDER BY position",
         args: [id],
       },
+      {
+        sql: "SELECT * FROM timeline_steps WHERE log_id = ? ORDER BY position, created_at",
+        args: [id],
+      },
     ],
     "read",
   );
@@ -156,7 +162,7 @@ export async function getLog(id: string): Promise<BakingLog | null> {
     recipeFiles: recipeFiles.rows.map(toRecipeFile),
     process: str(row.process),
     notes: str(row.notes),
-    timeline: parseTimeline(row.timeline),
+    timeline: steps.rows.map(toStep),
     ingredients: ingredients.rows.map((r) => ({
       ingredientId: str(r.ingredient_id),
       amount: str(r.amount),

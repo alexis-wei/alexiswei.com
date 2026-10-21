@@ -56,12 +56,22 @@ const ryeFlour: Ingredient = {
   crop: uploaded.crop,
 };
 
-function setup() {
+const butter: Ingredient = {
+  id: "ing-0",
+  name: "butter",
+  origin: "",
+  details: "",
+  imageUrl: null,
+  sourceUrl: null,
+  crop: null,
+};
+
+function setup(library: Ingredient[] = []) {
   const onCreated = vi.fn(async () => {});
   const onClose = vi.fn();
   render(
     <IngredientBrowser
-      library={[]}
+      library={library}
       selectedIds={new Set()}
       onToggle={() => {}}
       onCreated={onCreated}
@@ -90,6 +100,36 @@ afterEach(() => {
 });
 
 describe("adding an ingredient from a log's popup", () => {
+  // Regression: with ingredients already in the library, "add" used to appear
+  // only after a search found nothing, so there was no visible way to add one.
+  it("always offers “+ new” next to the existing ingredients", async () => {
+    const { onCreated } = setup([butter]);
+    fireEvent.click(screen.getByLabelText("New ingredient"));
+    fireEvent.change(screen.getByPlaceholderText("e.g. cultured butter"), {
+      target: { value: "rye flour" },
+    });
+    fireEvent.click(screen.getByText("pick image"));
+    fireEvent.click(screen.getByText("add to log"));
+
+    await waitFor(() => expect(onCreated).toHaveBeenCalledWith(ryeFlour));
+    expect(uploadIcon).toHaveBeenCalledTimes(1);
+    expect(createIngredient).toHaveBeenCalledWith(
+      expect.objectContaining({ name: "rye flour", image: uploaded }),
+    );
+  });
+
+  it("“+ new” carries over what was typed in the search", () => {
+    setup([butter]);
+    fireEvent.change(screen.getByPlaceholderText("search ingredients"), {
+      target: { value: "butt" },
+    });
+    fireEvent.click(screen.getByLabelText("New ingredient"));
+    expect(
+      (screen.getByPlaceholderText("e.g. cultured butter") as HTMLInputElement)
+        .value,
+    ).toBe("butt");
+  });
+
   it("saves it with its image when tapping “add to log”", async () => {
     const { onCreated, onClose } = setup();
     startAdding("rye flour");
