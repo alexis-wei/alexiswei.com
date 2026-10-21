@@ -29,6 +29,9 @@ Anyone can read it; only Alexis can edit, after unlocking with a passcode.
   from "recently deleted" for 30 days, and are then purged with their R2 files
   (`purgeExpired`). Any new table that belongs to a log must be handled in
   `trash.ts`, both in the purge and, if users can delete it, in `listDeleted`.
+- **Timeline step times** are "YYYY-MM-DDTHH:MM". Older steps may hold "HH:MM";
+  `resolveStepTimes` reads them on the log's date, rolling to the next day when
+  time goes backwards. Gaps between steps are computed on render, not stored.
 - **Ordering** (timeline steps, photos, ingredients, recipe files) is an integer
   `position` per log. Reordering rewrites the positions of that log's rows in one
   batch. Gaps are fine; only the order matters.
@@ -55,16 +58,17 @@ CI runs this on every pull request.
   `src/lib/baking/data.test.ts`. It runs the real code against an in-memory SQLite
   database and includes an "existing database" case shaped like production.
 
-| Test file                                          | Covers                                                                                |
-| -------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| `src/lib/baking/data.test.ts`                      | Migrations on an existing database, timeline step insert/reorder/delete, 30-day purge |
-| `src/lib/baking/format.test.ts`                    | Safe recipe links, bake start/end and durations                                       |
-| `src/lib/baking/order.test.ts`                     | Reorder helpers, drop position, cover choice                                          |
-| `src/lib/baking/image.test.ts`                     | 1080p sizing, saved ingredient crops                                                  |
-| `src/lib/baking/capture.test.ts`                   | Photo capture time from EXIF                                                          |
-| `src/components/baking/Timeline.test.tsx`          | Adding, inserting, reordering and deleting steps; per-step saving                     |
-| `src/components/baking/IngredientBrowser.test.tsx` | Adding an ingredient from a log (with image) and saving on every exit                 |
-| `src/components/baking/autosave.test.tsx`          | Debounced, ordered, retrying autosave                                                 |
+| Test file                                          | Covers                                                                                 |
+| -------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| `src/lib/baking/data.test.ts`                      | Migrations on an existing database, timeline step insert/reorder/delete, 30-day purge  |
+| `src/lib/baking/format.test.ts`                    | Safe recipe links, bake start/end and durations                                        |
+| `src/lib/baking/order.test.ts`                     | Reorder helpers, drop position, cover choice                                           |
+| `src/lib/baking/timeline.test.ts`                  | Step dates (incl. older time-only steps), gaps between steps, date labels              |
+| `src/lib/baking/image.test.ts`                     | 1080p sizing, saved ingredient crops                                                   |
+| `src/lib/baking/capture.test.ts`                   | Photo capture time from EXIF                                                           |
+| `src/components/baking/Timeline.test.tsx`          | Adding, inserting, reordering and deleting steps; per-step saving; step dates and gaps |
+| `src/components/baking/IngredientBrowser.test.tsx` | Adding an ingredient from a log (with image) and saving on every exit                  |
+| `src/components/baking/autosave.test.tsx`          | Debounced, ordered, retrying autosave                                                  |
 
 **Before shipping:** run `pnpm test`, `pnpm lint`, `npx tsc --noEmit` and a
 production build, then click through the change locally at phone width.

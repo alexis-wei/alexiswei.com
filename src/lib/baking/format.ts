@@ -24,8 +24,8 @@ export function formatTime(hhmm: string) {
   return `${hours % 12 || 12}:${match[2]} ${hours < 12 ? "am" : "pm"}`;
 }
 
-const DATE_TIME = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/;
-const TIME_ONLY = /^\d{2}:\d{2}$/;
+export const DATE_TIME = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/;
+export const TIME_ONLY = /^\d{2}:\d{2}$/;
 
 /**
  * A bake's start/end as "YYYY-MM-DDTHH:MM" (what datetime-local inputs use).
@@ -46,7 +46,7 @@ export function nowDateTime() {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}T${nowTime()}`;
 }
 
-const shortDay = (day: string) =>
+export const shortDay = (day: string) =>
   new Intl.DateTimeFormat("en-US", {
     timeZone: "UTC",
     month: "short",
@@ -62,11 +62,18 @@ export function formatDuration(start: string, end: string, logDate = "") {
   // Old time-only logs: an end before the start meant it ran past midnight.
   if (total < 0 && TIME_ONLY.test(start) && TIME_ONLY.test(end)) total += 1440;
   if (!(total >= 0)) return null;
-  const d = Math.floor(total / 1440);
-  const h = Math.floor((total % 1440) / 60);
-  const m = total % 60;
+  return formatMinutes(total);
+}
+
+/** 1530 → "1d 1h 30m"; negative values get a leading minus. */
+export function formatMinutes(total: number) {
+  const sign = total < 0 ? "−" : "";
+  const abs = Math.abs(Math.round(total));
+  const d = Math.floor(abs / 1440);
+  const h = Math.floor((abs % 1440) / 60);
+  const m = abs % 60;
   const parts = [d && `${d}d`, h && `${h}h`, m && `${m}m`].filter(Boolean);
-  return parts.length ? parts.join(" ") : "0m";
+  return sign + (parts.length ? parts.join(" ") : "0m");
 }
 
 /** "9:40 am → Oct 16, 1:10 pm": the date is shown when it isn't the log's day. */

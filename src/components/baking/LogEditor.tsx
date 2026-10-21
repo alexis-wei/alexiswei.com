@@ -128,7 +128,12 @@ export function LogEditor({
 
       {show(log.timeline.length > 0) && (
         <Section label="timeline">
-          <Timeline logId={log.id} initial={log.timeline} editable={editable} />
+          <Timeline
+            logId={log.id}
+            logDate={log.bakedOn}
+            initial={log.timeline}
+            editable={editable}
+          />
         </Section>
       )}
 
