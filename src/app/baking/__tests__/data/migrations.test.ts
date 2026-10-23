@@ -130,6 +130,7 @@ describe("migrating an existing database", () => {
         "deleted_at",
         "cover_media_id",
         "recipe_url",
+        "recipe_text",
       ]),
     );
     expect(columns).not.toContain("room_temp");

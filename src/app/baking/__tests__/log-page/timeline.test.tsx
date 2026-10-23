@@ -417,3 +417,32 @@ describe("Timeline readings typed before units were shown", () => {
     expect(updateStep).not.toHaveBeenCalled();
   });
 });
+
+describe("Timeline (read-only) layout", () => {
+  const steps = [
+    { ...step("a", "scoop into balls"), time: "2026-10-15T09:00" },
+    { ...step("b", "chill dough 1h"), time: "2026-10-15T21:24" },
+  ];
+
+  it("puts each circle on its step, and the gap between steps", () => {
+    const { container } = render(
+      <Timeline
+        logId="log1"
+        logDate="2026-10-15"
+        initial={steps}
+        editable={false}
+      />,
+    );
+    const blocks = container.querySelectorAll("[data-step]");
+    expect(blocks).toHaveLength(2);
+    const gap = screen.getByText("12h 24m later");
+    // The gap is outside both steps, just before the second one.
+    blocks.forEach((block) => expect(block.contains(gap)).toBe(false));
+    expect(gap.nextElementSibling).toBe(blocks[1]);
+    // Each step's circle sits in the step, beside its time.
+    blocks.forEach((block) =>
+      expect(block.querySelectorAll("[aria-hidden]")).toHaveLength(1),
+    );
+    expect(blocks[1].textContent).toContain("9:24 pm");
+  });
+});

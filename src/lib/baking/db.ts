@@ -97,6 +97,8 @@ const ADDED_COLUMNS = [
   // The timeline step a photo/video belongs to (one step per photo; a step
   // can have many). Linked by id, so reordering steps never loses the link.
   ["media", "step_id", "TEXT"],
+  // A recipe pasted into the log, kept exactly as written.
+  ["logs", "recipe_text", "TEXT NOT NULL DEFAULT ''"],
 ] as const;
 
 // Columns that were removed. Their data is deleted for good, so only list a

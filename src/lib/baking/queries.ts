@@ -160,6 +160,7 @@ export async function getLog(id: string): Promise<BakingLog | null> {
     endTime: str(row.end_time),
     coverMediaId: row.cover_media_id ? str(row.cover_media_id) : null,
     recipeUrl: str(row.recipe_url),
+    recipeText: str(row.recipe_text),
     recipeFiles: recipeFiles.rows.map(toRecipeFile),
     process: str(row.process),
     notes: str(row.notes),

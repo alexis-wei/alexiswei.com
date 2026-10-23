@@ -237,19 +237,33 @@ function ReadOnlyTimeline({
         ].filter(Boolean);
         const gap = gaps[index];
         return (
-          <li key={step.id} className="relative pb-5 last:pb-0">
-            {gap && <GapLabel gap={gap} className="-mt-2 mb-2" />}
-            <span className="absolute top-[0.6rem] -left-[23.5px] size-[7px] rounded-full border border-black/60 bg-white" />
-            {readings.length > 0 && (
-              <p className="font-mono text-[11px] text-black/45">
-                {readings.join(" · ")}
-              </p>
+          <li key={step.id}>
+            {/* The gap sits on the line between two steps' circles. */}
+            {gap ? (
+              <GapLabel gap={gap} className="py-3" />
+            ) : (
+              index > 0 && <div className="h-5" />
             )}
-            <p className="text-sm leading-relaxed whitespace-pre-wrap">
-              {step.text}
-            </p>
-            <div className="mt-2 empty:hidden">
-              <StepPhotoStrip photos={photosFor(step.id)} href />
+            <div className="relative" data-step>
+              {/* Centred on the step's first line: its time, or its text. */}
+              <span
+                aria-hidden
+                className={cn(
+                  "absolute -left-[23.5px] size-[7px] rounded-full border border-black/60 bg-white",
+                  readings.length > 0 ? "top-[4.5px]" : "top-[8px]",
+                )}
+              />
+              {readings.length > 0 && (
+                <p className="font-mono text-[11px] leading-4 text-black/45">
+                  {readings.join(" · ")}
+                </p>
+              )}
+              <p className="text-sm leading-relaxed whitespace-pre-wrap">
+                {step.text}
+              </p>
+              <div className="mt-2 empty:hidden">
+                <StepPhotoStrip photos={photosFor(step.id)} href />
+              </div>
             </div>
           </li>
         );

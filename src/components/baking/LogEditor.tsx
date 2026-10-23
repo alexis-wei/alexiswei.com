@@ -93,14 +93,19 @@ export function LogEditor({
           )}
         </div>
 
-        {show(Boolean(log.recipeUrl.trim()) || log.recipeFiles.length > 0) && (
+        {show(
+          Boolean(log.recipeUrl.trim() || log.recipeText.trim()) ||
+            log.recipeFiles.length > 0,
+        ) && (
           <Section label="recipe">
             <RecipeSection
               logId={log.id}
               initialUrl={log.recipeUrl}
               initialFiles={log.recipeFiles}
+              initialText={log.recipeText}
               editable={editable}
               onSaveUrl={(recipeUrl) => save({ recipeUrl })}
+              onSaveText={(recipeText) => save({ recipeText })}
             />
           </Section>
         )}

@@ -68,6 +68,7 @@ export type BakingLog = {
   endTime: string;
   coverMediaId: string | null; // chosen cover; null means the first photo
   recipeUrl: string; // link to the recipe, may be empty
+  recipeText: string; // a pasted recipe, as written, may be empty
   recipeFiles: RecipeFile[];
   process: string;
   notes: string;
@@ -94,6 +95,7 @@ export type LogPatch = Partial<
     | "startTime"
     | "endTime"
     | "recipeUrl"
+    | "recipeText"
     | "process"
     | "notes"
   >

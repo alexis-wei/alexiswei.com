@@ -67,6 +67,7 @@ const COLUMNS = {
   startTime: "start_time",
   endTime: "end_time",
   recipeUrl: "recipe_url",
+  recipeText: "recipe_text",
   process: "process",
   notes: "notes",
 } as const;

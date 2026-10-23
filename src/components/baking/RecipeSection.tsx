@@ -4,30 +4,35 @@ import { ArrowUpRight, FileText, X } from "lucide-react";
 import { useRef, useState } from "react";
 import { addRecipeFile, deleteRecipeFile } from "@/app/baking/actions";
 import { displayUrl, safeHref, uid } from "@/lib/baking/format";
+import { cn } from "@/lib/utils";
 import type { RecipeFile } from "@/lib/baking/types";
 import { track, useAutosave } from "./autosave";
-import { Label, TextButton } from "./ui";
+import { AutosaveText, Label, TextButton } from "./ui";
 import { contentTypeOf, uploadFile } from "./upload";
 
 type Pending = { id: string; name: string; progress: number; error?: string };
 
 /**
- * Where the recipe came from: an optional link, and optional recipe photos
- * or PDFs. Files are uploaded exactly as chosen (no resizing), so the full
+ * Where the recipe came from: an optional link, optional pasted recipe text,
+ * and optional recipe photos or PDFs. Files are uploaded exactly as chosen (no resizing), so the full
  * page stays readable and can be opened from the log.
  */
 export function RecipeSection({
   logId,
   initialUrl,
   initialFiles,
+  initialText,
   editable,
   onSaveUrl,
+  onSaveText,
 }: {
   logId: string;
   initialUrl: string;
   initialFiles: RecipeFile[];
+  initialText: string;
   editable: boolean;
   onSaveUrl: (url: string) => Promise<unknown>;
+  onSaveText: (text: string) => Promise<unknown>;
 }) {
   const [url, setUrl] = useState(initialUrl);
   const [files, setFiles] = useState(initialFiles);
@@ -120,6 +125,18 @@ export function RecipeSection({
             <ArrowUpRight size={14} strokeWidth={1.25} className="shrink-0" />
           </a>
         )
+      )}
+
+      {editable ? (
+        <AutosaveText
+          initial={initialText}
+          onSave={onSaveText}
+          placeholder="paste the recipe"
+          aria-label="Recipe"
+          className="max-h-[50vh] min-h-[4.5rem] overflow-y-auto border border-black/15 p-3 text-[13px] focus:border-black"
+        />
+      ) : (
+        initialText.trim() && <RecipeText text={initialText} />
       )}
 
       {(files.length > 0 || pending.length > 0) && (
@@ -240,5 +257,40 @@ function RecipeThumb({ file }: { file: RecipeFile }) {
         {file.name || "file"}
       </span>
     </span>
+  );
+}
+
+/** Recipes longer than this many lines (or characters) start collapsed. */
+const PREVIEW_LINES = 8;
+const PREVIEW_CHARS = 500;
+
+/** A pasted recipe, read-only: the first few lines, with "show full recipe". */
+function RecipeText({ text }: { text: string }) {
+  const trimmed = text.trim();
+  const long =
+    trimmed.split("\n").length > PREVIEW_LINES ||
+    trimmed.length > PREVIEW_CHARS;
+  const [open, setOpen] = useState(false);
+  const collapsed = long && !open;
+  return (
+    <div className="border border-black/15 p-3">
+      <p
+        className={cn(
+          "text-[13px] leading-relaxed whitespace-pre-wrap",
+          collapsed && "line-clamp-8",
+        )}
+      >
+        {trimmed}
+      </p>
+      {long && (
+        <TextButton
+          className="mt-2"
+          aria-expanded={open}
+          onClick={() => setOpen((o) => !o)}
+        >
+          {open ? "show less ↑" : "show full recipe ↓"}
+        </TextButton>
+      )}
+    </div>
   );
 }
