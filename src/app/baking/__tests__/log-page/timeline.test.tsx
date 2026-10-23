@@ -223,15 +223,27 @@ describe("Timeline dates and gaps", () => {
     ]);
   });
 
-  it("shows the time between steps, across days", () => {
+  it("shows readers the time between steps, across days", () => {
     render(
-      <Timeline logId="log1" logDate="2026-10-15" initial={timed} editable />,
+      <Timeline
+        logId="log1"
+        logDate="2026-10-15"
+        initial={timed}
+        editable={false}
+      />,
     );
     expect(screen.getByText("1h 30m later")).toBeTruthy();
     expect(screen.getByText("11h 45m later")).toBeTruthy();
   });
 
-  it("recalculates the gaps when steps are reordered", () => {
+  it("leaves the time between steps out while editing", () => {
+    render(
+      <Timeline logId="log1" logDate="2026-10-15" initial={timed} editable />,
+    );
+    expect(screen.queryByText(/later$/)).toBeNull();
+  });
+
+  it("still flags a step timed before the one above it while editing", () => {
     render(
       <Timeline logId="log1" logDate="2026-10-15" initial={timed} editable />,
     );
@@ -240,8 +252,8 @@ describe("Timeline dates and gaps", () => {
       key: "ArrowUp",
     });
     // bake (Oct 16 9:15) now sits before cold proof (Oct 15 21:30).
-    expect(screen.getByText("13h 15m later")).toBeTruthy();
     expect(screen.getByText("−11h 45m (before the step above)")).toBeTruthy();
+    expect(screen.queryByText(/later$/)).toBeNull();
   });
 
   it("saves a step's new date and time", async () => {

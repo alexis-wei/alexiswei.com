@@ -32,10 +32,30 @@ export function NewButton({
   );
 }
 
-export function LockButton() {
+function DoneSubmit() {
+  const { pending } = useFormStatus();
   return (
-    <form action={lock}>
-      <TextButton type="submit">lock editing</TextButton>
+    <button
+      type="submit"
+      disabled={pending}
+      className="border border-black/15 bg-white/90 px-4 py-2 font-mono text-[11px] tracking-[0.1em] text-black/70 uppercase backdrop-blur transition-colors hover:border-black hover:text-black disabled:opacity-40"
+    >
+      {pending ? "locking…" : "done editing"}
+    </button>
+  );
+}
+
+/**
+ * Pinned to the bottom of every /baking page while editing, so editing can
+ * be ended from anywhere without scrolling. Ends the editor session.
+ */
+export function DoneEditingButton() {
+  return (
+    <form
+      action={lock}
+      className="fixed inset-x-0 bottom-[calc(env(safe-area-inset-bottom)+1rem)] z-30 flex justify-center pointer-events-none [&>*]:pointer-events-auto"
+    >
+      <DoneSubmit />
     </form>
   );
 }

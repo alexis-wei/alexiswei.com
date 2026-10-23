@@ -1,4 +1,7 @@
 import type { Metadata, Viewport } from "next";
+import { DoneEditingButton } from "@/components/baking/forms";
+import { isEditor } from "@/lib/baking/auth";
+import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "baking | alexis wei",
@@ -13,16 +16,26 @@ export const viewport: Viewport = {
   maximumScale: 1,
 };
 
-export default function BakingLayout({
+export default async function BakingLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const editor = await isEditor();
   return (
     <div className="min-h-dvh bg-white text-black">
-      <div className="mx-auto max-w-2xl px-4 pb-[calc(env(safe-area-inset-bottom)+3rem)]">
+      <div
+        className={cn(
+          "mx-auto max-w-2xl px-4",
+          // Room for the pinned "done editing" button below the last item.
+          editor
+            ? "pb-[calc(env(safe-area-inset-bottom)+6rem)]"
+            : "pb-[calc(env(safe-area-inset-bottom)+3rem)]",
+        )}
+      >
         {children}
       </div>
+      {editor && <DoneEditingButton />}
     </div>
   );
 }

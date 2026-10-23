@@ -384,7 +384,9 @@ function StepRow({
         dragging && "z-10 bg-black/[0.03]",
       )}
     >
-      {gap && (
+      {/* The time between steps is for readers; while editing, only a
+          step timed before the one above it is flagged. */}
+      {gap?.backwards && (
         <GapLabel
           gap={gap}
           className="absolute -top-[7px] left-1/2 -translate-x-1/2 bg-white px-2 whitespace-nowrap"
