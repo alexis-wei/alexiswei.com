@@ -240,7 +240,7 @@ function ReadOnlyTimeline({
           <li key={step.id}>
             {/* The gap sits on the line between two steps' circles. */}
             {gap ? (
-              <GapLabel gap={gap} className="py-3" />
+              <GapLabel gap={gap} branch className="py-3" />
             ) : (
               index > 0 && <div className="h-5" />
             )}
@@ -272,19 +272,40 @@ function ReadOnlyTimeline({
   );
 }
 
-/** The time since the previous step, e.g. "1h 30m later". */
-function GapLabel({ gap, className }: { gap: StepGap; className?: string }) {
+/**
+ * The time since the previous step, e.g. "1h 30m later". Set in small italic
+ * serif so it reads as an aside, not as another timestamp (those are mono).
+ * On the read-only timeline a dashed tick branches it off the line, between
+ * two steps' circles.
+ */
+function GapLabel({
+  gap,
+  branch,
+  className,
+}: {
+  gap: StepGap;
+  branch?: boolean;
+  className?: string;
+}) {
   return (
     <p
+      data-gap
       className={cn(
-        "font-mono text-[10px] tracking-[0.06em]",
-        gap.backwards ? "text-red-600/80" : "text-black/40",
+        "flex items-center gap-1.5 font-serif text-[10px] italic",
+        gap.backwards ? "text-red-600/80" : "text-black/35",
+        branch && "-ml-5",
         className,
       )}
       title={
         gap.backwards ? "This step is timed before the one above it" : undefined
       }
     >
+      {branch && (
+        <span
+          aria-hidden
+          className="w-3.5 shrink-0 border-t border-dashed border-current opacity-60"
+        />
+      )}
       {gap.backwards
         ? `${gap.label} (before the step above)`
         : `${gap.label} later`}

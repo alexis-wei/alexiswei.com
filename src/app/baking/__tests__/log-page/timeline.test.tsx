@@ -445,4 +445,23 @@ describe("Timeline (read-only) layout", () => {
     );
     expect(blocks[1].textContent).toContain("9:24 pm");
   });
+
+  it("sets the gap apart from step times", () => {
+    render(
+      <Timeline
+        logId="log1"
+        logDate="2026-10-15"
+        initial={steps}
+        editable={false}
+      />,
+    );
+    const gap = screen.getByText("12h 24m later");
+    const time = screen.getByText("9:24 pm");
+    // Times are mono; the gap is a smaller italic serif aside.
+    expect(time.className).toContain("font-mono");
+    expect(gap.className).not.toContain("font-mono");
+    expect(gap.className).toContain("italic");
+    expect(gap.className).toContain("text-[10px]");
+    expect(time.className).toContain("text-[11px]");
+  });
 });
