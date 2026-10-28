@@ -201,12 +201,12 @@ describe("deleting recipes", () => {
     expect(await recipeIdsOf("log1")).toEqual([kept.id]);
   });
 
-  it("keeps a migrated recipe's files when its original log is purged", async () => {
-    // A file from before the library: log_id set, then given a recipe.
+  it("keeps a recipe's files when a log that used it is purged", async () => {
     const recipe = await createRecipe({ name: "loaf", url: "", text: "" });
+    await setRecipeSelected("log1", recipe.id, true);
     await c.execute({
-      sql: `INSERT INTO recipe_files (id, log_id, recipe_id, key, content_type, position, created_at)
-            VALUES ('scan', 'log1', ?, 'baking/recipes/log1/scan.pdf', 'application/pdf', 0, 1)`,
+      sql: `INSERT INTO recipe_files (id, recipe_id, key, content_type, position, created_at)
+            VALUES ('scan', ?, 'baking/recipes/log1/scan.pdf', 'application/pdf', 0, 1)`,
       args: [recipe.id],
     });
     await c.execute({

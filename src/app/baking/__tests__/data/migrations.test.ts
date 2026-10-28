@@ -91,13 +91,12 @@ describe("migrating an existing database", () => {
     ]);
   });
 
-  it("keeps the old JSON and every other log field untouched", async () => {
+  it("drops the old JSON once copied, keeping every other log field", async () => {
     await migrate(c);
-    const { rows } = await c.execute(
-      "SELECT title, timeline FROM logs WHERE id = 'cookies'",
-    );
+    const { rows } = await c.execute("SELECT * FROM logs WHERE id = 'cookies'");
     expect(rows[0].title).toBe("miso cookies");
-    expect(JSON.parse(String(rows[0].timeline))).toHaveLength(2);
+    expect(rows[0].baked_on).toBe("2026-10-15");
+    expect(Object.keys(rows[0])).not.toContain("timeline");
   });
 
   it("skips logs whose JSON is unreadable or empty", async () => {
@@ -118,26 +117,44 @@ describe("migrating an existing database", () => {
     expect(rows[0].n).toBe(0);
     const done = await c.execute("SELECT name FROM schema_migrations");
     expect(done.rows.map((r) => r.name).sort()).toEqual([
+      "2026-10-drop-pre-library-columns",
       "2026-10-recipe-library",
       "2026-10-timeline-steps",
     ]);
   });
 
-  it("adds new columns and drops the removed starting-room ones", async () => {
+  it("adds new columns and drops the removed ones", async () => {
     await migrate(c);
     const { rows } = await c.execute("PRAGMA table_info(logs)");
     const columns = rows.map((r) => r.name);
     expect(columns).toEqual(
-      expect.arrayContaining([
-        "start_time",
-        "deleted_at",
-        "cover_media_id",
-        "recipe_url",
-        "recipe_text",
-      ]),
+      expect.arrayContaining(["start_time", "deleted_at", "cover_media_id"]),
     );
-    expect(columns).not.toContain("room_temp");
-    expect(columns).not.toContain("humidity");
+    for (const dropped of [
+      "room_temp",
+      "humidity",
+      "timeline",
+      "recipe_url",
+      "recipe_text",
+    ]) {
+      expect(columns).not.toContain(dropped);
+    }
+  });
+});
+
+describe("a new database", () => {
+  it("is created without the old columns, and restarts cleanly", async () => {
+    const c = createClient({ url: ":memory:" });
+    await migrate(c);
+    await migrate(c); // simulates a server restart
+    const columns = async (table: string) =>
+      (await c.execute(`PRAGMA table_info(${table})`)).rows.map((r) => r.name);
+    expect(await columns("logs")).not.toContain("timeline");
+    expect(await columns("logs")).not.toContain("recipe_url");
+    expect(await columns("recipe_files")).not.toContain("log_id");
+    expect(await columns("recipe_files")).toContain("recipe_id");
+    const done = await c.execute("SELECT count(*) AS n FROM schema_migrations");
+    expect(done.rows[0].n).toBe(3);
   });
 });
 
@@ -172,6 +189,7 @@ describe("moving log recipes into the recipe library", () => {
          VALUES ('nothing', '2026-10-17', 3, 7)`,
         `INSERT INTO recipe_files (id, log_id, key, content_type, position, created_at)
          VALUES ('scan', 'bread', 'baking/recipes/bread/scan.pdf', 'application/pdf', 0, 1)`,
+        `CREATE INDEX recipe_files_log ON recipe_files (log_id, position)`,
       ],
       "write",
     );
@@ -209,12 +227,17 @@ describe("moving log recipes into the recipe library", () => {
     expect(files.rows[0].key).toBe("baking/recipes/bread/scan.pdf");
   });
 
-  it("leaves the old log columns in place as a backup", async () => {
-    const { rows } = await c.execute(
-      "SELECT recipe_url, recipe_text FROM logs WHERE id = 'cookies'",
-    );
-    expect(rows[0].recipe_url).toBe("https://example.com/miso");
-    expect(rows[0].recipe_text).toBe("225g butter\n2 tbsp miso");
+  it("drops the old log columns and file log ids once copied", async () => {
+    const columns = async (table: string) =>
+      (await c.execute(`PRAGMA table_info(${table})`)).rows.map((r) => r.name);
+    expect(await columns("logs")).not.toContain("recipe_url");
+    expect(await columns("logs")).not.toContain("recipe_text");
+    expect(await columns("recipe_files")).not.toContain("log_id");
+    // The copies survive the drop.
+    const files = await c.execute("SELECT id, recipe_id FROM recipe_files");
+    expect(files.rows.map((r) => [r.id, r.recipe_id])).toEqual([
+      ["scan", "bread-recipe"],
+    ]);
   });
 
   it("runs once: a recipe deleted later isn't recreated on the next start", async () => {
