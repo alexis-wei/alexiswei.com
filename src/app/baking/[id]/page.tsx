@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { LogEditor } from "@/components/baking/LogEditor";
 import { isEditor } from "@/lib/baking/auth";
-import { getLog, listIngredients } from "@/lib/baking/queries";
+import { getLog, listIngredients, listRecipes } from "@/lib/baking/queries";
 
 export const dynamic = "force-dynamic";
 
@@ -15,11 +15,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function LogPage({ params }: Props) {
   const { id } = await params;
-  const [log, library, editor] = await Promise.all([
+  const [log, library, recipes, editor] = await Promise.all([
     getLog(id),
     listIngredients(),
+    listRecipes(),
     isEditor(),
   ]);
   if (!log) notFound();
-  return <LogEditor log={log} library={library} editable={editor} />;
+  return (
+    <LogEditor
+      log={log}
+      library={library}
+      recipes={recipes}
+      editable={editor}
+    />
+  );
 }

@@ -25,7 +25,12 @@ export function contentTypeOf(blob: Blob, filename?: string) {
  */
 export async function uploadFile(
   blob: Blob,
-  options: { purpose: UploadPurpose; logId?: string; filename?: string },
+  options: {
+    purpose: UploadPurpose;
+    logId?: string;
+    recipeId?: string;
+    filename?: string;
+  },
   onProgress?: (fraction: number) => void,
 ) {
   const contentType = contentTypeOf(blob, options.filename);

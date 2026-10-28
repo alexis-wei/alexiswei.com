@@ -49,6 +49,8 @@ export async function resetTables(c: Client) {
       "DELETE FROM timeline_steps",
       "DELETE FROM media",
       "DELETE FROM recipe_files",
+      "DELETE FROM log_recipes",
+      "DELETE FROM recipes",
       "DELETE FROM log_ingredients",
       "DELETE FROM logs",
     ],

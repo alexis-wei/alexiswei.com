@@ -153,3 +153,27 @@ export function withoutUnit(value: string, unit: string) {
     ? match[1].trim()
     : value;
 }
+
+/**
+ * What a recipe is made of, for lists: "nytimes.com · 1 pdf · pasted".
+ * Empty for a recipe with nothing in it yet.
+ */
+export function recipeSummary(recipe: {
+  url: string;
+  text: string;
+  files: { contentType: string }[];
+}) {
+  const pdfs = recipe.files.filter(
+    (f) => f.contentType === "application/pdf",
+  ).length;
+  const photos = recipe.files.length - pdfs;
+  const href = safeHref(recipe.url);
+  return [
+    href && displayUrl(href),
+    pdfs && `${pdfs} ${pdfs === 1 ? "pdf" : "pdfs"}`,
+    photos && `${photos} ${photos === 1 ? "photo" : "photos"}`,
+    recipe.text.trim() && "pasted",
+  ]
+    .filter(Boolean)
+    .join(" · ");
+}

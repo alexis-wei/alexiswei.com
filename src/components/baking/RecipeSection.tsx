@@ -2,10 +2,14 @@
 
 import { ArrowUpRight, FileText, X } from "lucide-react";
 import { useRef, useState } from "react";
-import { addRecipeFile, deleteRecipeFile } from "@/app/baking/actions";
+import {
+  addRecipeFile,
+  deleteRecipeFile,
+  updateRecipe,
+} from "@/app/baking/actions";
 import { displayUrl, safeHref, uid } from "@/lib/baking/format";
 import { cn } from "@/lib/utils";
-import type { RecipeFile } from "@/lib/baking/types";
+import type { Recipe, RecipeFile } from "@/lib/baking/types";
 import { track, useAutosave } from "./autosave";
 import { AutosaveText, Label, TextButton } from "./ui";
 import { contentTypeOf, uploadFile } from "./upload";
@@ -13,29 +17,23 @@ import { contentTypeOf, uploadFile } from "./upload";
 type Pending = { id: string; name: string; progress: number; error?: string };
 
 /**
- * Where the recipe came from: an optional link, optional pasted recipe text,
- * and optional recipe photos or PDFs. Files are uploaded exactly as chosen (no resizing), so the full
- * page stays readable and can be opened from the log.
+ * A recipe's contents: an optional link, optional pasted text, and optional
+ * photos or PDFs. Each part saves itself to the recipe. Files are uploaded
+ * exactly as chosen (no resizing), so the full page stays readable.
  */
 export function RecipeSection({
-  logId,
-  initialUrl,
-  initialFiles,
-  initialText,
+  recipe,
   editable,
-  onSaveUrl,
-  onSaveText,
 }: {
-  logId: string;
-  initialUrl: string;
-  initialFiles: RecipeFile[];
-  initialText: string;
+  recipe: Recipe;
   editable: boolean;
-  onSaveUrl: (url: string) => Promise<unknown>;
-  onSaveText: (text: string) => Promise<unknown>;
 }) {
-  const [url, setUrl] = useState(initialUrl);
-  const [files, setFiles] = useState(initialFiles);
+  const recipeId = recipe.id;
+  const initialText = recipe.text;
+  const onSaveUrl = (url: string) => updateRecipe(recipeId, { url });
+  const onSaveText = (text: string) => updateRecipe(recipeId, { text });
+  const [url, setUrl] = useState(recipe.url);
+  const [files, setFiles] = useState(recipe.files);
   const [pending, setPending] = useState<Pending[]>([]);
   const [confirming, setConfirming] = useState<string | null>(null);
   const input = useRef<HTMLInputElement>(null);
@@ -53,12 +51,12 @@ export function RecipeSection({
       const key = await track(
         uploadFile(
           file,
-          { purpose: "recipe", logId, filename: file.name },
+          { purpose: "recipe", recipeId, filename: file.name },
           (progress) => setOne({ progress }),
         ),
       );
       const saved = await track(
-        addRecipeFile(logId, {
+        addRecipeFile(recipeId, {
           key,
           name: file.name,
           contentType: contentTypeOf(file, file.name),
@@ -236,7 +234,7 @@ export function RecipeSection({
 }
 
 /** A photo thumbnail, or a file card for PDFs and images the browser can't show (e.g. HEIC in Chrome). */
-function RecipeThumb({ file }: { file: RecipeFile }) {
+export function RecipeThumb({ file }: { file: RecipeFile }) {
   const [broken, setBroken] = useState(false);
   if (file.contentType.startsWith("image/") && !broken) {
     return (
@@ -265,7 +263,7 @@ const PREVIEW_LINES = 8;
 const PREVIEW_CHARS = 500;
 
 /** A pasted recipe, read-only: the first few lines, with "show full recipe". */
-function RecipeText({ text }: { text: string }) {
+export function RecipeText({ text }: { text: string }) {
   const trimmed = text.trim();
   const long =
     trimmed.split("\n").length > PREVIEW_LINES ||

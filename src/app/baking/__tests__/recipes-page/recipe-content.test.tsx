@@ -1,4 +1,4 @@
-// The log page's recipe section: pasting a recipe as text, and reading it.
+// A recipe's contents on its page: pasting it as text, and reading it.
 
 import {
   act,
@@ -8,36 +8,31 @@ import {
   screen,
 } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { updateRecipe } from "@/app/baking/actions";
 import { RecipeSection } from "@/components/baking/RecipeSection";
 
 vi.mock("@/app/baking/actions", () => ({
   addRecipeFile: vi.fn(),
   deleteRecipeFile: vi.fn(async () => {}),
+  updateRecipe: vi.fn(async () => {}),
 }));
 
 afterEach(() => {
   cleanup();
-  vi.useRealTimers();
+  vi.clearAllMocks();
 });
 
 function Recipe({
   text = "",
   editable = true,
-  onSaveText = vi.fn(async () => {}),
 }: {
   text?: string;
   editable?: boolean;
-  onSaveText?: (text: string) => Promise<unknown>;
 }) {
   return (
     <RecipeSection
-      logId="log1"
-      initialUrl=""
-      initialFiles={[]}
-      initialText={text}
+      recipe={{ id: "r1", name: "loaf", url: "", text, files: [] }}
       editable={editable}
-      onSaveUrl={vi.fn(async () => {})}
-      onSaveText={onSaveText}
     />
   );
 }
@@ -46,9 +41,8 @@ const lines = (n: number) =>
   Array.from({ length: n }, (_, i) => `line ${i + 1}`).join("\n");
 
 describe("pasting a recipe", () => {
-  it("saves the pasted text as written", async () => {
-    const onSaveText = vi.fn(async () => {});
-    render(<Recipe onSaveText={onSaveText} />);
+  it("saves the pasted text to the recipe, as written", async () => {
+    render(<Recipe />);
     const box = screen.getByLabelText("Recipe");
     expect(box.getAttribute("placeholder")).toBe("paste the recipe");
 
@@ -57,7 +51,19 @@ describe("pasting a recipe", () => {
     await act(async () => {
       fireEvent.blur(box);
     });
-    expect(onSaveText).toHaveBeenLastCalledWith(pasted);
+    expect(updateRecipe).toHaveBeenLastCalledWith("r1", { text: pasted });
+  });
+
+  it("saves a pasted link to the recipe", async () => {
+    render(<Recipe />);
+    const link = screen.getByPlaceholderText("paste the recipe's link");
+    fireEvent.change(link, { target: { value: "https://example.com/loaf" } });
+    await act(async () => {
+      fireEvent.blur(link);
+    });
+    expect(updateRecipe).toHaveBeenLastCalledWith("r1", {
+      url: "https://example.com/loaf",
+    });
   });
 
   it("shows a saved recipe for editing", () => {

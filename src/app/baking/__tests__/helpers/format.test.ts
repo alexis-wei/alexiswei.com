@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   formatDuration,
+  recipeSummary,
   safeHref,
   toDateTime,
   withoutUnit,
@@ -73,5 +74,27 @@ describe("withoutUnit", () => {
     expect(withoutUnit("75F", "°C")).toBe("75F");
     expect(withoutUnit("warm", "°C")).toBe("warm");
     expect(withoutUnit("", "%")).toBe("");
+  });
+});
+
+describe("recipeSummary", () => {
+  const pdf = { contentType: "application/pdf" };
+  const photo = { contentType: "image/jpeg" };
+
+  it("says what a recipe is made of", () => {
+    expect(
+      recipeSummary({
+        url: "https://www.example.com/miso",
+        text: "flour",
+        files: [pdf, photo, photo],
+      }),
+    ).toBe("example.com/miso · 1 pdf · 2 photos · pasted");
+  });
+
+  it("is empty for an empty recipe, and ignores unsafe links", () => {
+    expect(recipeSummary({ url: "", text: "  ", files: [] })).toBe("");
+    expect(
+      recipeSummary({ url: "javascript:alert(1)", text: "", files: [] }),
+    ).toBe("");
   });
 });
