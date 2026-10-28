@@ -1,6 +1,6 @@
 "use client";
 
-import { GripVertical, Plus, X } from "lucide-react";
+import { GripVertical, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import {
   addStep,
@@ -8,7 +8,7 @@ import {
   reorderSteps,
   updateStep,
 } from "@/app/baking/actions";
-import { nowDateTime } from "@/lib/baking/format";
+import { nowDateTime, withoutUnit, withUnit } from "@/lib/baking/format";
 import { dropIndex, moveItem, sameOrder } from "@/lib/baking/order";
 import {
   resolveStepTimes,
@@ -16,9 +16,12 @@ import {
   stepGaps,
   type StepGap,
 } from "@/lib/baking/timeline";
-import type { TimelineStep } from "@/lib/baking/types";
+import type { Media, TimelineStep } from "@/lib/baking/types";
 import { cn } from "@/lib/utils";
 import { track, useAutosave } from "./autosave";
+import { useLogState } from "./LogState";
+import { MoreMenu } from "./MoreMenu";
+import { StepPhotoPicker, StepPhotoStrip } from "./StepPhotos";
 import { AutoTextarea, TextButton } from "./ui";
 
 /**
@@ -30,18 +33,20 @@ import { AutoTextarea, TextButton } from "./ui";
 export function Timeline({
   logId,
   logDate,
-  initial,
   editable,
 }: {
   logId: string;
   logDate: string;
-  initial: TimelineStep[];
   editable: boolean;
 }) {
-  const [steps, setSteps] = useState(initial);
+  const { steps, setSteps, media, setMedia, linkMedia, arranging } =
+    useLogState();
   const [busy, setBusy] = useState(false);
   const [focusId, setFocusId] = useState<string | null>(null);
   const [dragId, setDragId] = useState<string | null>(null);
+  const [pickingFor, setPickingFor] = useState<string | null>(null);
+  const photosFor = (stepId: string) =>
+    media.filter((m) => m.stepId === stepId);
   const rows = useRef(new Map<string, HTMLLIElement>());
   const dragStart = useRef<string[]>([]);
 
@@ -55,6 +60,7 @@ export function Timeline({
     return (
       <ReadOnlyTimeline
         steps={steps}
+        photosFor={photosFor}
         resolved={resolved}
         gaps={gaps}
         logDate={logDate}
@@ -85,6 +91,10 @@ export function Timeline({
   async function remove(id: string) {
     const before = steps;
     setSteps((list) => list.filter((s) => s.id !== id));
+    // The step's photos stay in the gallery, unlinked (as on the server).
+    setMedia((list) =>
+      list.map((m) => (m.stepId === id ? { ...m, stepId: null } : m)),
+    );
     try {
       await track(deleteStep(id));
     } catch {
@@ -158,6 +168,9 @@ export function Timeline({
           <StepRow
             key={step.id}
             step={step}
+            arranging={arranging}
+            photos={photosFor(step.id)}
+            onPickPhotos={() => setPickingFor(step.id)}
             time={resolved[index]}
             gap={gaps[index]}
             index={index}
@@ -181,6 +194,17 @@ export function Timeline({
           />
         ))}
       </ol>
+      {pickingFor && steps.some((s) => s.id === pickingFor) && (
+        <StepPhotoPicker
+          step={steps.find((s) => s.id === pickingFor)!}
+          steps={steps}
+          media={media}
+          onToggle={(photo, attach) =>
+            linkMedia(photo.id, attach ? pickingFor : null)
+          }
+          onClose={() => setPickingFor(null)}
+        />
+      )}
       <TextButton className="mt-3" disabled={busy} onClick={() => insert(null)}>
         + add step
       </TextButton>
@@ -190,11 +214,13 @@ export function Timeline({
 
 function ReadOnlyTimeline({
   steps,
+  photosFor,
   resolved,
   gaps,
   logDate,
 }: {
   steps: TimelineStep[];
+  photosFor: (stepId: string) => Media[];
   resolved: string[];
   gaps: (StepGap | null)[];
   logDate: string;
@@ -205,23 +231,40 @@ function ReadOnlyTimeline({
       {steps.map((step, index) => {
         const readings = [
           labels[index],
-          step.roomTemp && `room ${step.roomTemp}`,
-          step.humidity && `rh ${step.humidity}`,
-          step.internalTemp && `internal ${step.internalTemp}`,
+          step.roomTemp && `room ${withUnit(step.roomTemp, "°C")}`,
+          step.humidity && `rh ${withUnit(step.humidity, "%")}`,
+          step.internalTemp && `internal ${withUnit(step.internalTemp, "°F")}`,
         ].filter(Boolean);
         const gap = gaps[index];
         return (
-          <li key={step.id} className="relative pb-5 last:pb-0">
-            {gap && <GapLabel gap={gap} className="-mt-2 mb-2" />}
-            <span className="absolute top-[0.6rem] -left-[23.5px] size-[7px] rounded-full border border-black/60 bg-white" />
-            {readings.length > 0 && (
-              <p className="font-mono text-[11px] text-black/45">
-                {readings.join(" · ")}
-              </p>
+          <li key={step.id}>
+            {/* The gap sits on the line between two steps' circles. */}
+            {gap ? (
+              <GapLabel gap={gap} branch className="py-3" />
+            ) : (
+              index > 0 && <div className="h-5" />
             )}
-            <p className="text-sm leading-relaxed whitespace-pre-wrap">
-              {step.text}
-            </p>
+            <div className="relative" data-step>
+              {/* Centred on the step's first line: its time, or its text. */}
+              <span
+                aria-hidden
+                className={cn(
+                  "absolute -left-[23.5px] size-[7px] rounded-full border border-black/60 bg-white",
+                  readings.length > 0 ? "top-[4.5px]" : "top-[8px]",
+                )}
+              />
+              {readings.length > 0 && (
+                <p className="font-mono text-[11px] leading-4 text-black/45">
+                  {readings.join(" · ")}
+                </p>
+              )}
+              <p className="text-sm leading-relaxed whitespace-pre-wrap">
+                {step.text}
+              </p>
+              <div className="mt-2 empty:hidden">
+                <StepPhotoStrip photos={photosFor(step.id)} href />
+              </div>
+            </div>
           </li>
         );
       })}
@@ -229,19 +272,40 @@ function ReadOnlyTimeline({
   );
 }
 
-/** The time since the previous step, e.g. "1h 30m later". */
-function GapLabel({ gap, className }: { gap: StepGap; className?: string }) {
+/**
+ * The time since the previous step, e.g. "1h 30m later". Set in small italic
+ * serif so it reads as an aside, not as another timestamp (those are mono).
+ * On the read-only timeline a dashed tick branches it off the line, between
+ * two steps' circles.
+ */
+function GapLabel({
+  gap,
+  branch,
+  className,
+}: {
+  gap: StepGap;
+  branch?: boolean;
+  className?: string;
+}) {
   return (
     <p
+      data-gap
       className={cn(
-        "font-mono text-[10px] tracking-[0.06em]",
-        gap.backwards ? "text-red-600/80" : "text-black/40",
+        "flex items-center gap-1.5 font-serif text-[10px] italic",
+        gap.backwards ? "text-red-600/80" : "text-black/35",
+        branch && "-ml-5",
         className,
       )}
       title={
         gap.backwards ? "This step is timed before the one above it" : undefined
       }
     >
+      {branch && (
+        <span
+          aria-hidden
+          className="w-3.5 shrink-0 border-t border-dashed border-current opacity-60"
+        />
+      )}
       {gap.backwards
         ? `${gap.label} (before the step above)`
         : `${gap.label} later`}
@@ -251,6 +315,9 @@ function GapLabel({ gap, className }: { gap: StepGap; className?: string }) {
 
 function StepRow({
   step,
+  arranging,
+  photos,
+  onPickPhotos,
   time,
   gap,
   index,
@@ -268,6 +335,9 @@ function StepRow({
   onDragEnd,
 }: {
   step: TimelineStep;
+  arranging: boolean;
+  photos: Media[];
+  onPickPhotos: () => void;
   time: string; // resolved "YYYY-MM-DDTHH:MM", or ""
   gap: StepGap | null;
   index: number;
@@ -314,34 +384,38 @@ function StepRow({
         dragging && "z-10 bg-black/[0.03]",
       )}
     >
-      {gap && (
+      {/* The time between steps is for readers; while editing, only a
+          step timed before the one above it is flagged. */}
+      {gap?.backwards && (
         <GapLabel
           gap={gap}
           className="absolute -top-[7px] left-1/2 -translate-x-1/2 bg-white px-2 whitespace-nowrap"
         />
       )}
       <div className="flex items-center gap-2">
-        <button
-          type="button"
-          aria-label={`Move step ${index + 1} of ${count}`}
-          title="Drag to reorder (or use ↑/↓)"
-          onPointerDown={onDragStart}
-          onPointerMove={onDragMove}
-          onPointerUp={onDragEnd}
-          onPointerCancel={onDragEnd}
-          onKeyDown={(e) => {
-            if (e.key === "ArrowUp") {
-              e.preventDefault();
-              onMove(-1);
-            } else if (e.key === "ArrowDown") {
-              e.preventDefault();
-              onMove(1);
-            }
-          }}
-          className="-ml-1 mt-0.5 shrink-0 cursor-grab touch-none p-0.5 text-black/25 hover:text-black active:cursor-grabbing"
-        >
-          <GripVertical size={15} strokeWidth={1.25} />
-        </button>
+        {arranging && (
+          <button
+            type="button"
+            aria-label={`Move step ${index + 1} of ${count}`}
+            title="Drag to reorder (or use ↑/↓)"
+            onPointerDown={onDragStart}
+            onPointerMove={onDragMove}
+            onPointerUp={onDragEnd}
+            onPointerCancel={onDragEnd}
+            onKeyDown={(e) => {
+              if (e.key === "ArrowUp") {
+                e.preventDefault();
+                onMove(-1);
+              } else if (e.key === "ArrowDown") {
+                e.preventDefault();
+                onMove(1);
+              }
+            }}
+            className="-ml-1 mt-0.5 shrink-0 cursor-grab touch-none p-0.5 text-black/25 hover:text-black active:cursor-grabbing"
+          >
+            <GripVertical size={15} strokeWidth={1.25} />
+          </button>
+        )}
         <input
           type="datetime-local"
           value={time}
@@ -360,24 +434,42 @@ function StepRow({
           </button>
         )}
         <span className="flex-1" />
-        {confirming ? (
-          <button
-            type="button"
-            onClick={onDelete}
-            className="mt-1 shrink-0 font-mono text-[10px] tracking-[0.1em] text-red-600 uppercase"
-          >
-            delete
-          </button>
-        ) : (
-          <button
-            type="button"
-            aria-label="Remove step"
-            onClick={() => setConfirming(true)}
-            className="mt-1 shrink-0 text-black/30 hover:text-black"
-          >
-            <X size={16} strokeWidth={1.25} />
-          </button>
-        )}
+        <MoreMenu
+          label={`More for step ${index + 1}`}
+          align="right"
+          items={[
+            {
+              label: "+ photo",
+              ariaLabel: `Choose photos for step ${index + 1}`,
+              onSelect: onPickPhotos,
+            },
+            {
+              label: "+ step below",
+              ariaLabel: `Insert a step after step ${index + 1}`,
+              onSelect: onInsertAfter,
+              disabled: busy,
+            },
+          ]}
+        />
+        {arranging &&
+          (confirming ? (
+            <button
+              type="button"
+              onClick={onDelete}
+              className="mt-1 shrink-0 font-mono text-[10px] tracking-[0.1em] text-red-600 uppercase"
+            >
+              delete
+            </button>
+          ) : (
+            <button
+              type="button"
+              aria-label="Remove step"
+              onClick={() => setConfirming(true)}
+              className="mt-1 shrink-0 text-black/30 hover:text-black"
+            >
+              <X size={16} strokeWidth={1.25} />
+            </button>
+          ))}
       </div>
       <AutoTextarea
         value={step.text}
@@ -386,11 +478,21 @@ function StepRow({
         autoFocus={autoFocus}
         placeholder="what happened"
         aria-label="Step"
-        className="mt-1 pl-6 text-sm"
+        className={cn("mt-1 text-sm", arranging && "pl-6")}
       />
-      <div className="mt-1.5 flex items-center gap-5 pl-6">
+      <div className={cn("mt-2 empty:hidden", arranging && "pl-6")}>
+        <StepPhotoStrip photos={photos} onOpen={onPickPhotos} />
+      </div>
+      {/* Readings wrap rather than overflow on narrow phones. */}
+      <div
+        className={cn(
+          "mt-1.5 flex flex-wrap items-center gap-x-5 gap-y-1.5",
+          arranging && "pl-6",
+        )}
+      >
         <Reading
           label="room"
+          unit="°C"
           value={step.roomTemp}
           onChange={(roomTemp) => patch({ roomTemp })}
           onBlur={flush}
@@ -398,6 +500,7 @@ function StepRow({
         />
         <Reading
           label="rh"
+          unit="%"
           value={step.humidity}
           onChange={(humidity) => patch({ humidity })}
           onBlur={flush}
@@ -405,21 +508,12 @@ function StepRow({
         />
         <Reading
           label="internal"
+          unit="°F"
           value={step.internalTemp}
           onChange={(internalTemp) => patch({ internalTemp })}
           onBlur={flush}
           aria-label="Internal temperature at this step"
         />
-        <button
-          type="button"
-          disabled={busy}
-          onClick={onInsertAfter}
-          aria-label={`Insert a step after step ${index + 1}`}
-          title="Insert a step after this one"
-          className="ml-auto flex items-center gap-1 font-mono text-[9px] tracking-[0.1em] text-black/35 uppercase hover:text-black disabled:opacity-40"
-        >
-          <Plus size={11} strokeWidth={1.25} /> step
-        </button>
       </div>
     </li>
   );
@@ -428,12 +522,14 @@ function StepRow({
 /** A small labelled reading (room temp, humidity, internal temp) under a step. */
 function Reading({
   label,
+  unit,
   value,
   onChange,
   onBlur,
   "aria-label": ariaLabel,
 }: {
   label: string;
+  unit: string;
   value: string | undefined;
   onChange: (value: string) => void;
   onBlur: () => void;
@@ -445,14 +541,32 @@ function Reading({
         {label}
       </span>
       <input
-        value={value ?? ""}
+        value={withoutUnit(value ?? "", unit)}
         onChange={(e) => onChange(e.target.value)}
         onBlur={onBlur}
         placeholder="—"
         inputMode="decimal"
         aria-label={ariaLabel}
-        className="w-12 min-w-0 border-b border-black/10 bg-transparent font-mono text-[13px] text-black/70 outline-none placeholder:text-black/20 focus:border-black"
+        className="w-10 min-w-0 border-b border-black/10 bg-transparent font-mono text-[13px] text-black/70 outline-none placeholder:text-black/20 focus:border-black"
       />
+      <span className="font-mono text-[11px] text-black/40">{unit}</span>
     </label>
+  );
+}
+
+/**
+ * "edit" / "done" beside the timeline heading: shows the steps' drag handles
+ * and delete buttons only while arranging, to keep the timeline compact.
+ */
+export function TimelineEditToggle() {
+  const { steps, arranging, setArranging } = useLogState();
+  if (steps.length === 0 && !arranging) return null;
+  return (
+    <TextButton
+      aria-pressed={arranging}
+      onClick={() => setArranging((on) => !on)}
+    >
+      {arranging ? "done" : "edit"}
+    </TextButton>
   );
 }

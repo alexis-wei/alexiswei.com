@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { fit1080, fromSavedCrop, toSavedCrop } from "./image";
+import { fit1080, fromSavedCrop, toSavedCrop } from "@/lib/baking/image";
 
 describe("fit1080 (photo and video upload size)", () => {
   it("shrinks a landscape 4K frame to 1920x1080", () => {

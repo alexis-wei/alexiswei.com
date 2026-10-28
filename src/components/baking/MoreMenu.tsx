@@ -4,11 +4,20 @@ import { MoreVertical } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
-/** Three-dot button with a small dropdown of links. */
+type MenuItem = { label: string; ariaLabel?: string } & (
+  | { href: string }
+  | { onSelect: () => void; disabled?: boolean }
+);
+
+/** Three-dot button with a small dropdown of links and actions. */
 export function MoreMenu({
   items,
+  label = "More",
+  align = "left",
 }: {
-  items: { href: string; label: string }[];
+  items: MenuItem[];
+  label?: string;
+  align?: "left" | "right";
 }) {
   const [open, setOpen] = useState(false);
   const root = useRef<HTMLDivElement>(null);
@@ -36,7 +45,7 @@ export function MoreMenu({
     <div ref={root} className="relative">
       <button
         type="button"
-        aria-label="More"
+        aria-label={label}
         aria-haspopup="menu"
         aria-expanded={open}
         onClick={() => setOpen((o) => !o)}
@@ -47,21 +56,42 @@ export function MoreMenu({
       {open && (
         <div
           role="menu"
-          className="absolute top-full left-0 z-30 mt-2 min-w-40 border border-black/15 bg-white py-1"
+          className={`absolute top-full ${align === "right" ? "right-0" : "left-0"} z-30 mt-2 min-w-40 border border-black/15 bg-white py-1`}
         >
-          {items.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              role="menuitem"
-              onClick={() => setOpen(false)}
-              className="block px-3 py-2 font-mono text-[11px] tracking-[0.1em] whitespace-nowrap text-black/70 uppercase hover:bg-black/[0.03] hover:text-black"
-            >
-              {item.label}
-            </Link>
-          ))}
+          {items.map((item) =>
+            "href" in item ? (
+              <Link
+                key={item.label}
+                href={item.href}
+                role="menuitem"
+                aria-label={item.ariaLabel}
+                onClick={() => setOpen(false)}
+                className={itemClass}
+              >
+                {item.label}
+              </Link>
+            ) : (
+              <button
+                key={item.label}
+                type="button"
+                role="menuitem"
+                aria-label={item.ariaLabel}
+                disabled={item.disabled}
+                onClick={() => {
+                  setOpen(false);
+                  item.onSelect();
+                }}
+                className={itemClass}
+              >
+                {item.label}
+              </button>
+            ),
+          )}
         </div>
       )}
     </div>
   );
 }
+
+const itemClass =
+  "block w-full px-3 py-2 text-left font-mono text-[11px] tracking-[0.1em] whitespace-nowrap text-black/70 uppercase hover:bg-black/[0.03] hover:text-black disabled:opacity-40";

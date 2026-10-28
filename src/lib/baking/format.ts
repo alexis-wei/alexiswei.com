@@ -132,3 +132,24 @@ export function displayUrl(href: string) {
 /** Short random id; works on plain-http LAN addresses where crypto.randomUUID doesn't. */
 export const uid = () =>
   Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
+
+/**
+ * A step reading with its unit: "24" → "24°C". Values typed before units were
+ * shown ("48%", "75F", "warm") are left as they are.
+ */
+export function withUnit(value: string, unit: string) {
+  const v = value.trim();
+  return /^-?\d+(\.\d+)?$/.test(v) ? `${v}${unit}` : v;
+}
+
+/**
+ * A reading as typed into its box, without a unit the box already shows:
+ * "23°C" or "23 c" → "23" for °C. Anything else is left as it is.
+ */
+export function withoutUnit(value: string, unit: string) {
+  const symbol = unit.replace("°", "");
+  const match = value.match(new RegExp(`^(.*?)\\s*°?\\s*${symbol}$`, "i"));
+  return match && /^-?\d+(\.\d+)?$/.test(match[1].trim())
+    ? match[1].trim()
+    : value;
+}

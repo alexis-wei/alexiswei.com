@@ -55,6 +55,7 @@ export type Media = {
   height: number | null;
   caption: string;
   takenAt: string | null; // phone clock time when captured, "YYYY-MM-DDTHH:MM:SS"
+  stepId: string | null; // the timeline step it belongs to, if any
 };
 
 export type BakingLog = {
@@ -67,6 +68,7 @@ export type BakingLog = {
   endTime: string;
   coverMediaId: string | null; // chosen cover; null means the first photo
   recipeUrl: string; // link to the recipe, may be empty
+  recipeText: string; // a pasted recipe, as written, may be empty
   recipeFiles: RecipeFile[];
   process: string;
   notes: string;
@@ -93,6 +95,7 @@ export type LogPatch = Partial<
     | "startTime"
     | "endTime"
     | "recipeUrl"
+    | "recipeText"
     | "process"
     | "notes"
   >

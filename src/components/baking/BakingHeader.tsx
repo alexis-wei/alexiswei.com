@@ -1,7 +1,6 @@
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { LockButton } from "./forms";
 import { MoreMenu } from "./MoreMenu";
 
 const TABS = [
@@ -66,17 +65,17 @@ export function BackLink({
 const footerLink =
   "font-mono text-[11px] tracking-[0.1em] text-black/30 uppercase hover:text-black";
 
-/** Bottom of the list pages: editing controls, or a quiet "edit" link. */
+/**
+ * Bottom of the list pages: a quiet "edit" link for visitors. (Editors get
+ * the pinned "done editing" button from the layout instead.)
+ */
 export function BakingFooter({ editor }: { editor: boolean }) {
+  if (editor) return null;
   return (
     <footer className="mt-12 flex justify-center gap-6">
-      {editor ? (
-        <LockButton />
-      ) : (
-        <Link href="/baking/edit" className={footerLink}>
-          edit
-        </Link>
-      )}
+      <Link href="/baking/edit" className={footerLink}>
+        edit
+      </Link>
     </footer>
   );
 }

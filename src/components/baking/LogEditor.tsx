@@ -13,9 +13,10 @@ import type { BakingLog, Ingredient, LogPatch } from "@/lib/baking/types";
 import { track, useAutosave, useUnsavedChangesWarning } from "./autosave";
 import { BackLink } from "./BakingHeader";
 import { LogIngredients } from "./LogIngredients";
+import { LogStateProvider } from "./LogState";
 import { MediaGallery } from "./MediaGallery";
 import { RecipeSection } from "./RecipeSection";
-import { Timeline } from "./Timeline";
+import { Timeline, TimelineEditToggle } from "./Timeline";
 import {
   AutosaveText,
   Label,
@@ -42,127 +43,135 @@ export function LogEditor({
   const show = (filled: boolean) => editable || filled;
 
   return (
-    <article>
-      <header className="sticky top-0 z-20 -mx-4 border-b border-black/10 bg-white/90 px-4 pt-[env(safe-area-inset-top)] backdrop-blur">
-        <div className="flex h-14 items-center justify-between">
-          <BackLink href="/baking">logs</BackLink>
-          {editable && <SaveIndicator />}
-        </div>
-      </header>
+    <LogStateProvider initialSteps={log.timeline} initialMedia={log.media}>
+      <article>
+        <header className="sticky top-0 z-20 -mx-4 border-b border-black/10 bg-white/90 px-4 pt-[env(safe-area-inset-top)] backdrop-blur">
+          <div className="flex h-14 items-center justify-between">
+            <BackLink href="/baking">logs</BackLink>
+            {editable && <SaveIndicator />}
+          </div>
+        </header>
 
-      <div className="pt-8 pb-6">
-        {editable ? (
-          <>
-            <DateField
-              initial={log.bakedOn}
-              onSave={(bakedOn) => save({ bakedOn })}
+        <div className="pt-8 pb-6">
+          {editable ? (
+            <>
+              <DateField
+                initial={log.bakedOn}
+                onSave={(bakedOn) => save({ bakedOn })}
+              />
+              <AutosaveText
+                initial={log.title}
+                onSave={(title) => save({ title })}
+                singleLine
+                placeholder="what did you bake?"
+                aria-label="Title"
+                className="mt-2 font-serif text-[28px] leading-tight"
+              />
+              <BakeTimes
+                start={toDateTime(log.startTime, log.bakedOn)}
+                end={toDateTime(log.endTime, log.bakedOn)}
+                onSave={save}
+              />
+            </>
+          ) : (
+            <>
+              <Label>{formatDate(log.bakedOn)}</Label>
+              <p className="mt-2 font-serif text-[28px] leading-tight">
+                {log.title || "untitled"}
+              </p>
+              {(log.startTime || log.endTime) && (
+                <Label className="mt-3">
+                  {[
+                    formatSpan(log.startTime, log.endTime, log.bakedOn),
+                    formatDuration(log.startTime, log.endTime, log.bakedOn),
+                  ]
+                    .filter(Boolean)
+                    .join(" · ")}
+                </Label>
+              )}
+            </>
+          )}
+        </div>
+
+        {show(
+          Boolean(log.recipeUrl.trim() || log.recipeText.trim()) ||
+            log.recipeFiles.length > 0,
+        ) && (
+          <Section label="recipe">
+            <RecipeSection
+              logId={log.id}
+              initialUrl={log.recipeUrl}
+              initialFiles={log.recipeFiles}
+              initialText={log.recipeText}
+              editable={editable}
+              onSaveUrl={(recipeUrl) => save({ recipeUrl })}
+              onSaveText={(recipeText) => save({ recipeText })}
             />
-            <AutosaveText
-              initial={log.title}
-              onSave={(title) => save({ title })}
-              singleLine
-              placeholder="what did you bake?"
-              aria-label="Title"
-              className="mt-2 font-serif text-[28px] leading-tight"
-            />
-            <BakeTimes
-              start={toDateTime(log.startTime, log.bakedOn)}
-              end={toDateTime(log.endTime, log.bakedOn)}
-              onSave={save}
-            />
-          </>
-        ) : (
-          <>
-            <Label>{formatDate(log.bakedOn)}</Label>
-            <p className="mt-2 font-serif text-[28px] leading-tight">
-              {log.title || "untitled"}
-            </p>
-            {(log.startTime || log.endTime) && (
-              <Label className="mt-3">
-                {[
-                  formatSpan(log.startTime, log.endTime, log.bakedOn),
-                  formatDuration(log.startTime, log.endTime, log.bakedOn),
-                ]
-                  .filter(Boolean)
-                  .join(" · ")}
-              </Label>
-            )}
-          </>
+          </Section>
         )}
-      </div>
 
-      {show(Boolean(log.recipeUrl.trim()) || log.recipeFiles.length > 0) && (
-        <Section label="recipe">
-          <RecipeSection
-            logId={log.id}
-            initialUrl={log.recipeUrl}
-            initialFiles={log.recipeFiles}
-            editable={editable}
-            onSaveUrl={(recipeUrl) => save({ recipeUrl })}
-          />
-        </Section>
-      )}
+        {show(log.media.length > 0) && (
+          <Section label="photos & videos">
+            <MediaGallery
+              logId={log.id}
+              logDate={log.bakedOn}
+              initialCover={log.coverMediaId}
+              editable={editable}
+            />
+          </Section>
+        )}
 
-      {show(log.media.length > 0) && (
-        <Section label="photos & videos">
-          <MediaGallery
-            logId={log.id}
-            logDate={log.bakedOn}
-            initialCover={log.coverMediaId}
-            initial={log.media}
-            editable={editable}
-          />
-        </Section>
-      )}
+        {show(hasIngredients) && (
+          <Section label="ingredients">
+            <LogIngredients
+              logId={log.id}
+              library={library}
+              initial={log.ingredients}
+              editable={editable}
+            />
+          </Section>
+        )}
 
-      {show(hasIngredients) && (
-        <Section label="ingredients">
-          <LogIngredients
-            logId={log.id}
-            library={library}
-            initial={log.ingredients}
-            editable={editable}
-          />
-        </Section>
-      )}
+        {show(log.timeline.length > 0) && (
+          <Section
+            label="timeline"
+            action={editable ? <TimelineEditToggle /> : undefined}
+          >
+            <Timeline
+              logId={log.id}
+              logDate={log.bakedOn}
+              editable={editable}
+            />
+          </Section>
+        )}
 
-      {show(log.timeline.length > 0) && (
-        <Section label="timeline">
-          <Timeline
-            logId={log.id}
-            logDate={log.bakedOn}
-            initial={log.timeline}
-            editable={editable}
-          />
-        </Section>
-      )}
+        <TextSection
+          label="process"
+          initial={log.process}
+          editable={editable}
+          placeholder="method, temperatures, what you tried…"
+          onSave={(process) => save({ process })}
+        />
+        <TextSection
+          label="how it turned out"
+          initial={log.notes}
+          editable={editable}
+          placeholder="texture, taste, what to change next time…"
+          onSave={(notes) => save({ notes })}
+        />
 
-      <TextSection
-        label="process"
-        initial={log.process}
-        editable={editable}
-        placeholder="method, temperatures, what you tried…"
-        onSave={(process) => save({ process })}
-      />
-      <TextSection
-        label="how it turned out"
-        initial={log.notes}
-        editable={editable}
-        placeholder="texture, taste, what to change next time…"
-        onSave={(notes) => save({ notes })}
-      />
-
-      {editable && (
-        <div className="border-t border-black/10 pt-6">
-          <ConfirmButton
-            label="delete log"
-            busyLabel="deleting…"
-            note="It moves to recently deleted, where you can restore it for 30 days."
-            onConfirm={() => deleteLog(log.id)}
-          />
-        </div>
-      )}
-    </article>
+        {editable && (
+          <div className="border-t border-black/10 pt-6">
+            <ConfirmButton
+              label="delete log"
+              busyLabel="deleting…"
+              note="It moves to recently deleted, where you can restore it for 30 days."
+              onConfirm={() => deleteLog(log.id)}
+            />
+          </div>
+        )}
+      </article>
+    </LogStateProvider>
   );
 }
 
