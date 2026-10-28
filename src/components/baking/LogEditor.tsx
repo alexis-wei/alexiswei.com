@@ -9,13 +9,18 @@ import {
   nowDateTime,
   toDateTime,
 } from "@/lib/baking/format";
-import type { BakingLog, Ingredient, LogPatch } from "@/lib/baking/types";
+import type {
+  BakingLog,
+  Ingredient,
+  LogPatch,
+  Recipe,
+} from "@/lib/baking/types";
 import { track, useAutosave, useUnsavedChangesWarning } from "./autosave";
 import { BackLink } from "./BakingHeader";
 import { LogIngredients } from "./LogIngredients";
 import { LogStateProvider } from "./LogState";
 import { MediaGallery } from "./MediaGallery";
-import { RecipeSection } from "./RecipeSection";
+import { LogRecipes } from "./LogRecipes";
 import { Timeline, TimelineEditToggle } from "./Timeline";
 import {
   AutosaveText,
@@ -30,10 +35,12 @@ import {
 export function LogEditor({
   log,
   library,
+  recipes,
   editable,
 }: {
   log: BakingLog;
   library: Ingredient[];
+  recipes: Recipe[];
   editable: boolean;
 }) {
   useUnsavedChangesWarning();
@@ -93,19 +100,13 @@ export function LogEditor({
           )}
         </div>
 
-        {show(
-          Boolean(log.recipeUrl.trim() || log.recipeText.trim()) ||
-            log.recipeFiles.length > 0,
-        ) && (
-          <Section label="recipe">
-            <RecipeSection
+        {show(log.recipeIds.length > 0) && (
+          <Section label="recipes">
+            <LogRecipes
               logId={log.id}
-              initialUrl={log.recipeUrl}
-              initialFiles={log.recipeFiles}
-              initialText={log.recipeText}
+              library={recipes}
+              initial={log.recipeIds}
               editable={editable}
-              onSaveUrl={(recipeUrl) => save({ recipeUrl })}
-              onSaveText={(recipeText) => save({ recipeText })}
             />
           </Section>
         )}

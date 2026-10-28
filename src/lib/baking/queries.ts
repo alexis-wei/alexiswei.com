@@ -7,7 +7,9 @@ import type {
   IngredientUsage,
   LogSummary,
   Media,
+  Recipe,
   RecipeFile,
+  RecipeUsage,
   SavedCrop,
   TimelineStep,
 } from "./types";
@@ -69,6 +71,82 @@ function toStep(row: Row): TimelineStep {
   };
 }
 
+function toRecipe(row: Row, files: Row[]): Recipe {
+  return {
+    id: str(row.id),
+    name: str(row.name),
+    url: str(row.url),
+    text: str(row.text),
+    files: files.map(toRecipeFile),
+  };
+}
+
+function filesByRecipe(rows: Row[]) {
+  const map = new Map<string, Row[]>();
+  for (const row of rows) {
+    const list = map.get(str(row.recipe_id)) ?? [];
+    list.push(row);
+    map.set(str(row.recipe_id), list);
+  }
+  return map;
+}
+
+/** The recipe library, by name, each with its files. */
+export async function listRecipes(): Promise<Recipe[]> {
+  const [recipes, files] = await (
+    await db()
+  ).batch(
+    [
+      "SELECT * FROM recipes WHERE deleted_at IS NULL ORDER BY name COLLATE NOCASE, created_at",
+      `SELECT f.* FROM recipe_files f JOIN recipes r ON r.id = f.recipe_id
+       WHERE f.deleted_at IS NULL AND r.deleted_at IS NULL
+       ORDER BY f.position`,
+    ],
+    "read",
+  );
+  const byRecipe = filesByRecipe(files.rows);
+  return recipes.rows.map((row) =>
+    toRecipe(row, byRecipe.get(str(row.id)) ?? []),
+  );
+}
+
+export async function getRecipe(
+  id: string,
+): Promise<{ recipe: Recipe; usage: RecipeUsage[] } | null> {
+  const [found, files, usage] = await (
+    await db()
+  ).batch(
+    [
+      {
+        sql: "SELECT * FROM recipes WHERE id = ? AND deleted_at IS NULL",
+        args: [id],
+      },
+      {
+        sql: "SELECT * FROM recipe_files WHERE recipe_id = ? AND deleted_at IS NULL ORDER BY position",
+        args: [id],
+      },
+      {
+        sql: `SELECT l.id, l.title, l.baked_on FROM log_recipes lr
+              JOIN logs l ON l.id = lr.log_id
+              WHERE lr.recipe_id = ? AND l.deleted_at IS NULL
+              ORDER BY l.baked_on DESC, l.created_at DESC`,
+        args: [id],
+      },
+    ],
+    "read",
+  );
+  const row = found.rows[0];
+  if (!row) return null;
+  return {
+    recipe: toRecipe(row, files.rows),
+    usage: usage.rows.map((r) => ({
+      logId: str(r.id),
+      title: str(r.title),
+      bakedOn: str(r.baked_on),
+    })),
+  };
+}
+
 export async function listIngredients(): Promise<Ingredient[]> {
   const { rows } = await (
     await db()
@@ -122,7 +200,7 @@ export async function listLogs(): Promise<LogSummary[]> {
 }
 
 export async function getLog(id: string): Promise<BakingLog | null> {
-  const [logs, ingredients, media, recipeFiles, steps] = await (
+  const [logs, ingredients, media, recipes, steps] = await (
     await db()
   ).batch(
     [
@@ -139,7 +217,10 @@ export async function getLog(id: string): Promise<BakingLog | null> {
         args: [id],
       },
       {
-        sql: "SELECT * FROM recipe_files WHERE log_id = ? AND deleted_at IS NULL ORDER BY position",
+        sql: `SELECT lr.recipe_id FROM log_recipes lr
+              JOIN recipes r ON r.id = lr.recipe_id
+              WHERE lr.log_id = ? AND r.deleted_at IS NULL
+              ORDER BY lr.position`,
         args: [id],
       },
       {
@@ -159,9 +240,7 @@ export async function getLog(id: string): Promise<BakingLog | null> {
     startTime: str(row.start_time),
     endTime: str(row.end_time),
     coverMediaId: row.cover_media_id ? str(row.cover_media_id) : null,
-    recipeUrl: str(row.recipe_url),
-    recipeText: str(row.recipe_text),
-    recipeFiles: recipeFiles.rows.map(toRecipeFile),
+    recipeIds: recipes.rows.map((r) => str(r.recipe_id)),
     process: str(row.process),
     notes: str(row.notes),
     timeline: steps.rows.map(toStep),

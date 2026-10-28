@@ -67,9 +67,7 @@ export type BakingLog = {
   startTime: string;
   endTime: string;
   coverMediaId: string | null; // chosen cover; null means the first photo
-  recipeUrl: string; // link to the recipe, may be empty
-  recipeText: string; // a pasted recipe, as written, may be empty
-  recipeFiles: RecipeFile[];
+  recipeIds: string[]; // library recipes this log uses, in order
   process: string;
   notes: string;
   timeline: TimelineStep[];
@@ -90,16 +88,22 @@ export type LogSummary = {
 export type LogPatch = Partial<
   Pick<
     BakingLog,
-    | "title"
-    | "bakedOn"
-    | "startTime"
-    | "endTime"
-    | "recipeUrl"
-    | "recipeText"
-    | "process"
-    | "notes"
+    "title" | "bakedOn" | "startTime" | "endTime" | "process" | "notes"
   >
 >;
+
+/** A recipe in the library: a link, pasted text and/or files. */
+export type Recipe = {
+  id: string;
+  name: string;
+  url: string; // link to the recipe, may be empty
+  text: string; // pasted recipe, as written, may be empty
+  files: RecipeFile[];
+};
+
+export type RecipePatch = Partial<Pick<Recipe, "name" | "url" | "text">>;
+
+export type RecipeUsage = { logId: string; title: string; bakedOn: string };
 
 /** A recipe photo or PDF, stored exactly as uploaded (full resolution). */
 export type RecipeFile = {

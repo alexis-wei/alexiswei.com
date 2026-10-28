@@ -5,6 +5,7 @@ import {
   restoreIngredient,
   restoreLog,
   restoreMedia,
+  restoreRecipe,
   restoreRecipeFile,
 } from "@/app/baking/actions";
 import { BackLink } from "@/components/baking/BakingHeader";
@@ -24,8 +25,16 @@ export const metadata: Metadata = { title: "recently deleted | baking" };
 const RESTORE = {
   log: restoreLog,
   ingredient: restoreIngredient,
+  recipe: restoreRecipe,
   media: restoreMedia,
-  recipe: restoreRecipeFile,
+  recipeFile: restoreRecipeFile,
+};
+
+const KIND_LABEL = {
+  log: "log",
+  ingredient: "ingredient",
+  recipe: "recipe",
+  recipeFile: "recipe file",
 };
 
 export default async function DeletedPage() {
@@ -43,7 +52,7 @@ export default async function DeletedPage() {
       <div className="pt-8 pb-6">
         <p className="font-serif text-[28px] leading-tight">recently deleted</p>
         <p className="mt-2 text-sm text-black/45">
-          Deleted logs, ingredients, photos and videos are kept for{" "}
+          Deleted logs, ingredients, recipes, photos and videos are kept for{" "}
           {RETENTION_DAYS} days, then removed for good.
         </p>
       </div>
@@ -92,7 +101,7 @@ function DeletedRow({ item }: { item: DeletedItem }) {
       </div>
       <div className="min-w-0 flex-1">
         <p className="font-mono text-[10px] tracking-[0.14em] text-black/45 uppercase">
-          {item.kind === "media" ? item.label : item.kind}
+          {item.kind === "media" ? item.label : KIND_LABEL[item.kind]}
           {" · "}
           {item.daysLeft === 1 ? "1 day left" : `${item.daysLeft} days left`}
         </p>

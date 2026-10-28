@@ -6,6 +6,7 @@ import { MoreMenu } from "./MoreMenu";
 const TABS = [
   { key: "logs", href: "/baking", label: "logs" },
   { key: "ingredients", href: "/baking/ingredients", label: "ingredients" },
+  { key: "recipes", href: "/baking/recipes", label: "recipes" },
 ] as const;
 
 export function BakingHeader({
@@ -17,8 +18,9 @@ export function BakingHeader({
 }) {
   return (
     <header className="sticky top-0 z-20 -mx-4 border-b border-black/10 bg-white/90 px-4 pt-[env(safe-area-inset-top)] backdrop-blur">
-      <div className="flex h-14 items-center justify-between gap-3">
-        <nav className="flex items-baseline gap-5">
+      {/* Tighter on phones so three tabs and "+ new" fit side by side. */}
+      <div className="flex h-14 items-center justify-between gap-2 sm:gap-3">
+        <nav className="flex min-w-0 items-baseline gap-3 sm:gap-5">
           <Link href="/baking" className="font-serif text-xl">
             baking
           </Link>

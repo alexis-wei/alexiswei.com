@@ -117,7 +117,10 @@ describe("migrating an existing database", () => {
     );
     expect(rows[0].n).toBe(0);
     const done = await c.execute("SELECT name FROM schema_migrations");
-    expect(done.rows.map((r) => r.name)).toEqual(["2026-10-timeline-steps"]);
+    expect(done.rows.map((r) => r.name).sort()).toEqual([
+      "2026-10-recipe-library",
+      "2026-10-timeline-steps",
+    ]);
   });
 
   it("adds new columns and drops the removed starting-room ones", async () => {
@@ -135,5 +138,88 @@ describe("migrating an existing database", () => {
     );
     expect(columns).not.toContain("room_temp");
     expect(columns).not.toContain("humidity");
+  });
+});
+
+describe("moving log recipes into the recipe library", () => {
+  let c: Client;
+
+  beforeEach(async () => {
+    c = createClient({ url: ":memory:" });
+    // The shape production had before the recipe library: each log held its
+    // own recipe link, pasted text and files.
+    await c.batch(
+      [
+        `CREATE TABLE logs (
+          id TEXT PRIMARY KEY, title TEXT NOT NULL DEFAULT '',
+          baked_on TEXT NOT NULL, process TEXT NOT NULL DEFAULT '',
+          notes TEXT NOT NULL DEFAULT '', timeline TEXT NOT NULL DEFAULT '[]',
+          created_at INTEGER NOT NULL, updated_at INTEGER NOT NULL,
+          deleted_at INTEGER,
+          recipe_url TEXT NOT NULL DEFAULT '',
+          recipe_text TEXT NOT NULL DEFAULT '')`,
+        `CREATE TABLE recipe_files (
+          id TEXT PRIMARY KEY, log_id TEXT NOT NULL, key TEXT NOT NULL,
+          name TEXT NOT NULL DEFAULT '', content_type TEXT NOT NULL,
+          size INTEGER, position INTEGER NOT NULL,
+          created_at INTEGER NOT NULL, deleted_at INTEGER) STRICT`,
+        `INSERT INTO logs (id, title, baked_on, created_at, updated_at, recipe_url, recipe_text)
+         VALUES ('cookies', 'miso cookies', '2026-10-15', 1, 5,
+                 'https://example.com/miso', '225g butter\n2 tbsp miso')`,
+        `INSERT INTO logs (id, title, baked_on, created_at, updated_at)
+         VALUES ('bread', 'country loaf', '2026-10-16', 2, 6)`,
+        `INSERT INTO logs (id, baked_on, created_at, updated_at)
+         VALUES ('nothing', '2026-10-17', 3, 7)`,
+        `INSERT INTO recipe_files (id, log_id, key, content_type, position, created_at)
+         VALUES ('scan', 'bread', 'baking/recipes/bread/scan.pdf', 'application/pdf', 0, 1)`,
+      ],
+      "write",
+    );
+    await migrate(c);
+  });
+
+  const recipes = async () =>
+    (await c.execute("SELECT * FROM recipes ORDER BY id")).rows.map((r) => ({
+      ...r,
+    }));
+
+  it("makes a recipe from each log that had a link, text or files", async () => {
+    expect(await recipes()).toMatchObject([
+      { id: "bread-recipe", name: "country loaf", url: "", text: "" },
+      {
+        id: "cookies-recipe",
+        name: "miso cookies",
+        url: "https://example.com/miso",
+        text: "225g butter\n2 tbsp miso",
+        deleted_at: null,
+      },
+    ]);
+  });
+
+  it("links each new recipe to its log, and moves the files onto it", async () => {
+    const links = await c.execute(
+      "SELECT log_id, recipe_id FROM log_recipes ORDER BY log_id",
+    );
+    expect(links.rows.map((r) => [r.log_id, r.recipe_id])).toEqual([
+      ["bread", "bread-recipe"],
+      ["cookies", "cookies-recipe"],
+    ]);
+    const files = await c.execute("SELECT recipe_id, key FROM recipe_files");
+    expect(files.rows[0].recipe_id).toBe("bread-recipe");
+    expect(files.rows[0].key).toBe("baking/recipes/bread/scan.pdf");
+  });
+
+  it("leaves the old log columns in place as a backup", async () => {
+    const { rows } = await c.execute(
+      "SELECT recipe_url, recipe_text FROM logs WHERE id = 'cookies'",
+    );
+    expect(rows[0].recipe_url).toBe("https://example.com/miso");
+    expect(rows[0].recipe_text).toBe("225g butter\n2 tbsp miso");
+  });
+
+  it("runs once: a recipe deleted later isn't recreated on the next start", async () => {
+    await c.execute("DELETE FROM recipes WHERE id = 'cookies-recipe'");
+    await migrate(c);
+    expect((await recipes()).map((r) => r.id)).toEqual(["bread-recipe"]);
   });
 });

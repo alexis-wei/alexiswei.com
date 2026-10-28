@@ -71,6 +71,26 @@ const SCHEMA = [
     updated_at INTEGER NOT NULL
   ) STRICT`,
   `CREATE INDEX IF NOT EXISTS timeline_steps_log ON timeline_steps (log_id, position)`,
+  // The recipe library. A recipe has an optional link, pasted text and files
+  // (recipe_files.recipe_id), and can be used by any number of logs.
+  `CREATE TABLE IF NOT EXISTS recipes (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL DEFAULT '',
+    url TEXT NOT NULL DEFAULT '',
+    text TEXT NOT NULL DEFAULT '',
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL,
+    deleted_at INTEGER
+  ) STRICT`,
+  // Which recipes a log uses, in order (like log_ingredients).
+  `CREATE TABLE IF NOT EXISTS log_recipes (
+    log_id TEXT NOT NULL,
+    recipe_id TEXT NOT NULL,
+    position INTEGER NOT NULL,
+    PRIMARY KEY (log_id, recipe_id)
+  ) STRICT`,
+  `CREATE INDEX IF NOT EXISTS log_recipes_log ON log_recipes (log_id, position)`,
+  `CREATE INDEX IF NOT EXISTS log_recipes_recipe ON log_recipes (recipe_id)`,
   // One-time data migrations that have run (see DATA_MIGRATIONS).
   `CREATE TABLE IF NOT EXISTS schema_migrations (
     name TEXT PRIMARY KEY,
@@ -97,9 +117,18 @@ const ADDED_COLUMNS = [
   // The timeline step a photo/video belongs to (one step per photo; a step
   // can have many). Linked by id, so reordering steps never loses the link.
   ["media", "step_id", "TEXT"],
-  // A recipe pasted into the log, kept exactly as written.
+  // A recipe pasted into the log, kept exactly as written. (Superseded by the
+  // recipe library; kept as a backup of what was migrated into it.)
   ["logs", "recipe_text", "TEXT NOT NULL DEFAULT ''"],
+  // The library recipe a file belongs to. Files from before the library keep
+  // their log_id too; new files have log_id ''.
+  ["recipe_files", "recipe_id", "TEXT"],
 ] as const;
+
+// Indexes on added columns, created once the columns exist.
+const LATE_INDEXES = [
+  `CREATE INDEX IF NOT EXISTS recipe_files_recipe ON recipe_files (recipe_id, position)`,
+];
 
 // Columns that were removed. Their data is deleted for good, so only list a
 // column here when that's intended. (logs.room_temp/humidity: the starting
@@ -163,6 +192,50 @@ const DATA_MIGRATIONS: {
       return out;
     },
   },
+  {
+    // Recipes used to live on each log (recipe_url, recipe_text and
+    // recipe_files.log_id). Each log that had any becomes a library recipe,
+    // named after the log and linked to it. The log columns are left
+    // untouched as a backup.
+    name: "2026-10-recipe-library",
+    async statements(c) {
+      const { rows } = await c.execute(
+        `SELECT id, title, recipe_url, recipe_text, created_at, updated_at
+         FROM logs l
+         WHERE recipe_url != '' OR recipe_text != ''
+            OR EXISTS (SELECT 1 FROM recipe_files
+                       WHERE log_id = l.id AND deleted_at IS NULL)`,
+      );
+      return rows.flatMap((row) => {
+        const logId = String(row.id);
+        const recipeId = `${logId}-recipe`;
+        const created = Number(row.created_at) || Date.now();
+        const updated = Number(row.updated_at) || created;
+        return [
+          {
+            sql: `INSERT INTO recipes (id, name, url, text, created_at, updated_at)
+                  VALUES (?, ?, ?, ?, ?, ?)`,
+            args: [
+              recipeId,
+              String(row.title ?? "").trim(),
+              String(row.recipe_url ?? ""),
+              String(row.recipe_text ?? ""),
+              created,
+              updated,
+            ],
+          },
+          {
+            sql: "INSERT INTO log_recipes (log_id, recipe_id, position) VALUES (?, ?, 0)",
+            args: [logId, recipeId],
+          },
+          {
+            sql: "UPDATE recipe_files SET recipe_id = ? WHERE log_id = ? AND recipe_id IS NULL",
+            args: [recipeId, logId],
+          },
+        ];
+      });
+    },
+  },
 ];
 
 async function runDataMigrations(c: Client) {
@@ -211,6 +284,7 @@ export async function migrate(c: Client) {
       if (!String(error).includes("no such column")) throw error;
     }
   }
+  await c.batch(LATE_INDEXES, "write");
   await runDataMigrations(c);
 }
 

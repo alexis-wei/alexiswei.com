@@ -19,7 +19,9 @@ import type {
   IngredientPatch,
   LogPatch,
   Media,
+  Recipe,
   RecipeFile,
+  RecipePatch,
   StepPatch,
   TimelineStep,
 } from "@/lib/baking/types";
@@ -66,8 +68,6 @@ const COLUMNS = {
   bakedOn: "baked_on",
   startTime: "start_time",
   endTime: "end_time",
-  recipeUrl: "recipe_url",
-  recipeText: "recipe_text",
   process: "process",
   notes: "notes",
 } as const;
@@ -457,13 +457,97 @@ export async function setLogCover(logId: string, mediaId: string | null) {
   );
 }
 
+// The recipe library: recipes are shared, and logs pick them like ingredients.
+
+export async function createRecipe(input: {
+  name: string;
+  url: string;
+  text: string;
+}): Promise<Recipe> {
+  await requireEditor();
+  const recipe: Recipe = {
+    id: randomUUID(),
+    name: input.name.trim(),
+    url: input.url.trim(),
+    text: input.text,
+    files: [],
+  };
+  const now = Date.now();
+  await (
+    await db()
+  ).execute({
+    sql: `INSERT INTO recipes (id, name, url, text, created_at, updated_at)
+          VALUES (?, ?, ?, ?, ?, ?)`,
+    args: [recipe.id, recipe.name, recipe.url, recipe.text, now, now],
+  });
+  return recipe;
+}
+
+/** "New recipe" on the recipes page: start blank, fill in on its page. */
+export async function createBlankRecipe() {
+  const { id } = await createRecipe({ name: "", url: "", text: "" });
+  redirect(`/baking/recipes/${id}`);
+}
+
+const RECIPE_COLUMNS = { name: "name", url: "url", text: "text" } as const;
+
+export async function updateRecipe(id: string, patch: RecipePatch) {
+  await requireEditor();
+  const fields = Object.entries(RECIPE_COLUMNS).filter(
+    ([field]) => typeof patch[field as keyof RecipePatch] === "string",
+  );
+  if (fields.length === 0) return;
+  await (
+    await db()
+  ).execute({
+    sql: `UPDATE recipes SET ${fields.map(([, column]) => `${column} = ?`).join(", ")}, updated_at = ? WHERE id = ?`,
+    args: [
+      ...fields.map(([field]) => patch[field as keyof RecipePatch] as string),
+      Date.now(),
+      id,
+    ],
+  });
+}
+
+/** Moves a recipe to recently deleted; logs stop showing it until restored. */
+export async function deleteRecipe(id: string) {
+  await softDelete("recipes", id);
+  redirect("/baking/recipes");
+}
+
+export async function restoreRecipe(id: string) {
+  await restore("recipes", id);
+}
+
+export async function setRecipeSelected(
+  logId: string,
+  recipeId: string,
+  selected: boolean,
+) {
+  await requireEditor();
+  await (
+    await db()
+  ).execute(
+    selected
+      ? {
+          sql: `INSERT OR IGNORE INTO log_recipes (log_id, recipe_id, position)
+                VALUES (?, ?, (SELECT COALESCE(MAX(position), -1) + 1 FROM log_recipes WHERE log_id = ?))`,
+          args: [logId, recipeId, logId],
+        }
+      : {
+          sql: "DELETE FROM log_recipes WHERE log_id = ? AND recipe_id = ?",
+          args: [logId, recipeId],
+        },
+  );
+}
+
 /** Records a recipe photo/PDF uploaded to storage as-is (full resolution). */
 export async function addRecipeFile(
-  logId: string,
+  recipeId: string,
   file: { key: string; name: string; contentType: string; size: number },
 ): Promise<RecipeFile> {
   await requireEditor();
-  if (!validKey(file.key, `baking/recipes/${logId}/`)) {
+  if (!validKey(file.key, `baking/recipes/${recipeId}/`)) {
     throw new Error("Invalid upload");
   }
   const id = randomUUID();
@@ -471,16 +555,16 @@ export async function addRecipeFile(
   await (
     await db()
   ).execute({
-    sql: `INSERT INTO recipe_files (id, log_id, key, name, content_type, size, position, created_at)
-          VALUES (?, ?, ?, ?, ?, ?, (SELECT COALESCE(MAX(position), -1) + 1 FROM recipe_files WHERE log_id = ?), ?)`,
+    sql: `INSERT INTO recipe_files (id, log_id, recipe_id, key, name, content_type, size, position, created_at)
+          VALUES (?, '', ?, ?, ?, ?, ?, (SELECT COALESCE(MAX(position), -1) + 1 FROM recipe_files WHERE recipe_id = ?), ?)`,
     args: [
       id,
-      logId,
+      recipeId,
       file.key,
       name,
       file.contentType,
       Math.round(file.size) || null,
-      logId,
+      recipeId,
       Date.now(),
     ],
   });
@@ -513,7 +597,7 @@ export async function restoreMedia(id: string) {
   await restore("media", id);
 }
 
-type Trashable = "logs" | "ingredients" | "media" | "recipe_files";
+type Trashable = "logs" | "ingredients" | "media" | "recipes" | "recipe_files";
 
 // Deletes are reversible for 30 days (see lib/baking/trash.ts). Expired items
 // are purged after the response is sent, whenever something is deleted.
