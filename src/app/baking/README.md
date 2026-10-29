@@ -40,8 +40,14 @@ Anyone can read it; only Alexis can edit, after unlocking with a passcode.
   recipes a log uses (several per log, ordered). Before the library, each log
   held its own `recipe_url`, `recipe_text` and files (`recipe_files.log_id`);
   the `2026-10-recipe-library` migration turned each into a recipe named after
-  its log. Those log columns are no longer read or written, and are kept as a
-  backup. Deleting a recipe hides it from its logs; its files go with it.
+  its log. Deleting a recipe hides it from its logs; its files go with it.
+- **Old columns are dropped in a later release than the move.** Once production
+  was checked on `timeline_steps` and the recipe library, the
+  `2026-10-drop-pre-library-columns` migration dropped `logs.timeline`,
+  `logs.recipe_url`, `logs.recipe_text` and `recipe_files.log_id`. Drops that
+  depend on a data move go in `DATA_MIGRATIONS` after it (not
+  `DROPPED_COLUMNS`, which runs first), so no database loses data before it's
+  copied.
 - **Ordering** (timeline steps, photos, ingredients, recipe files) is an integer
   `position` per log. Reordering rewrites the positions of that log's rows in one
   batch. Gaps are fine; only the order matters.
@@ -71,26 +77,26 @@ Tests live in `src/app/baking/__tests__/`, grouped by **page** (what you see
 and do there) and by **function** (data and helpers). Put a new test in the
 folder that matches what it checks, and add it to this table:
 
-| Folder          | File                        | Covers                                                                                                                         |
-| --------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| `all-pages/`    | `editing.test.tsx`          | Pinned "done editing" button while unlocked; visitors' "edit" link                                                             |
-| `log-page/`     | `timeline.test.tsx`         | Adding, inserting, reordering and deleting steps (edit mode); step menu; per-step saving; dates, gaps (readers only) and units |
-| `log-page/`     | `step-photos.test.tsx`      | Linking photos to steps from either side; links surviving reorders and deletes                                                 |
-| `log-page/`     | `log-recipes.test.tsx`      | Picking several recipes for a log; adding one from a link, pasted text or files; saving on every exit                          |
-| `log-page/`     | `ingredient-popup.test.tsx` | Adding an ingredient from a log (with image), "+ new", saving on every exit                                                    |
-| `log-page/`     | `autosave.test.tsx`         | Debounced, ordered, retrying autosave                                                                                          |
-| `recipes-page/` | `library.test.tsx`          | The recipes list: links, what each recipe holds, search                                                                        |
-| `recipes-page/` | `recipe-content.test.tsx`   | A recipe's link and pasted text saving; long recipes collapsed when reading                                                    |
-| `data/`         | `migrations.test.ts`        | Schema and data migrations on a production-shaped database (timeline steps, recipe library)                                    |
-| `data/`         | `timeline-steps.test.ts`    | Step insert/reorder/update/delete in the database                                                                              |
-| `data/`         | `photo-steps.test.ts`       | `media.step_id` links: same-log only, moves, reorders, step deletes, restores                                                  |
-| `data/`         | `recipes.test.ts`           | Recipes and their files, logs sharing recipes, delete/restore/purge                                                            |
-| `data/`         | `trash.test.ts`             | The 30-day purge of logs, steps and photos                                                                                     |
-| `helpers/`      | `format.test.ts`            | Safe recipe links, recipe summaries, bake start/end and durations, reading units                                               |
-| `helpers/`      | `step-times.test.ts`        | Step dates (incl. older time-only steps), gaps, date labels                                                                    |
-| `helpers/`      | `order.test.ts`             | Reorder helpers, drop position, cover choice                                                                                   |
-| `helpers/`      | `image.test.ts`             | 1080p sizing, saved ingredient crops                                                                                           |
-| `helpers/`      | `capture.test.ts`           | Photo capture time from EXIF                                                                                                   |
+| Folder          | File                        | Covers                                                                                                                                 |
+| --------------- | --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `all-pages/`    | `editing.test.tsx`          | Pinned "done editing" button while unlocked; visitors' "edit" link                                                                     |
+| `log-page/`     | `timeline.test.tsx`         | Adding, inserting, reordering and deleting steps (edit mode); step menu; per-step saving; dates, gaps (readers only) and units         |
+| `log-page/`     | `step-photos.test.tsx`      | Linking photos to steps from either side; links surviving reorders and deletes                                                         |
+| `log-page/`     | `log-recipes.test.tsx`      | Picking several recipes for a log; adding one from a link, pasted text or files; saving on every exit                                  |
+| `log-page/`     | `ingredient-popup.test.tsx` | Adding an ingredient from a log (with image), "+ new", saving on every exit                                                            |
+| `log-page/`     | `autosave.test.tsx`         | Debounced, ordered, retrying autosave                                                                                                  |
+| `recipes-page/` | `library.test.tsx`          | The recipes list: links, what each recipe holds, search                                                                                |
+| `recipes-page/` | `recipe-content.test.tsx`   | A recipe's link and pasted text saving; long recipes collapsed when reading                                                            |
+| `data/`         | `migrations.test.ts`        | Schema and data migrations on a production-shaped database (timeline steps, recipe library, dropping the old columns) and on a new one |
+| `data/`         | `timeline-steps.test.ts`    | Step insert/reorder/update/delete in the database                                                                                      |
+| `data/`         | `photo-steps.test.ts`       | `media.step_id` links: same-log only, moves, reorders, step deletes, restores                                                          |
+| `data/`         | `recipes.test.ts`           | Recipes and their files, logs sharing recipes, delete/restore/purge                                                                    |
+| `data/`         | `trash.test.ts`             | The 30-day purge of logs, steps and photos                                                                                             |
+| `helpers/`      | `format.test.ts`            | Safe recipe links, recipe summaries, bake start/end and durations, reading units                                                       |
+| `helpers/`      | `step-times.test.ts`        | Step dates (incl. older time-only steps), gaps, date labels                                                                            |
+| `helpers/`      | `order.test.ts`             | Reorder helpers, drop position, cover choice                                                                                           |
+| `helpers/`      | `image.test.ts`             | 1080p sizing, saved ingredient crops                                                                                                   |
+| `helpers/`      | `capture.test.ts`           | Photo capture time from EXIF                                                                                                           |
 
 Database tests use `data/harness.ts`. Each one runs the real code against a
 fresh in-memory SQLite database, never Turso or the local dev file.

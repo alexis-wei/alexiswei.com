@@ -108,11 +108,9 @@ export async function listDeleted(): Promise<DeletedItem[]> {
 export async function purgeExpired(now = Date.now()) {
   const cutoff = now - RETENTION_MS;
   const client = await db();
-  // Recipe files go with their recipe. Files from before the recipe library
-  // that never got a recipe still go with their log.
+  // Recipe files go with their recipe.
   const expiredFiles = `deleted_at < ?
-    OR recipe_id IN (SELECT id FROM recipes WHERE deleted_at < ?)
-    OR (recipe_id IS NULL AND log_id IN (SELECT id FROM logs WHERE deleted_at < ?))`;
+    OR recipe_id IN (SELECT id FROM recipes WHERE deleted_at < ?)`;
   const [logs, ingredients, recipes, media, files] = await client.batch(
     [
       { sql: "SELECT id FROM logs WHERE deleted_at < ?", args: [cutoff] },
@@ -128,7 +126,7 @@ export async function purgeExpired(now = Date.now()) {
       },
       {
         sql: `SELECT key FROM recipe_files WHERE ${expiredFiles}`,
-        args: [cutoff, cutoff, cutoff],
+        args: [cutoff, cutoff],
       },
     ],
     "read",
@@ -156,7 +154,7 @@ export async function purgeExpired(now = Date.now()) {
       },
       {
         sql: `DELETE FROM recipe_files WHERE ${expiredFiles}`,
-        args: [cutoff, cutoff, cutoff],
+        args: [cutoff, cutoff],
       },
       {
         sql: `DELETE FROM log_recipes

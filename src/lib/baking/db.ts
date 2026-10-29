@@ -13,7 +13,6 @@ const SCHEMA = [
     baked_on TEXT NOT NULL,
     process TEXT NOT NULL DEFAULT '',
     notes TEXT NOT NULL DEFAULT '',
-    timeline TEXT NOT NULL DEFAULT '[]',
     created_at INTEGER NOT NULL,
     updated_at INTEGER NOT NULL
   )`,
@@ -42,10 +41,9 @@ const SCHEMA = [
   )`,
   `CREATE INDEX IF NOT EXISTS media_log ON media (log_id, position)`,
   `CREATE INDEX IF NOT EXISTS log_ingredients_log ON log_ingredients (log_id, position)`,
-  // A log's recipe source files (photos/PDFs), kept as the original upload.
+  // A recipe's source files (photos/PDFs), kept as the original upload.
   `CREATE TABLE IF NOT EXISTS recipe_files (
     id TEXT PRIMARY KEY,
-    log_id TEXT NOT NULL,
     key TEXT NOT NULL,
     name TEXT NOT NULL DEFAULT '',
     content_type TEXT NOT NULL,
@@ -54,7 +52,6 @@ const SCHEMA = [
     created_at INTEGER NOT NULL,
     deleted_at INTEGER
   ) STRICT`,
-  `CREATE INDEX IF NOT EXISTS recipe_files_log ON recipe_files (log_id, position)`,
   // One row per timeline step. Order is `position` within a log: moving or
   // inserting a step renumbers only that log's rows, in one transaction.
   // Positions may have gaps (after deletes); only their order matters.
@@ -113,15 +110,10 @@ const ADDED_COLUMNS = [
   ["media", "caption", "TEXT NOT NULL DEFAULT ''"],
   ["media", "taken_at", "TEXT"],
   ["logs", "cover_media_id", "TEXT"],
-  ["logs", "recipe_url", "TEXT NOT NULL DEFAULT ''"],
   // The timeline step a photo/video belongs to (one step per photo; a step
   // can have many). Linked by id, so reordering steps never loses the link.
   ["media", "step_id", "TEXT"],
-  // A recipe pasted into the log, kept exactly as written. (Superseded by the
-  // recipe library; kept as a backup of what was migrated into it.)
-  ["logs", "recipe_text", "TEXT NOT NULL DEFAULT ''"],
-  // The library recipe a file belongs to. Files from before the library keep
-  // their log_id too; new files have log_id ''.
+  // The library recipe a file belongs to.
   ["recipe_files", "recipe_id", "TEXT"],
 ] as const;
 
@@ -152,9 +144,10 @@ const DATA_MIGRATIONS: {
 }[] = [
   {
     // Steps used to live as JSON in logs.timeline. Copy them into
-    // timeline_steps. logs.timeline is left untouched as a backup.
+    // timeline_steps. (logs.timeline is dropped by a later migration.)
     name: "2026-10-timeline-steps",
     async statements(c) {
+      if (!(await hasColumn(c, "logs", "timeline"))) return []; // new database
       const { rows } = await c.execute(
         "SELECT id, timeline, updated_at FROM logs",
       );
@@ -195,10 +188,11 @@ const DATA_MIGRATIONS: {
   {
     // Recipes used to live on each log (recipe_url, recipe_text and
     // recipe_files.log_id). Each log that had any becomes a library recipe,
-    // named after the log and linked to it. The log columns are left
-    // untouched as a backup.
+    // named after the log and linked to it. (The log columns are dropped by
+    // a later migration.)
     name: "2026-10-recipe-library",
     async statements(c) {
+      if (!(await hasColumn(c, "logs", "recipe_url"))) return []; // new database
       const { rows } = await c.execute(
         `SELECT id, title, recipe_url, recipe_text, created_at, updated_at
          FROM logs l
@@ -236,7 +230,38 @@ const DATA_MIGRATIONS: {
       });
     },
   },
+  {
+    // The columns the two migrations above copied from, kept as a backup
+    // until production was checked on the new tables. Listed after them, so
+    // a database is only cleaned up once its data has been copied, in the
+    // same run. Deletes that data for good.
+    name: "2026-10-drop-pre-library-columns",
+    async statements(c) {
+      const out: Statement[] = [
+        { sql: "DROP INDEX IF EXISTS recipe_files_log", args: [] },
+      ];
+      for (const [table, column] of [
+        ["logs", "timeline"],
+        ["logs", "recipe_url"],
+        ["logs", "recipe_text"],
+        ["recipe_files", "log_id"],
+      ]) {
+        if (await hasColumn(c, table, column)) {
+          out.push({
+            sql: `ALTER TABLE ${table} DROP COLUMN ${column}`,
+            args: [],
+          });
+        }
+      }
+      return out;
+    },
+  },
 ];
+
+async function hasColumn(c: Client, table: string, column: string) {
+  const { rows } = await c.execute(`PRAGMA table_info(${table})`);
+  return rows.some((row) => row.name === column);
+}
 
 async function runDataMigrations(c: Client) {
   const { rows } = await c.execute("SELECT name FROM schema_migrations");
@@ -256,8 +281,10 @@ async function runDataMigrations(c: Client) {
         "write",
       );
     } catch (error) {
-      // Another instance applied it first; this attempt was rolled back.
-      if (!String(error).includes("UNIQUE")) throw error;
+      // Another instance applied it first (its record, or a column it
+      // dropped, is already there); this attempt was rolled back.
+      const raced = ["UNIQUE", "no such column"];
+      if (!raced.some((text) => String(error).includes(text))) throw error;
     }
   }
 }

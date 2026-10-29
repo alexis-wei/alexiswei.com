@@ -555,8 +555,8 @@ export async function addRecipeFile(
   await (
     await db()
   ).execute({
-    sql: `INSERT INTO recipe_files (id, log_id, recipe_id, key, name, content_type, size, position, created_at)
-          VALUES (?, '', ?, ?, ?, ?, ?, (SELECT COALESCE(MAX(position), -1) + 1 FROM recipe_files WHERE recipe_id = ?), ?)`,
+    sql: `INSERT INTO recipe_files (id, recipe_id, key, name, content_type, size, position, created_at)
+          VALUES (?, ?, ?, ?, ?, ?, (SELECT COALESCE(MAX(position), -1) + 1 FROM recipe_files WHERE recipe_id = ?), ?)`,
     args: [
       id,
       recipeId,
