@@ -3,11 +3,22 @@ import Icons from "unplugin-icons/webpack";
 import IconsResolver from "unplugin-icons/resolver";
 import AutoImport from "unplugin-auto-import/webpack";
 
+const BAKING_SITE = "https://baking-log-ten.vercel.app";
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  // libSQL ships native bindings (used for the local dev database file).
-  serverExternalPackages: ["@libsql/client", "libsql"],
+  async redirects() {
+    return [
+      // The baking log moved to its own site (github.com/alexis-wei/baking-log).
+      { source: "/baking", destination: BAKING_SITE, permanent: true },
+      {
+        source: "/baking/:path*",
+        destination: `${BAKING_SITE}/:path*`,
+        permanent: true,
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       {

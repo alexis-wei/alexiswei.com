@@ -35,5 +35,5 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# baking: local dev database + uploads
+# old baking log local data (the app moved to github.com/alexis-wei/baking-log)
 /.baking-local

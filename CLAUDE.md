@@ -69,6 +69,4 @@ This is Alexis Wei's personal portfolio website built with Next.js 15+ using the
 
 ### Baking log (`/baking`)
 
-- Read `src/app/baking/README.md` before changing anything under `src/app/baking`, `src/components/baking` or `src/lib/baking`. It holds real data in production.
-- Every change there adds or updates tests (`pnpm test`): new features get tests, changed behaviour updates the outdated tests in the same change, and bug fixes get a test that fails without the fix.
-- Test against the local database (`pnpm dev` with no Turso env vars), never a Vercel preview, which shares the production database.
+Moved to its own repo (github.com/alexis-wei/baking-log) and Vercel project. `/baking/...` here only redirects there (`next.config.mjs`). Don't add baking code back to this repo.
